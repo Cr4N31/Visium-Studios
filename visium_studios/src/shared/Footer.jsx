@@ -1,3 +1,4 @@
+import { FaLinkedinIn, FaInstagram, FaTwitter } from 'react-icons/fa'
 function Footer() {
   const studio = ['Who we are', 'Philosophy', 'Visual direction']
   const services = ['Brand system', 'Launch presence kit', 'Enterprise retainers']
@@ -37,9 +38,9 @@ function Footer() {
         </p>
         <div className="flex items-center gap-3 text-white/30">
           {/* swap these for your actual icon components */}
-          <a href="#" className="hover:text-white transition-colors text-sm">in</a>
-          <a href="#" className="hover:text-white transition-colors text-sm">ig</a>
-          <a href="#" className="hover:text-white transition-colors text-sm">x</a>
+          <a href="#" className="hover:text-white transition-colors text-sm"><FaLinkedinIn /></a>
+          <a href="#" className="hover:text-white transition-colors text-sm"><FaInstagram /></a>
+          <a href="#" className="hover:text-white transition-colors text-sm"><FaTwitter /></a>
         </div>
       </div>
     </footer>
