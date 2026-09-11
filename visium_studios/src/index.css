@@ -1,5 +1,120 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "Suisse Intl";
+  src: url("/assets/fonts/Suisse/SuisseIntl-Light/Web%20Fonts/03d5b20d124cd26dc873bd4a8e42313e.woff2")
+    format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Suisse Intl";
+  src: url("/assets/fonts/Suisse/SuisseIntl-Regular/Web%20Fonts/88f10bf18a36407ef36bf30bc25a3618.woff2")
+    format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Suisse Intl";
+  src: url("/assets/fonts/Suisse/SuisseIntl-Medium/Web%20Fonts/c446362802681bacaacbad0f39bfc1a5.woff2")
+    format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Suisse Intl";
+  src: url("/assets/fonts/Suisse/SuisseIntl-SemiBold/Web%20Fonts/653d9381828e9577fb1e417dc047f89d.woff2")
+    format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Suisse Intl";
+  src: url("/assets/fonts/Suisse/SuisseIntl-Bold/Web%20Fonts/d1a580023d40c546276decde1c711e60.woff2")
+    format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+body,
+p,
+a,
+span {
+  font-family: "Suisse Intl", sans-serif !important;
+  font-weight: 300;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: "Suisse Intl", sans-serif !important;
+  font-weight: 700 !important;
+}
+
+.font-serif,
+p.font-serif {
+  font-family: "Suisse Intl", sans-serif !important;
+  font-weight: 300;
+}
+
+.custom-cursor {
+  position: fixed;
+  top: -18px;
+  left: -18px;
+  z-index: 200;
+  width: 36px;
+  height: 36px;
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  border-radius: 999px;
+  opacity: 0;
+  pointer-events: none;
+  mix-blend-mode: difference;
+  transition: opacity 180ms ease;
+}
+
+.custom-cursor span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: #fff;
+  transform: translate(-50%, -50%);
+}
+
+.custom-cursor--visible {
+  opacity: 1;
+}
+
+@media (hover: none), (pointer: coarse) {
+  .custom-cursor {
+    display: none;
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  html,
+  body {
+    cursor: none;
+  }
+}
+
+.desktop-nav-link {
+  font-family: "Suisse Intl", serif !important;
+  font-weight: 400;
+}
+
 /* Chrome, Edge, Safari */
 ::-webkit-scrollbar {
   width: 6px;
@@ -22,4 +137,127 @@
 * {
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.486) #0a0a0a;
+}
+
+.home-page {
+  transition:
+    background-color 500ms ease,
+    color 500ms ease;
+}
+
+.home-page,
+.home-page .bg-black,
+.home-page .text-white,
+.home-page [class*="text-white/"],
+.home-page [class*="bg-white/"],
+.home-page [class*="border-white"],
+.home-page [class*="divide-gray-200"] {
+  transition:
+    background-color 700ms ease,
+    color 700ms ease,
+    border-color 700ms ease;
+}
+
+.home-page--inverted,
+.home-page--inverted .bg-black {
+  background-color: #fff !important;
+}
+
+.home-page--inverted .text-white,
+.home-page--inverted [class*="text-white/"] {
+  color: #0a0a0a !important;
+}
+
+.home-page--inverted [class*="border-white"],
+.home-page--inverted [class*="divide-gray-200"] {
+  border-color: rgba(10, 10, 10, 0.2) !important;
+}
+
+.home-page--inverted [class*="bg-white/"] {
+  background-color: rgba(10, 10, 10, 0.05) !important;
+}
+
+.home-page--inverted [class*="hover\\:bg-gray-100"]:hover {
+  background-color: rgba(10, 10, 10, 0.08) !important;
+}
+
+.service-tree__network {
+  position: relative;
+  width: min(100%, 32rem);
+  height: 14rem;
+  margin: 2.5rem auto 0;
+}
+
+.service-tree__branches {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  color: rgba(255, 255, 255, 0.42);
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 0.7;
+}
+
+.service-tree__capabilities {
+  position: absolute;
+  inset: 0;
+}
+
+.service-tree__capability {
+  position: absolute;
+  display: flex;
+  width: 30%;
+  align-items: center;
+  gap: 0.6rem;
+  translate: 0 -50%;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.75rem;
+  line-height: 1.25;
+}
+
+.service-tree__capability--left {
+  right: 72%;
+  flex-direction: row-reverse;
+  text-align: right;
+}
+
+.service-tree__capability--right {
+  left: 72%;
+  text-align: left;
+}
+
+.service-tree__node {
+  flex: 0 0 0.35rem;
+  width: 0.35rem;
+  height: 0.35rem;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+}
+
+.home-page--inverted #services {
+  color: #0a0a0a !important;
+}
+
+.home-page--inverted .service-tree__branches {
+  color: rgba(10, 10, 10, 0.42);
+}
+
+.home-page--inverted .service-tree__capability {
+  color: rgba(10, 10, 10, 0.78) !important;
+}
+
+@media (max-width: 640px) {
+  .service-tree__network {
+    height: 15rem;
+    margin-top: 2rem;
+  }
+
+  .service-tree__capability {
+    width: 35%;
+    font-size: 0.68rem;
+  }
 }

@@ -1,25 +1,40 @@
-import Header from "./shared/Header"
-import Layout from "./Layout"
-import Footer from "./shared/Footer"
-import { useEffect } from "react";
-import AOS from 'aos';
-import 'aos/dist/aos.css'; // Import AOS styles
+import { Routes, Route } from "react-router-dom";
+import Header from "./shared/Header";
+import CTA from "./shared/CTA";
+import Footer from "./shared/Footer";
+import Home from "./pages/Home";
+import Work from "./pages/Work";
+import Studio from "./pages/Studio";
+import CaseStudy from "./components/work/CaseStudy";
+import CustomCursor from "./shared/CustomCursor";
+import { useEffect, useState } from "react";
+import AOS from "aos";
+import "aos/dist/aos.css"; // Import AOS styles
 
 function App() {
+  const [homeInverted, setHomeInverted] = useState(false);
+
   useEffect(() => {
     AOS.init({
       duration: 1000, // Duration of animations in milliseconds
-      once: false,     // Whether animation should happen only once while scrolling
+      once: false, // Whether animation should happen only once while scrolling
     });
   }, []);
 
   return (
     <div className="bg-black text-white">
-      <Header/>
-      <Layout/>
-      <Footer/>
+      <CustomCursor />
+      <Header inverted={homeInverted} />
+      <Routes>
+        <Route path="/" element={<Home onThemeChange={setHomeInverted} />} />
+        <Route path="/work" element={<Work />} />
+        <Route path="/studio" element={<Studio />} />
+        <Route path="/work/:slug" element={<CaseStudy />} />
+      </Routes>
+      <CTA inverted={homeInverted} />
+      <Footer />
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
