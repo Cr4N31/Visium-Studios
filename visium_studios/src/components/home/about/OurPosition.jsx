@@ -10,7 +10,7 @@ function OurPosition() {
   const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [0.25, 1, 0.25]);
 
   return (
-    <section ref={ref} className="px-8 py-24 md:py-32">
+    <section ref={ref} className="px-0 py-20 sm:px-0 md:px-0 md:py-32">
       <motion.div
         style={{ opacity }}
         data-aos="fade-up"

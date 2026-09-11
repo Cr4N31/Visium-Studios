@@ -1,7 +1,13 @@
 function VideoMotion() {
   return (
-    <div>
-      <video autoPlay muted loop>
+    <div className="h-full w-full overflow-hidden">
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        className="block h-full w-full object-cover"
+      >
         <source src="/assets/video/final_motion.mp4" type="video/mp4" />
       </video>
     </div>

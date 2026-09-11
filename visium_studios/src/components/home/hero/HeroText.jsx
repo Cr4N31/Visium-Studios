@@ -18,17 +18,17 @@ const fadeIn = {
 function HeroText() {
   return (
     <motion.div
-      className="grid min-h-screen grid-rows-[auto_1fr_auto] gap-8 px-4 py-5 text-white sm:px-6 md:px-10 md:py-7"
+      className="grid min-h-[100svh] grid-rows-[auto_1fr_auto] gap-4 px-4 py-4 text-white sm:px-6 md:min-h-screen md:gap-8 md:px-10 md:py-7"
       variants={container}
       initial="hidden"
       animate="show"
     >
-      <div className="grid content-center gap-10 py-4 md:grid-cols-[minmax(0,1.15fr)_minmax(280px,0.85fr)] md:items-end md:gap-12 lg:gap-20">
+      <div className="grid content-center gap-5 py-2 md:grid-cols-[minmax(0,1.15fr)_minmax(280px,0.85fr)] md:items-end md:gap-12 md:py-4 lg:gap-20">
         <div>
-          <p className="mb-6 max-w-3xl text-xs uppercase tracking-[0.18em] text-white/60 md:mb-8 md:text-sm">
+          <p className="mb-4 max-w-3xl text-[10px] uppercase tracking-[0.14em] text-white/60 md:mb-8 md:text-sm md:tracking-[0.18em]">
             Design with intent / Brands with presence
           </p>
-          <p className="max-w-5xl text-[clamp(3.2rem,8vw,8.5rem)] font-semibold leading-[0.92] tracking-[-0.04em]">
+          <p className="max-w-5xl text-[clamp(2.4rem,11vw,4.5rem)] font-semibold leading-[0.92] tracking-[-0.04em] md:text-[clamp(3.2rem,8vw,8.5rem)]">
             <span className="block overflow-hidden">
               <motion.span className="block" variants={revealUp}>
                 <em className="italic">Perception</em>,
@@ -71,7 +71,7 @@ function HeroText() {
       </div>
 
       <motion.div
-        className="grid gap-6 border-t border-white/20 pt-4 text-xs leading-relaxed text-white/60 md:grid-cols-[minmax(150px,0.55fr)_minmax(0,1fr)_auto] md:items-end"
+        className="grid gap-4 border-t border-white/20 pt-3 text-xs leading-relaxed text-white/60 md:grid-cols-[minmax(150px,0.55fr)_minmax(0,1fr)_auto] md:items-end md:gap-6 md:pt-4"
         variants={fadeIn}
       >
         <div className="flex h-9 w-9 items-center justify-center rounded-full border border-white/40 text-white">
@@ -82,7 +82,7 @@ function HeroText() {
         </p>
         <a
           href="#contact"
-          className="group flex min-h-20 items-end justify-between gap-8 border border-white/30 p-3 text-white transition-colors hover:bg-white hover:text-black md:min-w-48"
+          className="group flex min-h-16 items-end justify-between gap-8 border border-white/30 p-3 text-white transition-colors hover:bg-white hover:text-black md:min-h-20 md:min-w-48"
         >
           <span className="max-w-20 text-xs uppercase leading-[1.05] tracking-[0.12em]">
             Let&apos;s collaborate

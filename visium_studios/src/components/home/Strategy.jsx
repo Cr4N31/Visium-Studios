@@ -48,7 +48,7 @@ function Strategy() {
   return (
     <section
       ref={ref}
-      className="px-8 py-24 md:py-32"
+      className="px-4 py-20 sm:px-6 md:px-8 md:py-32"
       data-aos="fade-up"
       id="strategy"
     >

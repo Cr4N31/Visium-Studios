@@ -36,7 +36,7 @@ function Statement() {
     <section
       ref={ref}
       id="statement"
-      className="px-8 py-40 md:py-56"
+      className="px-4 py-32 sm:px-6 md:px-8 md:py-56"
       data-aos="fade-up"
     >
       <div className="max-w-5xl mx-auto flex flex-col">

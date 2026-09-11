@@ -20,7 +20,7 @@ const textReveal = {
 function FeaturedTakeover({ project }) {
   return (
     <motion.div
-      className="relative w-full/2 left-1/2 -translate-x-1/2 h-[85vh] md:h-screen overflow-hidden bg-white/5"
+      className="relative h-[85svh] w-full overflow-hidden bg-white/5 md:h-screen"
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, amount: 0.3 }}

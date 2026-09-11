@@ -34,7 +34,11 @@ function Target() {
   ];
 
   return (
-    <section ref={ref} id="target" className="px-8 py-24 md:py-32">
+    <section
+      ref={ref}
+      id="target"
+      className="px-4 py-20 sm:px-6 md:px-8 md:py-32"
+    >
       <motion.div style={{ opacity }} data-aos="fade-up" className="max-w-5xl">
         <p className="mb-8 text-xs uppercase tracking-[0.2em] text-white/40">
           Market architecture

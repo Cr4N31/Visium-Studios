@@ -49,7 +49,7 @@ function Footer() {
   ];
 
   return (
-    <footer className="mt-24 overflow-hidden border-t border-white/10 px-8 pt-8 pb-8">
+    <footer className="mt-24 overflow-hidden border-t border-white/10 px-4 pt-8 pb-8 sm:px-6 md:px-8">
       {/* ================= CTA ================= */}
       <div
         className="mb-16 flex flex-col gap-8 md:flex-row md:items-center md:justify-between"
@@ -264,7 +264,7 @@ function Footer() {
         </div>
       </div>
       <div className="flex justify-center items-center">
-        <img src={footer_img} className="w-[500px] mt-10" />
+        <img src={footer_img} className="mt-10 w-full max-w-[500px]" />
       </div>
     </footer>
   );

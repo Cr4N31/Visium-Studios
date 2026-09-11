@@ -16,7 +16,7 @@ function Hero() {
   return (
     <section
       ref={sectionRef}
-      className="relative flex items-center h-screen overflow-hidden bg-white"
+      className="relative flex h-[100svh] items-center overflow-hidden bg-white md:h-screen"
       id="home"
     >
       <div className="absolute inset-0 z-[5]" />

@@ -16,7 +16,11 @@ function StudioDirect() {
   const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [0.5, 1, 0.8]);
 
   return (
-    <section ref={ref} id="studio-direct" className="px-8 py-24 md:py-32">
+    <section
+      ref={ref}
+      id="studio-direct"
+      className="px-4 py-20 sm:px-6 md:px-8 md:py-32"
+    >
       <motion.div style={{ opacity }} data-aos="fade-up" className="max-w-5xl">
         <div className="flex flex-col gap-8">
           <p className="text-xs uppercase tracking-[0.2em] text-white/40">

@@ -257,7 +257,15 @@ p.font-serif {
   }
 
   .service-tree__capability {
-    width: 35%;
+    width: 31%;
     font-size: 0.68rem;
+  }
+
+  .service-tree__capability--left {
+    right: 68%;
+  }
+
+  .service-tree__capability--right {
+    left: 68%;
   }
 }
