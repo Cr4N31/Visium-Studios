@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Header from "./shared/Header";
 import CTA from "./shared/CTA";
 import Footer from "./shared/Footer";
@@ -10,6 +10,16 @@ import CustomCursor from "./shared/CustomCursor";
 import { useEffect, useState } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css"; // Import AOS styles
+
+function ScrollToTop() {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [pathname]);
+
+  return null;
+}
 
 function App() {
   const [homeInverted, setHomeInverted] = useState(false);
@@ -23,6 +33,7 @@ function App() {
 
   return (
     <div className="bg-black text-white">
+      <ScrollToTop />
       <CustomCursor />
       <Header inverted={homeInverted} />
       <Routes>

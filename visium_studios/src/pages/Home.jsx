@@ -5,7 +5,8 @@ import Target from "../components/home/Target";
 import FeaturedWork from "../components/home/FeaturedWork";
 import ServicePreview from "../components/home/ServicePreview";
 import Strategy from "../components/home/Strategy";
-import Aesthetics from "../components/home/Aesthetics";
+import ClientsCarousel from "../components/home/ClientsCarousel";
+import ContactSection from "../components/home/ContactSection";
 import StudioDirect from "../components/home/StudioDirect";
 import StackedHero from "../shared/StackedHero";
 import Statement from "../shared/Statement";
@@ -62,7 +63,8 @@ function Home({ onThemeChange }) {
           <Target />
           <Strategy />
           <StudioDirect />
-          <Aesthetics />
+          <ClientsCarousel />
+          <ContactSection />
         </div>
       </div>
     </main>

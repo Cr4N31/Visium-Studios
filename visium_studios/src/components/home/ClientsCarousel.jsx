@@ -26,9 +26,13 @@ function ClientRow({ items, reverse = false }) {
   );
 }
 
-function ClientsStrip() {
+function ClientsCarousel() {
   return (
-    <section className="overflow-hidden border-t border-white/10 px-4 py-16 sm:px-6 md:px-10 md:py-24">
+    <section
+      id="aesthetics"
+      className="overflow-hidden border-t border-white/10 px-4 py-16 sm:px-6 md:px-10 md:py-24"
+      aria-label="Selected clients"
+    >
       <div className="mb-8 flex items-end justify-between gap-6 md:mb-12">
         <p className="text-xs uppercase tracking-[0.2em] text-white/40">
           Selected clients
@@ -43,4 +47,4 @@ function ClientsStrip() {
   );
 }
 
-export default ClientsStrip;
+export default ClientsCarousel;
