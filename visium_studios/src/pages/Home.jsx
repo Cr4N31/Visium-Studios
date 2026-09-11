@@ -19,17 +19,18 @@ function Home({ onThemeChange }) {
     const updateTheme = () => {
       const about = document.querySelector("#work");
       const services = document.querySelector("#services");
+      const video = document.querySelector("#video-motion");
       const home = document.querySelector(".home-page");
 
-      if (!about || !services || !home) return;
+      if (!about || !services || !video || !home) return;
 
-      const aboutReached =
-        about.getBoundingClientRect().top <= window.innerHeight * 0.75;
+      const videoReached =
+        video.getBoundingClientRect().top <= window.innerHeight * 0.8;
       const servicesReached =
         services.getBoundingClientRect().top <= window.innerHeight * 0.75;
       const homeHasEnded =
         home.getBoundingClientRect().bottom <= window.innerHeight;
-      const nextValue = !aboutReached || (servicesReached && !homeHasEnded);
+      const nextValue = !videoReached || (servicesReached && !homeHasEnded);
 
       setIsInverted(nextValue);
       onThemeChange(nextValue);
@@ -53,10 +54,10 @@ function Home({ onThemeChange }) {
       </StackedHero>
       <div className="relative z-10 bg-black rounded-t-[32px]">
         <div className="flex flex-col gap-12 py-8">
-          <Statement />
-          <StackedHero>
+          <section id="video-motion" className="bg-black px-4 sm:px-6 md:px-10">
             <VideoMotion />
-          </StackedHero>
+          </section>
+          <Statement />
           <About />
           <FeaturedWork />
           <ServicePreview />
