@@ -41,7 +41,7 @@ function HeroText() {
       </div>
 
       <motion.div
-        className="flex flex-col mt-12 gap-8 border-t border-white/15 pt-6 md:flex-row md:items-end md:justify-between md:gap-12"
+        className="flex flex-col mt-12 gap-8 border-t border-white/15 pt-6 md:flex-row md:items-center items-end md:justify-between md:gap-12"
         variants={fadeIn}
       >
         <div className="flex min-w-0 items-start gap-4 md:max-w-xs md:flex-1">
