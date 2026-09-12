@@ -93,10 +93,10 @@ function HeroText() {
         <div className="flex">
           <a
             href="#contact"
-            className="group relative flex flex-1 aspect-[1.1] flex-col items-start justify-end gap-6 border border-white/30 bg-white p-3 text-black transition-colors"
+            className="group relative flex flex-1 aspect-[4.3] flex-col items-start justify-end gap-6 border border-white/30 bg-white p-3 text-black transition-colors"
           >
             <span className="max-w-[6rem] mr-4 text-xs uppercase leading-[1.05] tracking-[0.12em]">
-              Let&apos;s collaborate
+              Explore Our Work
             </span>
             <span className="absolute bottom-3 right-3 text-2xl font-light leading-none transition-transform group-hover:translate-x-1 group-hover:-translate-y-1">
               ↗
