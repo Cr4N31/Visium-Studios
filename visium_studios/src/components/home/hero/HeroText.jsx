@@ -15,16 +15,6 @@ const fadeIn = {
   show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
 };
 
-// Sweeps a white rectangle across the headline on hover — mix-blend-mode:
-// difference flips the covered text to black, a true color invert.
-const invertSweep = {
-  rest: { scaleX: 0 },
-  hover: {
-    scaleX: 1,
-    transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] },
-  },
-};
-
 function HeroText() {
   return (
     <motion.div
@@ -58,17 +48,7 @@ function HeroText() {
           </span>
         </motion.div>
 
-        <motion.div
-          className="flex-1 relative cursor-default"
-          initial="rest"
-          whileHover="hover"
-        >
-          <motion.span
-            aria-hidden="true"
-            variants={invertSweep}
-            style={{ transformOrigin: "left" }}
-            className="pointer-events-none absolute inset-0 z-10 bg-white mix-blend-difference"
-          />
+        <div className="flex-1">
           <p className="relative text-[clamp(2.4rem,9vw,4.5rem)] font-semibold leading-[0.92] tracking-[-0.04em] md:text-[clamp(2.6rem,6vw,6rem)]">
             <span className="block overflow-hidden">
               <motion.span className="block" variants={revealUp}>
@@ -86,7 +66,7 @@ function HeroText() {
               </motion.span>
             </span>
           </p>
-        </motion.div>
+        </div>
 
         <motion.span
           variants={fadeIn}

@@ -9,7 +9,6 @@ import ClientsCarousel from "../components/home/ClientsCarousel";
 import ContactSection from "../components/home/ContactSection";
 import StudioDirect from "../components/home/StudioDirect";
 import StackedHero from "../shared/StackedHero";
-import Statement from "../shared/Statement";
 import VideoMotion from "../components/home/VideoMotion";
 
 function Home({ onThemeChange }) {
@@ -57,7 +56,6 @@ function Home({ onThemeChange }) {
           <VideoMotion />
         </StackedHero>
         <div className="flex flex-col gap-12 py-8">
-          <Statement />
           <About />
           <FeaturedWork />
           <ServicePreview />

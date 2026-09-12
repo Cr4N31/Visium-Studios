@@ -9,12 +9,6 @@ function About() {
           What is Visium Studios?
         </p>
       </div>
-      <p
-        className="font-serif text-center py-20 italic text-2xl md:text-3xl lg:text-5xl text-white/80 leading-[1.15]"
-        data-aos="fade-up"
-      >
-        "Visium is a visual systems studio"
-      </p>
       <OurPosition />
       <Philosophy />
     </section>
