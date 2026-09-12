@@ -41,7 +41,7 @@ function HeroText() {
       </div>
 
       <motion.div
-        className="flex flex-col gap-8 border-t border-white/15 pt-6 md:flex-row md:items-end md:justify-between md:gap-12"
+        className="flex flex-col mt-12 gap-8 border-t border-white/15 pt-6 md:flex-row md:items-end md:justify-between md:gap-12"
         variants={fadeIn}
       >
         <div className="flex min-w-0 items-start gap-4 md:max-w-xs md:flex-1">
@@ -54,7 +54,7 @@ function HeroText() {
           </p>
         </div>
 
-        <div className="flex w-full md:w-auto md:min-w-64">
+        <div className="md:flex hidden w-full md:w-auto md:min-w-64">
           <a
             href="/work"
             className="group relative flex min-h-28 w-full flex-1 flex-col items-end justify-end gap-6 border border-white/30 bg-white p-4 text-black transition-colors hover:bg-white/90 md:aspect-[2.4] md:min-h-0 md:w-64"
