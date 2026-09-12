@@ -34,7 +34,7 @@ function App() {
   return (
     <div className="bg-black text-white">
       <ScrollToTop />
-      <CustomCursor />
+      <CustomCursor inverted={homeInverted} />
       <Header inverted={homeInverted} />
       <Routes>
         <Route path="/" element={<Home onThemeChange={setHomeInverted} />} />

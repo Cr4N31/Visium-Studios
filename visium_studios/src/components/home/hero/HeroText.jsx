@@ -52,7 +52,7 @@ function HeroText() {
           <p className="relative text-[clamp(2.4rem,9vw,4.5rem)] font-semibold leading-[0.92] tracking-[-0.04em] md:text-[clamp(2.6rem,6vw,6rem)]">
             <span className="block overflow-hidden">
               <motion.span className="block" variants={revealUp}>
-                <em className="italic">Perception</em>,
+                Perception,
               </motion.span>
             </span>
             <span className="block overflow-hidden">

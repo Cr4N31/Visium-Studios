@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-function CustomCursor() {
+function CustomCursor({ inverted = false }) {
   const cursorRef = useRef(null);
   const frameRef = useRef(null);
   const positionRef = useRef({ x: 0, y: 0 });
@@ -36,8 +36,12 @@ function CustomCursor() {
   }, []);
 
   return (
-    <div ref={cursorRef} className="custom-cursor" aria-hidden="true">
-      <span />
+    <div
+      ref={cursorRef}
+      className={`custom-cursor${inverted ? " custom-cursor--inverted" : ""}`}
+      aria-hidden="true"
+    >
+      <img src="/assets/logo/cursor-mark.svg" alt="" />
     </div>
   );
 }
