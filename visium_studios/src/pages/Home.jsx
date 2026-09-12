@@ -53,10 +53,10 @@ function Home({ onThemeChange }) {
         <Hero />
       </StackedHero>
       <div className="relative z-10 bg-black rounded-t-[32px]">
+        <StackedHero id="video-motion" className="bg-black">
+          <VideoMotion />
+        </StackedHero>
         <div className="flex flex-col gap-12 py-8">
-          <section id="video-motion" className="bg-black px-4 sm:px-6 md:px-10">
-            <VideoMotion />
-          </section>
           <Statement />
           <About />
           <FeaturedWork />

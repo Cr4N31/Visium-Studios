@@ -16,11 +16,9 @@ function Hero() {
   return (
     <section
       ref={sectionRef}
-      className="relative flex h-[100svh] items-center overflow-hidden bg-white md:h-screen"
+      className="relative flex min-h-[100svh] items-center bg-black px-4 py-10 md:min-h-screen md:px-10 md:py-16"
       id="home"
     >
-      <div className="absolute inset-0 z-[5]" />
-
       <motion.div
         className="relative z-20 w-full max-w-6xl mx-auto"
         style={{ y: contentY, opacity: contentOpacity }}

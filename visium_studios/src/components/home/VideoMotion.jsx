@@ -1,6 +1,6 @@
 function VideoMotion() {
   return (
-    <div className="aspect-video w-full overflow-hidden md:aspect-auto md:h-screen">
+    <div className="h-full w-full overflow-hidden md:h-screen">
       <video
         autoPlay
         muted
