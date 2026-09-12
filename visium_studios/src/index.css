@@ -76,6 +76,7 @@ p.font-serif {
   height: 24px;
   opacity: 0;
   pointer-events: none;
+  user-select: none;
   filter: invert(1);
   transition:
     opacity 180ms ease,
@@ -99,13 +100,6 @@ p.font-serif {
 @media (hover: none), (pointer: coarse) {
   .custom-cursor {
     display: none;
-  }
-}
-
-@media (hover: hover) and (pointer: fine) {
-  html,
-  body {
-    cursor: none;
   }
 }
 
