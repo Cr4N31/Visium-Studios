@@ -90,30 +90,12 @@ function HeroText() {
           </p>
         </div>
 
-        <div className="flex flex-1 gap-3">
-          <div className="relative flex-1 aspect-[1.1] overflow-hidden border border-white/25 bg-white/5 p-3">
-            <span className="absolute left-3 top-3 text-[9px] uppercase tracking-[0.16em] text-white/50">
-              Image placeholder / 01
-            </span>
-            <span className="absolute bottom-3 right-3 text-2xl font-light text-white/30">
-              +
-            </span>
-          </div>
-
-          <div className="relative flex-1 aspect-[1.1] overflow-hidden border border-white/25 bg-white/5 p-3">
-            <span className="absolute left-3 top-3 text-[9px] uppercase tracking-[0.16em] text-white/50">
-              Image placeholder / 02
-            </span>
-            <span className="absolute bottom-3 right-3 text-2xl font-light text-white/30">
-              +
-            </span>
-          </div>
-
+        <div className="flex">
           <a
             href="#contact"
-            className="group relative flex flex-1 aspect-[1.1] flex-col items-start justify-end gap-2 border border-white/30 bg-white p-3 text-black transition-colors"
+            className="group relative flex flex-1 aspect-[1.1] flex-col items-start justify-end gap-6 border border-white/30 bg-white p-3 text-black transition-colors"
           >
-            <span className="max-w-[6rem] text-xs uppercase leading-[1.05] tracking-[0.12em]">
+            <span className="max-w-[7rem] mr-4 text-xs uppercase leading-[1.05] tracking-[0.12em]">
               Let&apos;s collaborate
             </span>
             <span className="absolute bottom-3 right-3 text-2xl font-light leading-none transition-transform group-hover:translate-x-1 group-hover:-translate-y-1">

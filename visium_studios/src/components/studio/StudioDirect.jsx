@@ -58,13 +58,6 @@ function StudioDirect() {
                   </li>
                 ))}
               </ul>
-
-              <a
-                href="/studio"
-                className="mt-10 inline-flex items-center gap-3 text-xs uppercase border border-black/40 p-2 tracking-[0.18em] text-white transition-opacity hover:opacity-70"
-              >
-                View more <span aria-hidden="true">→</span>
-              </a>
             </div>
           </div>
         </div>

@@ -7,7 +7,6 @@ import ServicePreview from "../components/home/ServicePreview";
 import Strategy from "../components/home/Strategy";
 import ClientsCarousel from "../components/home/ClientsCarousel";
 import ContactSection from "../components/home/ContactSection";
-import StudioDirect from "../components/home/StudioDirect";
 import StackedHero from "../shared/StackedHero";
 import VideoMotion from "../components/home/VideoMotion";
 
@@ -61,7 +60,6 @@ function Home({ onThemeChange }) {
           <ServicePreview />
           <Target />
           <Strategy />
-          <StudioDirect />
           <ClientsCarousel />
           <ContactSection />
         </div>
