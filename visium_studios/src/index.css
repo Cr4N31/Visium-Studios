@@ -47,8 +47,7 @@
 
 body,
 p,
-a,
-span {
+a {
   font-family: "Suisse Intl", sans-serif !important;
   font-weight: 300;
 }
