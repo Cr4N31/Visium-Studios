@@ -27,16 +27,16 @@ function HeroText() {
       <span className="absolute -top-4 right-0 h-3 w-16 bg-white md:h-4 md:w-24" />
 
       {/* headline — serif, generous whitespace, one italic word for emphasis */}
-      <div className="flex flex-1 items-center justify-center px-1 sm:px-4">
-        <p className="relative max-w-4xl text-center text-[clamp(2.2rem,8vw,4.25rem)] font-normal leading-[1.05] tracking-[-0.02em] md:text-[clamp(2.6rem,5.5vw,5.5rem)]">
-          <span className="block font-semibold overflow-hidden">
+      <div className="flex flex-1 items-center justify-start md:justify-center px-1 sm:px-4">
+        <p className="relative max-w-4xl text-[clamp(6.2rem,8vw,4.25rem)] font-normal leading-[1.05] tracking-[-0.02em] md:text-[clamp(2.6rem,5.5vw,5.5rem)]">
+          <span className="block font-[400] overflow-hidden">
             <motion.span className="block " variants={revealUp}>
               Perception is part
             </motion.span>
           </span>
-          <span className="block font-semibold overflow-hidden">
+          <span className="block font-[400] overflow-hidden">
             <motion.span className="block" variants={revealUp}>
-              of the <em className="italic">product</em>
+              of the product
             </motion.span>
           </span>
         </p>
@@ -44,7 +44,7 @@ function HeroText() {
 
       {/* thin bottom strip — icon + line + CTA, no boxed frame */}
       <motion.div
-        className="flex flex-col gap-6 border-t border-white/15 pt-6 md:flex-row md:items-center md:justify-between md:gap-12"
+        className="hidden md:flex flex-col gap-6 border-t border-white/15 pt-6 md:flex-row md:items-center md:justify-between md:gap-12"
         variants={fadeIn}
       >
         <div className="flex min-w-0 items-start gap-4 md:max-w-xs md:flex-1">
