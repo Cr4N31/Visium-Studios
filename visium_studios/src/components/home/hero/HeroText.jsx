@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import hero_img from "/assets/img/subway_led_billboard.png";
+import hero_img from "/assets/img/subway_led_billboard.webp";
 const container = {
   hidden: {},
   show: { transition: { staggerChildren: 0.15, delayChildren: 0.1 } },
@@ -44,7 +44,7 @@ function HeroText() {
         </div>
 
         {/* mobile hero image, centered */}
-        <div className="w-full flex justify-center">
+        <div className="w-full flex justify-center" data-aos="fade-up">
           <img
             src={hero_img}
             alt="hero"
