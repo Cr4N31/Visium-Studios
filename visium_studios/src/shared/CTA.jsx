@@ -2,7 +2,8 @@ import img from "/assets/logo/visiumSingleLogoBlack.png";
 
 function CTA({ inverted = false }) {
   return (
-    <button
+    <a
+      href="#contact"
       className={`
         group
         fixed bottom-6 right-6 z-[100]
@@ -34,7 +35,7 @@ function CTA({ inverted = false }) {
       >
         Start a project →
       </span>
-    </button>
+    </a>
   );
 }
 
