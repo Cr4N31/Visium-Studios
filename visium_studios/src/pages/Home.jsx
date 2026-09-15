@@ -8,27 +8,23 @@ import Strategy from "../components/home/Strategy";
 import ClientsCarousel from "../components/home/ClientsCarousel";
 import ContactSection from "../components/home/ContactSection";
 import StackedHero from "../shared/StackedHero";
-import VideoMotion from "../components/home/VideoMotion";
 
 function Home({ onThemeChange }) {
-  const [isInverted, setIsInverted] = useState(true);
+  const [isInverted, setIsInverted] = useState(false);
 
   useEffect(() => {
     const updateTheme = () => {
-      const about = document.querySelector("#work");
       const services = document.querySelector("#services");
-      const video = document.querySelector("#video-motion");
+      const contact = document.querySelector("#contact");
       const home = document.querySelector(".home-page");
 
-      if (!about || !services || !video || !home) return;
+      if (!services || !contact || !home) return;
 
-      const videoReached =
-        video.getBoundingClientRect().top <= window.innerHeight * 0.8;
       const servicesReached =
         services.getBoundingClientRect().top <= window.innerHeight * 0.75;
-      const homeHasEnded =
-        home.getBoundingClientRect().bottom <= window.innerHeight;
-      const nextValue = !videoReached || (servicesReached && !homeHasEnded);
+      const contactHasEnded =
+        contact.getBoundingClientRect().bottom <= window.innerHeight * 0.9;
+      const nextValue = servicesReached && !contactHasEnded;
 
       setIsInverted(nextValue);
       onThemeChange(nextValue);
@@ -50,10 +46,8 @@ function Home({ onThemeChange }) {
       <StackedHero>
         <Hero />
       </StackedHero>
+
       <div className="relative z-10 bg-black rounded-t-[32px]">
-        <StackedHero id="video-motion" className="bg-black">
-          <VideoMotion />
-        </StackedHero>
         <div className="flex flex-col gap-12 py-8">
           <About />
           <FeaturedWork />

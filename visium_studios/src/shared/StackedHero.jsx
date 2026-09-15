@@ -5,7 +5,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 // `extraScrollVh` controls how much extra scroll distance the zoom-out plays
 // over before the next section fully covers it — bigger number = slower,
 // more gradual shrink.
-function StackedHero({ children, extraScrollVh = 60, id, className = "" }) {
+function StackedHero({ children, extraScrollVh = 60 }) {
   const containerRef = useRef(null);
 
   const { scrollYProgress } = useScroll({
@@ -20,8 +20,7 @@ function StackedHero({ children, extraScrollVh = 60, id, className = "" }) {
   return (
     <div
       ref={containerRef}
-      id={id}
-      className={`relative ${className}`}
+      className="relative"
       style={{ height: `calc(100vh + ${extraScrollVh}vh)` }}
     >
       <div className="sticky top-0 h-screen overflow-hidden">

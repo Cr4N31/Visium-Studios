@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import hero_img from "/assets/img/subway_led_billboard.webp";
+import VideoMotion from "../VideoMotion";
 const container = {
   hidden: {},
   show: { transition: { staggerChildren: 0.15, delayChildren: 0.1 } },
@@ -18,15 +18,12 @@ const fadeIn = {
 function HeroText() {
   return (
     <motion.div
-      className="relative flex min-h-[80vh] flex-col justify-between text-white md:min-h-[85vh]"
+      className="relative flex min-h-full flex-col gap-12 justify-between text-white"
       variants={container}
       initial="hidden"
       animate="show"
     >
-      {/* small filled corner mark, top-right — quiet chrome, echoes the reference */}
-      <span className="absolute -top-4 right-0 h-3 w-16 bg-white md:h-4 md:w-24" />
-
-      <div className="flex flex-col mt-30 gap-20 md:gap-10 justify-center items-center">
+      <div className="flex md:mt-0 -mt-60 flex-col items-center justify-center gap-24 md:gap-16">
         {/* headline — serif, generous whitespace, one italic word for emphasis, centered on all breakpoints */}
         <div className="flex flex-1 items-center justify-center px-1 sm:px-4 w-full">
           <p className="relative max-w-4xl w-full text-center text-[clamp(3.2rem,8vw,4.25rem)] font-normal leading-[1.05] tracking-[-0.02em] md:text-[clamp(2.6rem,5.5vw,5.5rem)]">
@@ -42,41 +39,10 @@ function HeroText() {
             </span>
           </p>
         </div>
-
-        {/* mobile hero image, centered */}
-        <div className="w-full flex justify-center" data-aos="fade-up">
-          <img
-            src={hero_img}
-            alt="hero"
-            className="md:hidden block w-full object-cover"
-          />
-        </div>
       </div>
 
-      {/* thin bottom strip — icon + line + CTA, no boxed frame */}
-      <motion.div
-        className="hidden md:flex flex-col gap-6 border-t border-white/15 pt-6 md:flex-row md:items-center md:justify-between md:gap-12"
-        variants={fadeIn}
-      >
-        <div className="flex min-w-0 items-start gap-4 md:max-w-xs md:flex-1">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/40 text-white">
-            ↘
-          </div>
-          <p className="max-w-xs text-xs leading-relaxed text-white/60">
-            We build visual systems that shape how ambitious brands are seen,
-            understood and remembered.
-          </p>
-        </div>
-
-        <a
-          href="/work"
-          className="group flex items-center gap-3 text-xs uppercase tracking-[0.12em] text-white/70 transition-colors hover:text-white"
-        >
-          Explore our work
-          <span className="text-lg font-light leading-none transition-transform group-hover:translate-x-1 group-hover:-translate-y-1">
-            ↗
-          </span>
-        </a>
+      <motion.div className="" variants={fadeIn}>
+        <VideoMotion />
       </motion.div>
     </motion.div>
   );

@@ -336,6 +336,7 @@ function Header({ inverted = false }) {
             toggled={isOpen}
             toggle={setOpen}
             color={inverted && !isOpen ? "#000" : "#fff"}
+            thickness={1}
           />
         </div>
       </div>
