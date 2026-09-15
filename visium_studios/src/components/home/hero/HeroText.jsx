@@ -41,7 +41,7 @@ function HeroText() {
         </div>
       </div>
 
-      <motion.div className="" variants={fadeIn}>
+      <motion.div className="h-full" variants={fadeIn}>
         <VideoMotion />
       </motion.div>
     </motion.div>

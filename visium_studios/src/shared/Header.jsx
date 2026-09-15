@@ -1,10 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { createPortal } from "react-dom";
-import { Fade as Hamburger } from "hamburger-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
-import header_logo from "/assets/logo/Logo Icon - White.png";
-import header_logo_black from "/assets/logo/visiumSingleLogoBlack.png";
+import header_logo from "/assets/logo/fullWhite.png";
+import header_logo_black from "/assets/logo/Full Logo, Black - VISIŪM™.png";
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -282,7 +281,7 @@ function Header({ inverted = false }) {
         inverted ? "bg-transparent text-black" : "bg-transparent text-white"
       }`}
     >
-      <div className="hidden h-[68px] items-center justify-between border-t-4 border-[#303638] px-6 md:flex lg:px-8">
+      <div className="hidden h-[68px] items-center justify-between px-6 md:flex lg:px-8">
         <a href="/" aria-label="Visium Studios home">
           <img
             src={
@@ -324,21 +323,23 @@ function Header({ inverted = false }) {
         </nav>
       </div>
 
-      <div className="flex h-14 items-center justify-between px-6 md:hidden">
+      <div className="flex h-[72px] items-stretch justify-between md:hidden">
         <img
           src={inverted ? header_logo_black : header_logo}
-          className="w-8"
+          className="ml-6 w-24 self-center"
           alt="Visium Studios"
         />
 
-        <div>
-          <Hamburger
-            toggled={isOpen}
-            toggle={setOpen}
-            color={inverted && !isOpen ? "#000" : "#fff"}
-            thickness={1}
-          />
-        </div>
+        <button
+          type="button"
+          className={`custom-menu-trigger${isOpen ? " custom-menu-trigger--open" : ""}`}
+          onClick={() => setOpen((open) => !open)}
+          aria-label={isOpen ? "Close menu" : "Open menu"}
+          aria-expanded={isOpen}
+        >
+          <span />
+          <span />
+        </button>
       </div>
 
       <MenuOverlay

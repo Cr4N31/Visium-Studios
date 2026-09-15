@@ -96,6 +96,42 @@ p.font-serif {
   opacity: 1;
 }
 
+.custom-menu-trigger {
+  position: relative;
+  display: flex;
+  width: 70px;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+  background: transparent;
+}
+
+.custom-menu-trigger span {
+  position: absolute;
+  width: 20px;
+  height: 1px;
+  background: currentColor;
+  transition:
+    transform 300ms ease,
+    width 300ms ease;
+}
+
+.custom-menu-trigger span:first-child {
+  transform: translateY(-4px);
+}
+
+.custom-menu-trigger span:last-child {
+  transform: translateY(4px);
+}
+
+.custom-menu-trigger--open span:first-child {
+  transform: rotate(45deg);
+}
+
+.custom-menu-trigger--open span:last-child {
+  transform: rotate(-45deg);
+}
+
 @media (hover: none), (pointer: coarse) {
   .custom-cursor {
     display: none;
