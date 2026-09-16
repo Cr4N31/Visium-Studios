@@ -123,36 +123,51 @@ function ConstellationLines({ containerRef, nodeRefs, progress }) {
     if (!container) return;
 
     const containerRect = container.getBoundingClientRect();
-    const next = nodeRefs.current.filter(Boolean).map((node) => {
-      const rect = node.getBoundingClientRect();
-      const anchor = node.dataset.anchor === "left" ? 0.18 : 0.82;
+    const next = nodeRefs.current
+      .filter(Boolean)
+      .map((node) => {
+        const rect = node.getBoundingClientRect();
+        const anchor = node.dataset.anchor === "left" ? 0.18 : 0.82;
 
-      return {
-        x: rect.left - containerRect.left + rect.width * anchor,
-        y: rect.top - containerRect.top + rect.height * 0.58,
-      };
-    });
+        return {
+          x: rect.left - containerRect.left + rect.width * anchor,
+          y: rect.top - containerRect.top + rect.height * 0.58,
+        };
+      })
+      .filter(
+        (point) =>
+          Number.isFinite(point.x) && Number.isFinite(point.y) && point.x >= 0,
+      );
 
     setPoints(next);
     setSize({ width: containerRect.width, height: containerRect.height });
   }, [containerRef, nodeRefs]);
 
   useLayoutEffect(() => {
-    measure();
+    const update = () => {
+      if (typeof window === "undefined") return;
+      requestAnimationFrame(measure);
+    };
 
-    const ro = new ResizeObserver(measure);
+    update();
+
+    const ro = new ResizeObserver(update);
     if (containerRef.current) ro.observe(containerRef.current);
 
-    window.addEventListener("resize", measure);
+    window.addEventListener("resize", update);
+
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(update);
+    }
 
     return () => {
       ro.disconnect();
-      window.removeEventListener("resize", measure);
+      window.removeEventListener("resize", update);
     };
-  }, [measure]);
+  }, [measure, containerRef]);
 
-  const path = buildSmoothPath(points);
-  const pathProgress = useTransform(progress, [0, 0.25, 1], [0, 0.25, 1]);
+  const path = points.length > 1 ? buildSmoothPath(points) : "";
+  const pathProgress = useTransform(progress, [0, 1], [0, 1]);
 
   return (
     <svg
