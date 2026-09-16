@@ -46,11 +46,10 @@ function Home({ onThemeChange }) {
       <StackedHero>
         <Hero />
       </StackedHero>
-
       <div className="relative z-10 bg-black rounded-t-[32px]">
         <div className="flex flex-col gap-12 py-8">
-          <About />
           <FeaturedWork />
+          <About />
           <ServicePreview />
           <Target />
           <Strategy />

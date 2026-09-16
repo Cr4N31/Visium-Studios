@@ -169,8 +169,9 @@ p.font-serif {
 
 .home-page {
   transition:
-    background-color 500ms ease,
-    color 500ms ease;
+    background-color 900ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 900ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 900ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .home-page,
@@ -181,14 +182,48 @@ p.font-serif {
 .home-page [class*="border-white"],
 .home-page [class*="divide-gray-200"] {
   transition:
-    background-color 700ms ease,
-    color 700ms ease,
-    border-color 700ms ease;
+    background-color 900ms cubic-bezier(0.22, 1, 0.36, 1),
+    color 900ms cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 900ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 900ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 900ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.home-page::before {
+  content: "";
+  position: fixed;
+  inset: -18vmax;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    radial-gradient(
+      circle at 50% 38%,
+      rgba(255, 255, 255, 0.8),
+      transparent 0 18%
+    ),
+    radial-gradient(
+      circle at 44% 46%,
+      rgba(255, 255, 255, 0.45),
+      transparent 0 24%
+    );
+  filter: blur(54px);
+  transform: scale(0.78);
+  transition:
+    opacity 950ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 950ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 950ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .home-page--inverted,
 .home-page--inverted .bg-black {
   background-color: #fff !important;
+}
+
+.home-page--inverted::before {
+  opacity: 1;
+  filter: blur(30px);
+  transform: scale(1);
 }
 
 .home-page--inverted .text-white,
@@ -207,6 +242,49 @@ p.font-serif {
 
 .home-page--inverted [class*="hover\\:bg-gray-100"]:hover {
   background-color: rgba(10, 10, 10, 0.08) !important;
+}
+
+.hero-copy {
+  isolation: isolate;
+}
+
+.hero-copy__headline {
+  z-index: 1;
+  letter-spacing: 0;
+}
+
+.hero-copy__morph {
+  position: absolute;
+  z-index: 2;
+  width: clamp(11rem, 31vw, 31rem);
+  aspect-ratio: 1 / 0.86;
+  border-radius: 44% 56% 62% 38% / 48% 35% 65% 52%;
+  background: #fff;
+  mix-blend-mode: difference;
+  pointer-events: none;
+  translate: -50% -50%;
+  will-change: border-radius, left, top, scale, transform;
+}
+
+.hero-copy:hover .hero-copy__morph {
+  animation: hero-morph 4.8s ease-in-out infinite alternate;
+}
+
+@keyframes hero-morph {
+  0% {
+    border-radius: 44% 56% 62% 38% / 48% 35% 65% 52%;
+    rotate: -2deg;
+  }
+
+  45% {
+    border-radius: 61% 39% 47% 53% / 38% 56% 44% 62%;
+    rotate: 4deg;
+  }
+
+  100% {
+    border-radius: 39% 61% 55% 45% / 62% 42% 58% 38%;
+    rotate: -5deg;
+  }
 }
 
 .service-tree__network {

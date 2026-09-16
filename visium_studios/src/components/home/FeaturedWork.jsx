@@ -17,19 +17,6 @@ const [heroProject, ...restFeatured] = featured;
 function FeaturedWork() {
   return (
     <section id="work-preview" className="bg-black text-white py-24 md:py-32">
-      {/* Intro — sets up the section before work takes over the viewport */}
-      <motion.div
-        className="max-w-3xl mb-16 md:mb-20 px-4 md:px-10"
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, amount: 0.4 }}
-        variants={fadeUp}
-      >
-        <p className="text-4xl font-serif md:text-6xl mt-3 leading-relaxed md:leading-tight">
-          Our works? <br /> Take a look & experience for yourself
-        </p>
-      </motion.div>
-
       {/* The takeover moment — full-bleed, dominates the viewport */}
       {heroProject && <FeaturedTakeover project={heroProject} />}
 

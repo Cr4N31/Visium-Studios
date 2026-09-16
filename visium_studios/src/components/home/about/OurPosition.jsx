@@ -1,5 +1,6 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import VideoMotion from "../VideoMotion";
 
 function OurPosition() {
   const ref = useRef(null);
@@ -7,36 +8,30 @@ function OurPosition() {
     target: ref,
     offset: ["start end", "end start"],
   });
-  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [0.25, 1, 0.25]);
+
+  const opacity = useTransform(scrollYProgress, [0, 0.45, 1], [0.25, 1, 0.25]);
 
   return (
     <section ref={ref} className="px-0 py-20 sm:px-0 md:px-0 md:py-32">
       <motion.div
         style={{ opacity }}
         data-aos="fade-up"
-        className="max-w-4xl text-left"
+        className="relative text-left"
       >
-        <p className="text-xs uppercase tracking-[0.2em] text-white/40 mb-8">
+        <p className="mb-8 text-xs uppercase tracking-[0.2em] text-white/40">
           Our Position
         </p>
-        <div className="flex flex-col gap-8 font-serif leading-[1.15]">
-          <p className="text-4xl md:text-6xl lg:text-7xl text-white">
-            At{" "}
-            <span className="underline underline-offset-8 decoration-white/30">
-              Visium Studios
-            </span>
-            , we serve as a startup credibility engine. We help early-stage tech
-            founders transform raw, scattered concepts into{" "}
-            <span className="underline underline-offset-8 decoration-white/30">
-              structured, market-ready brands
-            </span>
-            .
+
+        <div className="font-serif leading-[1.05]">
+          <p className="max-w-6xl text-5xl text-white md:text-7xl lg:text-8xl">
+            At Visium Studios, raw ideas become credible brands.
           </p>
-          <p className="text-2xl md:text-3xl lg:text-4xl text-white/50 leading-snug">
-            By prioritizing strategic, design-first solutions, we establish the
-            visual authority and structural readiness that startups need to
-            command attention, secure funding, and scale efficiently.
-          </p>
+
+          <motion.div>
+            <div className="w-full mt-15 relative h-full">
+              <VideoMotion />
+            </div>
+          </motion.div>
         </div>
       </motion.div>
     </section>
