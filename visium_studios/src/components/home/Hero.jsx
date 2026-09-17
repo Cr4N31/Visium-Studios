@@ -16,7 +16,7 @@ function Hero() {
   return (
     <section
       ref={sectionRef}
-      className="relative flex min-h-[120svh] items-center overflow-hidden bg-black px-4 py-16 md:min-h-[125vh] md:px-10 md:py-24"
+      className="relative flex min-h-[120svh] items-center overflow-visible bg-black px-4 py-16 md:min-h-[125vh] md:px-10 md:py-24"
       id="home"
     >
       <motion.div

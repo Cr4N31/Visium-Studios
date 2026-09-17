@@ -1,6 +1,6 @@
 function VideoMotion() {
   return (
-    <div className="w-full h-full overflow-hidden bg-black">
+    <div className="w-full h-full overflow-hidden bg-transparent">
       <video
         autoPlay
         muted

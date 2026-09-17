@@ -44,7 +44,7 @@ function HeroText() {
 
   return (
     <motion.div
-      className="relative flex flex-col min-h-[92svh] md:gap-12 gap-10 items-center justify-center text-white md:min-h-[86vh]"
+      className="relative flex flex-col min-h-[92svh] md:gap-12 gap-10 items-center justify-center text-white md:min-h-[100vh]"
       variants={container}
       initial="hidden"
       animate="show"
@@ -61,16 +61,16 @@ function HeroText() {
           style={{ left: blobLeft, top: blobTop, scale: smoothScale }}
         />
 
-        <p className="hero-copy__headline relative w-full text-center text-[clamp(2.3rem,1vw,3.9rem)] md:mt-0 -mt-3 font-normal leading-[0.92] md:text-[clamp(3rem,10vw,5rem)]">
-          <span className="block overflow-hidden">
-            <motion.span className="block" variants={revealUp}>
-              Ambition should
+        <p className="hero-copy__headline relative w-full text-center text-[clamp(2.3rem,1vw,3.9rem)] md:mt-12 -mt-3 font-normal leading-[1.06] md:text-[clamp(3rem,5vw,5rem)]">
+          <span className="block">
+            <motion.span className="font-[400] block" variants={revealUp}>
+              <span className="hero-copy__accent">Ambition</span> should
             </motion.span>
           </span>
-          <span className="block overflow-hidden">
+          <span className="block font-[400]">
             <motion.span className="block" variants={revealUp}>
-              have a visual
-              <br className="md:hidden" /> language
+              have a <span className="hero-copy__accent">visual language</span>
+              <br className="md:hidden" />
             </motion.span>
           </span>
         </p>
