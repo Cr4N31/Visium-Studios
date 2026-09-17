@@ -6,7 +6,7 @@ function VideoMotion() {
         muted
         loop
         playsInline
-        className="block h-full w-full object-cover"
+        className="block rounded-lg h-full w-full object-cover"
       >
         <source src="/assets/video/final_motion.mp4" type="video/mp4" />
       </video>

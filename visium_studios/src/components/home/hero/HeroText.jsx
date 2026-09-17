@@ -61,7 +61,7 @@ function HeroText() {
           style={{ left: blobLeft, top: blobTop, scale: smoothScale }}
         />
 
-        <p className="hero-copy__headline relative w-full text-center text-[clamp(2.3rem,1vw,3.9rem)] md:mt-12 -mt-3 font-normal leading-[1.06] md:text-[clamp(3rem,5vw,5rem)]">
+        <p className="hero-copy__headline relative w-full text-center text-[clamp(2.3rem,1vw,3.9rem)] md:mt-24 -mt-2 font-normal leading-[1.06] md:text-[clamp(3rem,5vw,5rem)]">
           <span className="block">
             <motion.span className="font-[400] block" variants={revealUp}>
               <span className="hero-copy__accent">Ambition</span> should
@@ -75,7 +75,7 @@ function HeroText() {
           </span>
         </p>
       </motion.div>
-      <div className="md:h-[100vh] h-[550px] aspect-[9/16] md:aspect-video">
+      <div className="md:h-[100vh] mt-10 h-[550px] aspect-[9/16] md:aspect-video">
         <VideoMotion />
       </div>
     </motion.div>
