@@ -20,15 +20,13 @@ function Work() {
         viewport={{ once: true, amount: 0.4 }}
         variants={fadeUp}
       >
-        <span className="text-white/50 text-xs uppercase tracking-widest">
-          Selected Work
+        <span className="font-serif text-3xl md:text-5xl mt-3 leading-tight">
+          From the thinkers and builders behind Visium.
         </span>
-        <h2 className="text-3xl md:text-5xl font-bold mt-3 leading-tight">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-        </h2>
         <p className="text-white/60 mt-4 max-w-xl">
-          Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua, ut
-          enim ad minim veniam quis nostrud exercitation.
+          These are a collections of projects and trusted clients that have been
+          handled by visium, since it started. Ranging from brand designs,
+          websites, digital products, brand idenity etc.
         </p>
       </motion.div>
 

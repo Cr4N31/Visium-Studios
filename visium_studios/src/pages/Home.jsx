@@ -51,8 +51,6 @@ function Home({ onThemeChange }) {
           <FeaturedWork />
           <About />
           <ServicePreview />
-          <Target />
-          <Strategy />
           <ClientsCarousel />
           <ContactSection />
         </div>
