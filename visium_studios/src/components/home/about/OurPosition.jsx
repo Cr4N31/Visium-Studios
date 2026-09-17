@@ -26,12 +26,6 @@ function OurPosition() {
           <p className="max-w-6xl text-5xl text-white md:text-7xl lg:text-8xl">
             At Visium Studios, raw ideas become credible brands.
           </p>
-
-          <motion.div>
-            <div className="w-full mt-15 relative h-full">
-              <VideoMotion />
-            </div>
-          </motion.div>
         </div>
       </motion.div>
     </section>

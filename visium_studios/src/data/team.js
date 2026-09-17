@@ -1,66 +1,48 @@
-// Placeholder team — swap with real people once available. Keep the same
-// { name, role, image } shape so TeamGrid never needs to change.
-
 const team = [
   {
-    name: "Jordan Ellis",
-    role: "Creative Direction",
-    image: "/placeholders/team/jordan-ellis.jpg",
+    name: "Jace Kayode",
+    role: "Founder & Creative director",
+    image: "/assets/team/Jace Kayode.png",
   },
   {
-    name: "Sasha Moreno",
-    role: "Brand Strategy",
-    image: "/placeholders/team/sasha-moreno.jpg",
+    name: "Fawaz Madelewi",
+    role: "Growth & Client partnerships lead",
+    image: "/assets/team/Fawaz Madelewi.png",
   },
   {
-    name: "Kai Whitfield",
-    role: "Visual Identity",
-    image: "/placeholders/team/kai-whitfield.jpg",
+    name: "Gold Wuraola",
+    role: "Brand Strategists",
+    image: "/assets/team/Gold Wuraola.png",
   },
   {
-    name: "Reese Okafor",
-    role: "Web Design",
-    image: "/placeholders/team/reese-okafor.jpg",
+    name: "Chioma Okoye",
+    role: "Social & Client experience manager",
+    image: "/assets/team/Chioma Okoye.png",
   },
   {
-    name: "Devon Marsh",
-    role: "Development",
-    image: "/placeholders/team/devon-marsh.jpg",
+    name: "Wisdom Chukwu",
+    role: "Brand & Visual designer",
+    image: "/assets/team/Wisdom Chukwu.png",
   },
   {
-    name: "Priya Nathan",
-    role: "Motion Design",
-    image: "/placeholders/team/priya-nathan.jpg",
+    name: "Bitrus Duniya",
+    role: "Product designer & Developer",
+    image: "/assets/team/Bitrus Duniya.png",
   },
   {
-    name: "Toma Ionescu",
-    role: "Art Direction",
-    image: "/placeholders/team/toma-ionescu.jpg",
+    name: "Ken Godswill",
+    role: "Studio operations lead",
+    image: "/assets/team/Ken Godswill.png",
   },
   {
-    name: "Leah Fontaine",
-    role: "Product Design",
-    image: "/placeholders/team/leah-fontaine.jpg",
+    name: "Emmanuel Babalola",
+    role: "Motion & Animations artist",
+    image: "/assets/team/Emmanuel Babalola.png",
   },
   {
-    name: "Marcus Voss",
-    role: "Brand Systems",
-    image: "/placeholders/team/marcus-voss.jpg",
-  },
-  {
-    name: "Amara Diallo",
-    role: "Content Strategy",
-    image: "/placeholders/team/amara-diallo.jpg",
-  },
-  {
-    name: "Elliot Cho",
-    role: "Engineering",
-    image: "/placeholders/team/elliot-cho.jpg",
-  },
-  {
-    name: "Noa Berg",
-    role: "Growth",
-    image: "/placeholders/team/noa-berg.jpg",
+    name: "Nathan Araujo",
+    role: "Video & Post production artist",
+    image: "/assets/team/Nathan Araujo.png",
   },
 ];
 

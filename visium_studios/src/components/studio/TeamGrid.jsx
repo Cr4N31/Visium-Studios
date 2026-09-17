@@ -37,20 +37,19 @@ function TeamGrid() {
             <motion.div
               variants={imageReveal}
               className="relative aspect-[3/4] overflow-hidden bg-white/5"
-              style={{
-                backgroundImage: member.image
-                  ? `url(${member.image})`
-                  : undefined,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-              }}
             >
-              {!member.image && (
+              {member.image ? (
+                <img
+                  src={member.image}
+                  alt={member.name}
+                  loading="lazy"
+                  className="h-full w-full object-cover grayscale transition-[filter] duration-500 hover:grayscale-0"
+                />
+              ) : (
                 <span className="absolute inset-0 flex items-center justify-center text-white/20 text-xs uppercase tracking-widest">
                   Photo placeholder
                 </span>
               )}
-              <div className="absolute inset-0 grayscale hover:grayscale-0 transition-[filter] duration-500 bg-transparent" />
             </motion.div>
 
             <div className="border-b border-white/10 pb-4 pt-4">
