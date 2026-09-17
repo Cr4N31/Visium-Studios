@@ -61,16 +61,18 @@ function HeroText() {
           style={{ left: blobLeft, top: blobTop, scale: smoothScale }}
         />
 
-        <p className="hero-copy__headline relative w-full text-center text-[clamp(2.3rem,1vw,3.9rem)] md:mt-24 -mt-2 font-normal leading-[1.06] md:text-[clamp(3rem,5vw,5rem)]">
+        <p className="hero-copy__headline relative w-full text-center text-[clamp(1.7rem,8vw,3.9rem)] md:mt-24 -mt-2 font-normal leading-[1.06] md:text-[clamp(3rem,5vw,5rem)]">
           <span className="block">
             <motion.span className="font-[400] block" variants={revealUp}>
               <span className="hero-copy__accent">Ambition</span> should
             </motion.span>
           </span>
           <span className="block font-[400]">
-            <motion.span className="block" variants={revealUp}>
+            <motion.span
+              className="block whitespace-nowrap"
+              variants={revealUp}
+            >
               have a <span className="hero-copy__accent">visual language</span>
-              <br className="md:hidden" />
             </motion.span>
           </span>
         </p>
