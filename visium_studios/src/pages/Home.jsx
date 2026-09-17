@@ -8,6 +8,7 @@ import Strategy from "../components/home/Strategy";
 import ClientsCarousel from "../components/home/ClientsCarousel";
 import ContactSection from "../components/home/ContactSection";
 import StackedHero from "../shared/StackedHero";
+import CapabilitiesMarquee from "../shared/CapabilitiesMarquee";
 
 function Home({ onThemeChange }) {
   const [isInverted, setIsInverted] = useState(false);
@@ -46,6 +47,7 @@ function Home({ onThemeChange }) {
       <Hero />
       <div className="relative z-10 bg-black rounded-t-[32px]">
         <div className="flex flex-col gap-12 py-8">
+          <CapabilitiesMarquee />
           <FeaturedWork />
           <About />
           <ServicePreview />
