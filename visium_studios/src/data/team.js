@@ -11,7 +11,7 @@ const team = [
   },
   {
     name: "Gold Wuraola",
-    role: "Brand Strategists",
+    role: "Brand Strategist",
     image: "/assets/team/Gold Wuraola.png",
   },
   {
@@ -36,7 +36,7 @@ const team = [
   },
   {
     name: "Emmanuel Babalola",
-    role: "Motion & Animations artist",
+    role: "Motion & Animation artist",
     image: "/assets/team/Emmanuel Babalola.png",
   },
   {

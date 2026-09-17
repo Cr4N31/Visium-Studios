@@ -54,7 +54,9 @@ function TeamGrid() {
 
             <div className="border-b border-white/10 pb-4 pt-4">
               <h4 className="text-white text-lg font-medium">{member.name}</h4>
-              <p className="text-white/40 text-sm mt-1">{member.role}</p>
+              <p className="text-white/40 uppercase text-sm mt-1">
+                {member.role}
+              </p>
             </div>
           </motion.div>
         ))}
