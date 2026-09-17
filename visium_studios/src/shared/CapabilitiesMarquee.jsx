@@ -1,15 +1,18 @@
-// CapabilitiesMarquee.jsx
 import { useRef, useState, useLayoutEffect } from "react";
 import { motion, useMotionValue, useAnimationFrame } from "framer-motion";
 import capabilities from "../data/capabilities";
 
-const SPEED = 40; // pixels per second
+const SPEED = 40;
+function wrapX(value, width) {
+  if (!width) return value;
+  let v = value % width;
+  if (v > 0) v -= width;
+  return v;
+}
 
 function CapabilitiesMarquee() {
-  const loopItems = [...capabilities, ...capabilities];
-
   const trackRef = useRef(null);
-  const groupRef = useRef(null); // measures one un-duplicated set
+  const groupRef = useRef(null);
   const x = useMotionValue(0);
   const [isPaused, setIsPaused] = useState(false);
   const [groupWidth, setGroupWidth] = useState(0);
@@ -25,16 +28,18 @@ function CapabilitiesMarquee() {
 
   useAnimationFrame((_, delta) => {
     if (isPaused || !groupWidth) return;
-    let next = x.get() - (SPEED * delta) / 1000;
-    if (Math.abs(next) >= groupWidth) {
-      next += groupWidth;
-    }
-    x.set(next);
+    const next = x.get() - (SPEED * delta) / 1000;
+    x.set(wrapX(next, groupWidth));
   });
+
+  const handlePan = (_, info) => {
+    if (!groupWidth) return;
+    x.set(wrapX(x.get() + info.delta.x, groupWidth));
+  };
 
   return (
     <section
-      className="overflow-hidden border-y border-white/10 py-10 md:py-14 select-none touch-none"
+      className="overflow-hidden border-y border-white/10 py-10 md:py-14 select-none touch-none cursor-grab active:cursor-grabbing"
       onPointerDown={() => setIsPaused(true)}
       onPointerUp={() => setIsPaused(false)}
       onPointerLeave={() => setIsPaused(false)}
@@ -44,6 +49,7 @@ function CapabilitiesMarquee() {
         ref={trackRef}
         className="flex w-max items-center"
         style={{ x }}
+        onPan={handlePan}
       >
         <div
           ref={groupRef}
@@ -51,7 +57,7 @@ function CapabilitiesMarquee() {
         >
           {capabilities.map((item, i) => (
             <div key={i} className="flex items-center gap-10 md:gap-16">
-              <span className="whitespace-nowrap font-serif text-3xl leading-none text-white/80 md:text-5xl">
+              <span className="whitespace-nowrap font-serif text-xl leading-none text-white/80 md:text-2xl">
                 {item}
               </span>
               <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-white/30" />
@@ -64,7 +70,7 @@ function CapabilitiesMarquee() {
         >
           {capabilities.map((item, i) => (
             <div key={i} className="flex items-center gap-10 md:gap-16">
-              <span className="whitespace-nowrap font-serif text-3xl leading-none text-white/80 md:text-5xl">
+              <span className="whitespace-nowrap font-serif text-xl leading-none text-white/80 md:text-2xl">
                 {item}
               </span>
               <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-white/30" />

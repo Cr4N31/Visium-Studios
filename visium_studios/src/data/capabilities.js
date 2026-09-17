@@ -1,4 +1,3 @@
-// data/capabilities.js
 const capabilities = [
   "Digital Systems",
   "Motion Design",
