@@ -73,7 +73,7 @@ function HeroText() {
               </span>
               <br className="md:hidden" />
               <span className="hero-copy__accent whitespace-nowrap">
-                language
+                &nbsp;language
               </span>
             </motion.span>
           </span>
