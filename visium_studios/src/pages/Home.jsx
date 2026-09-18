@@ -44,7 +44,10 @@ function Home({ onThemeChange }) {
 
   return (
     <main className={`home-page${isInverted ? " home-page--inverted" : ""}`}>
-      <Hero />
+      <StackedHero>
+        <Hero />
+      </StackedHero>
+
       <div className="relative z-10 bg-black rounded-t-[32px]">
         <div className="flex flex-col gap-12 py-8">
           <CapabilitiesMarquee />

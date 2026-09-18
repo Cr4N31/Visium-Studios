@@ -39,7 +39,7 @@ function CapabilitiesMarquee() {
 
   return (
     <section
-      className="overflow-hidden border-y border-white/10 py-10 md:py-14 select-none touch-none cursor-grab active:cursor-grabbing"
+      className="overflow-hidden border-y border-white/10 -mt-32 py-10 md:py-14 select-none touch-none cursor-grab active:cursor-grabbing"
       onPointerDown={() => setIsPaused(true)}
       onPointerUp={() => setIsPaused(false)}
       onPointerLeave={() => setIsPaused(false)}

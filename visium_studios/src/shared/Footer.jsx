@@ -1,25 +1,34 @@
 import { FaLinkedinIn, FaInstagram, FaTwitter } from "react-icons/fa";
-import { Link } from "react-router-dom";
 
 import footer_img from "/assets/logo/fullWhite.png";
+import footer_img_black from "/assets/logo/Full Logo, Black - VISIŪM™.png";
 
-function Footer() {
+function Footer({ inverted = false }) {
+  const isLight = false;
+  const themeClasses = {
+    shell: "border-white/10 bg-black text-white",
+    muted: "text-white/40",
+    soft: "text-white/60",
+    primary: "text-white",
+    secondary: "text-white/70",
+    border: "border-white/10",
+    button: "bg-white text-black",
+  };
   const siteMap = [
     { name: "Home", href: "#home" },
     { name: "Work", href: "/work" },
-    { name: "Project", href: "#project" },
-    { name: "Services", href: "#services" },
+    { name: "Studio", href: "/studio" },
     { name: "Contact", href: "#contact" },
   ];
 
   const branding = [
-    "Branding",
-    "Logo creation",
-    "Visual identity",
-    "Brand Systems",
-    "Rebranding",
-    "Art direction",
-    "Positioning",
+    { name: "Branding", href: "/branding" },
+    { name: "Logo creation", href: "/branding/logo-creation" },
+    { name: "Visual identity", href: "/branding/visual-identity" },
+    { name: "Brand systems", href: "/branding/brand-systems" },
+    { name: "Rebranding", href: "/branding/rebranding" },
+    { name: "Art direction", href: "/branding/art-direction" },
+    { name: "Positioning", href: "/branding/positioning" },
   ];
 
   const digital = [
@@ -49,29 +58,32 @@ function Footer() {
   ];
 
   return (
-    <footer className="mt-24 overflow-hidden border-t border-white/10 px-4 pt-8 pb-8 sm:px-6 md:px-8">
+    <footer
+      className={`mt-24 overflow-hidden border-t px-4 pt-8 pb-8 sm:px-6 md:px-8 ${themeClasses.shell}`}
+    >
       {/* ================= CTA ================= */}
       <div
         className="mb-16 flex flex-col gap-8 md:flex-row md:items-center md:justify-between"
         data-aos="fade-up"
       >
-        <p className="text-4xl font-medium tracking-tight text-white md:text-5xl lg:text-6xl">
+        <p
+          className={`text-4xl font-medium tracking-tight md:text-5xl lg:text-6xl ${themeClasses.primary}`}
+        >
           Have something worth building?
         </p>
 
         <a
           href="#contact"
-          className="
+          className={`
             flex w-fit items-center gap-4
             rounded-full
-            bg-white
             px-7 py-4
             text-sm font-semibold
             uppercase tracking-wide
-            text-black
             transition-all duration-300
             hover:gap-6
-          "
+            ${themeClasses.button}
+          `}
         >
           Let's talk
           <span>→</span>
@@ -85,7 +97,9 @@ function Footer() {
       >
         {/* Site Map */}
         <div>
-          <p className="mb-5 text-[10px] uppercase tracking-[0.25em] text-white/40">
+          <p
+            className={`mb-5 text-[10px] uppercase tracking-[0.25em] ${themeClasses.muted}`}
+          >
             Site map
           </p>
 
@@ -94,15 +108,15 @@ function Footer() {
               <a
                 key={link.name}
                 href={link.href}
-                className="
+                className={`
                   block
                   text-2xl
                   leading-[1]
                   tracking-tight
-                  text-white
                   transition-opacity duration-200
                   hover:opacity-50
-                "
+                  ${themeClasses.primary}
+                `}
               >
                 {link.name}
               </a>
@@ -112,26 +126,28 @@ function Footer() {
 
         {/* Branding */}
         <div>
-          <p className="mb-5 text-[10px] uppercase tracking-[0.25em] text-white/40">
+          <p
+            className={`mb-5 text-[10px] uppercase tracking-[0.25em] ${themeClasses.muted}`}
+          >
             Branding
           </p>
 
           <div className="space-y-0">
             {branding.map((link) => (
               <a
-                key={link}
-                href="#"
-                className="
+                key={link.name}
+                href={link.href}
+                className={`
                   block
                   text-2xl
                   leading-[1]
                   tracking-tight
-                  text-white
                   transition-opacity duration-200
                   hover:opacity-50
-                "
+                  ${themeClasses.primary}
+                `}
               >
-                {link}
+                {link.name}
               </a>
             ))}
           </div>
@@ -139,7 +155,9 @@ function Footer() {
 
         {/* Digital */}
         <div>
-          <p className="mb-5 text-[10px] uppercase tracking-[0.25em] text-white/40">
+          <p
+            className={`mb-5 text-[10px] uppercase tracking-[0.25em] ${themeClasses.muted}`}
+          >
             Digital
           </p>
 
@@ -148,15 +166,15 @@ function Footer() {
               <a
                 key={link}
                 href="#"
-                className="
+                className={`
                   block
                   text-2xl
                   leading-[1]
                   tracking-tight
-                  text-white
                   transition-opacity duration-200
                   hover:opacity-50
-                "
+                  ${themeClasses.primary}
+                `}
               >
                 {link}
               </a>
@@ -166,7 +184,9 @@ function Footer() {
 
         {/* Connect */}
         <div>
-          <p className="mb-5 text-[10px] uppercase tracking-[0.25em] text-white/40">
+          <p
+            className={`mb-5 text-[10px] uppercase tracking-[0.25em] ${themeClasses.muted}`}
+          >
             Connect
           </p>
 
@@ -175,15 +195,15 @@ function Footer() {
               <a
                 key={link.name}
                 href="#"
-                className="
+                className={`
                   flex items-center gap-2
                   text-2xl
                   leading-[1]
                   tracking-tight
-                  text-white
                   transition-opacity duration-200
                   hover:opacity-50
-                "
+                  ${themeClasses.primary}
+                `}
               >
                 {link.name}
               </a>
@@ -199,27 +219,31 @@ function Footer() {
       >
         {/* Studio */}
         <div>
-          <p className="mb-5 text-[10px] uppercase tracking-[0.25em] text-white/40">
+          <p
+            className={`mb-5 text-[10px] uppercase tracking-[0.25em] ${themeClasses.muted}`}
+          >
             Studio
           </p>
 
-          <p className="text-2xl leading-none tracking-tight text-white">
+          <p
+            className={`text-2xl leading-none tracking-tight ${themeClasses.primary}`}
+          >
             Visium Studios
           </p>
 
-          <p className="mt-2 text-sm text-white/40">
+          <p className={`mt-2 text-sm ${themeClasses.muted}`}>
             © {new Date().getFullYear()} Visium Studios™
           </p>
 
           <a
             href="#"
-            className="
+            className={`
               mt-3 block
               text-sm
-              text-white/60
               transition-colors
-              hover:text-white
-            "
+              hover:opacity-60
+              ${themeClasses.soft}
+            `}
           >
             Privacy & Cookies
           </a>
@@ -227,44 +251,50 @@ function Footer() {
 
         {/* Contact */}
         <div>
-          <p className="mb-5 text-[10px] uppercase tracking-[0.25em] text-white/40">
+          <p
+            className={`mb-5 text-[10px] uppercase tracking-[0.25em] ${themeClasses.muted}`}
+          >
             Contact
           </p>
 
           <a
             href="mailto:hello@visiumstudios.com"
-            className="
+            className={`
               block
               text-2xl
               leading-none
               tracking-tight
-              text-white
               transition-opacity
               hover:opacity-50
-            "
+              ${themeClasses.primary}
+            `}
           >
             hello@visiumstudios.com
           </a>
 
           <a
             href="tel:+0000000000"
-            className="
+            className={`
               mt-1
               block
               text-2xl
               leading-none
               tracking-tight
-              text-white
               transition-opacity
               hover:opacity-50
-            "
+              ${themeClasses.primary}
+            `}
           >
             +00 000 000 000
           </a>
         </div>
       </div>
-      <div className="flex justify-center items-center">
-        <img src={footer_img} className="mt-10 w-full max-w-[500px]" />
+      <div className="flex items-center justify-center">
+        <img
+          src={footer_img}
+          className="mt-10 w-full max-w-[500px]"
+          alt="Visium Studios"
+        />
       </div>
     </footer>
   );

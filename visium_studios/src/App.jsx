@@ -8,6 +8,7 @@ import Studio from "./pages/Studio";
 import CaseStudy from "./components/work/CaseStudy";
 import CustomCursor from "./shared/CustomCursor";
 import Loader from "./shared/Loader";
+import Branding from "./components/footer_components/Branding";
 import { useEffect, useState } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css"; // Import AOS styles
@@ -54,20 +55,26 @@ function App() {
     }
   }, [location.pathname]);
 
+  const isBrandingPage = location.pathname === "/branding";
+  const cursorInverted = isBrandingPage ? false : homeInverted;
+  const headerInverted = isBrandingPage ? false : homeInverted;
+  const ctaInverted = isBrandingPage ? false : homeInverted;
+
   return (
     <div className="bg-black text-white">
       <Loader visible={isLoading} />
       <ScrollToTop />
-      <CustomCursor inverted={homeInverted} />
-      <Header inverted={homeInverted} />
+      <CustomCursor inverted={cursorInverted} />
+      <Header inverted={headerInverted} />
       <Routes>
         <Route path="/" element={<Home onThemeChange={setHomeInverted} />} />
         <Route path="/work" element={<Work />} />
         <Route path="/studio" element={<Studio />} />
         <Route path="/work/:slug" element={<CaseStudy />} />
+        <Route path="/branding" element={<Branding />} />
       </Routes>
-      <CTA inverted={homeInverted} />
-      <Footer />
+      <CTA inverted={ctaInverted} />
+      <Footer inverted={false} />
     </div>
   );
 }

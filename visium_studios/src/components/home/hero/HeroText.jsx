@@ -42,7 +42,7 @@ function HeroText() {
 
   return (
     <motion.div
-      className="relative flex flex-col items-center justify-start pt-24 pb-10 gap-8 text-white sm:pt-28 sm:gap-10 md:min-h-[100vh] md:justify-center md:pt-0 md:pb-0 md:gap-12"
+      className="relative flex flex-col items-center justify-start pt-24 pb-10 gap-12 text-white sm:pt-28 sm:gap-10 md:min-h-[100vh] md:justify-center md:pt-0 md:pb-0 md:gap-12"
       variants={container}
       initial="hidden"
       animate="show"
