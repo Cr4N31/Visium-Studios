@@ -9,6 +9,12 @@ import CaseStudy from "./components/work/CaseStudy";
 import CustomCursor from "./shared/CustomCursor";
 import Loader from "./shared/Loader";
 import Branding from "./components/footer_components/branding/Branding";
+import LogoCreation from "./components/footer_components/branding/LogoCreation";
+import VisualIdentity from "./components/footer_components/branding/VisualIdentity";
+import BrandSystems from "./components/footer_components/branding/BrandSystems";
+import Rebranding from "./components/footer_components/branding/Rebranding";
+import ArtDirection from "./components/footer_components/branding/ArtDirection";
+import Positioning from "./components/footer_components/branding/Positioning";
 import ContactSection from "./components/home/ContactSection";
 import { useEffect, useState } from "react";
 import AOS from "aos";
@@ -73,7 +79,14 @@ function App() {
         <Route path="/studio" element={<Studio />} />
         <Route path="/contact" element={<ContactSection />} />
         <Route path="/work/:slug" element={<CaseStudy />} />
+        {/*footer components*/}
         <Route path="/branding" element={<Branding />} />
+        <Route path="/branding/logo-creation" element={<LogoCreation />} />
+        <Route path="/branding/visual-identity" element={<VisualIdentity />} />
+        <Route path="/branding/brand-systems" element={<BrandSystems />} />
+        <Route path="/branding/rebranding" element={<Rebranding />} />
+        <Route path="/branding/art-direction" element={<ArtDirection />} />
+        <Route path="/branding/positioning" element={<Positioning />} />
       </Routes>
       <CTA inverted={ctaInverted} />
       <Footer inverted={false} />
