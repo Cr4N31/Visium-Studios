@@ -100,7 +100,7 @@ function AccordionItem({ q, a, isOpen, onToggle }) {
             transition={{ duration: 0.35, ease: [0.65, 0, 0.35, 1] }}
             className="overflow-hidden"
           >
-            <p className="max-w-2xl pt-4 text-sm leading-relaxed text-black/60 sm:text-base">
+            <p className="max-w-2xl pt-4 text-sm leading-relaxed text-white/60 sm:text-base">
               {a}
             </p>
           </motion.div>
@@ -116,7 +116,7 @@ function PointsList({ items }) {
       {items.map(({ point, desc }) => (
         <li key={point} className="flex flex-col gap-1 sm:flex-row sm:gap-2">
           <span className="font-medium">{point}:</span>
-          <span className="text-black/60">{desc}</span>
+          <span className="text-white/60">{desc}</span>
         </li>
       ))}
     </ul>
@@ -151,19 +151,34 @@ function Branding() {
         </div>
         <div className="max-w-2xl space-y-5 text-sm leading-relaxed text-white/70 sm:text-base">
           <p>
-            A brand isn't a logo. It's the way you look, speak, and stay in
-            people's minds, across every screen and every material.
+            A brand is the overall perception of your product. It is the overall
+            reputation and gut feeling people have about your product. They
+            focus too much on flashy and unnecessary presentations on posts,
+            websites, fliers, banners etc, so first-time visitors and customers
+            don't quickly understand what the company does or what the product
+            is about — this causes high cognitive overload and low conversion
+            rates. At Visium we strictly believe in a clarity-first,
+            design-second approach, where we communicate and tell the story of
+            your product to your customers, providing clarity, advertising the
+            purpose of your product and strengthening the trust of customers in
+            your product.
           </p>
           <p>
-            Most entrepreneurs come to us with a simpler problem than they
-            think: they have a logo, but no system. Every post looks different,
-            the site doesn't match the printed materials, and first-time
-            visitors don't quickly grasp what the company does.
+            Most entrepreneurs and business owners often struggle to build a
+            lasting brand because they focus too much on a logo instead of a
+            clear strategy, and most branding agencies frequently overlook the
+            internal team culture and long-term brand management. They focus too
+            much on flashy and unnecessary presentations on posts, websites,
+            fliers, banners etc, so first-time visitors and customers don't
+            quickly understand what the company does or what the product is
+            about — this causes high cognitive overload and low conversion
+            rates.
           </p>
           <p>
-            We solve that by building a system, not isolated pieces. Strategy
-            produces visual direction, direction produces identity, and identity
-            produces the rules anyone can use tomorrow.
+            At Visium we strictly believe in a clarity-first, design-second
+            approach, where we communicate and tell the story of your product to
+            your customers, providing clarity, advertising the purpose of your
+            product and strengthening the trust of customers in your product.
           </p>
           <div className="pt-2">
             <PointsList items={coreServices} />
@@ -203,7 +218,7 @@ function Branding() {
           </p>
         </div>
 
-        <div className="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-3">
+        <div className="mt-10 grid grid-cols-1 gap-8 mb-8 sm:grid-cols-3">
           {projects.map((project) => (
             <div key={project.id}>
               <div className="aspect-[4/5] w-full bg-white/10" />
@@ -213,12 +228,13 @@ function Branding() {
           ))}
         </div>
 
-        <button
+        <a
+          href="/work"
           type="button"
-          className="mt-8 text-xs uppercase tracking-wide text-white/60 underline-offset-4 hover:underline"
+          className="mt-12 text-xs uppercase tracking-wide text-white/60 underline-offset-4 hover:underline"
         >
           View all projects →
-        </button>
+        </a>
       </section>
 
       {/* FAQ */}
@@ -241,12 +257,13 @@ function Branding() {
 
       {/* CTA */}
       <section className="flex justify-center border-t border-white/10 px-6 py-16 sm:px-10">
-        <button
+        <a
           type="button"
+          href="/contact"
           className="rounded-full border border-white/30 px-6 py-3 text-sm text-white hover:border-white/60"
         >
           Start a project →
-        </button>
+        </a>
       </section>
     </div>
   );

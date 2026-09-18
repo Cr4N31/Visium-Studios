@@ -9,14 +9,14 @@ const navLinks = [
   { name: "Home", href: "/" },
   { name: "Work", href: "/work" },
   { name: "Studio", href: "/studio" },
-  { name: "Contact", href: "#contact" },
+  { name: "Contact", href: "/contact" },
 ];
 
 const desktopNavLinks = [
   { name: "Home", href: "/" },
   { name: "Work", href: "/work" },
   { name: "Studio", href: "/studio" },
-  { name: "Contact", href: "#contact" },
+  { name: "Contact", href: "/contact" },
 ];
 
 const HASH_LINKS = navLinks.filter((l) => l.href.startsWith("#"));

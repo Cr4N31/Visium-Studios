@@ -73,7 +73,7 @@ function Footer({ inverted = false }) {
         </p>
 
         <a
-          href="#contact"
+          href="/contact"
           className={`
             flex w-fit items-center gap-4
             rounded-full

@@ -3,7 +3,7 @@ import img from "/assets/logo/visiumSingleLogoBlack.png";
 function CTA({ inverted = false }) {
   return (
     <a
-      href="#contact"
+      href="/contact"
       className={`
         group
         fixed bottom-6 right-6 z-[100]

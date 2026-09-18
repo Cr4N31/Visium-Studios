@@ -9,6 +9,7 @@ import CaseStudy from "./components/work/CaseStudy";
 import CustomCursor from "./shared/CustomCursor";
 import Loader from "./shared/Loader";
 import Branding from "./components/footer_components/Branding";
+import ContactSection from "./components/home/ContactSection";
 import { useEffect, useState } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css"; // Import AOS styles
@@ -70,6 +71,7 @@ function App() {
         <Route path="/" element={<Home onThemeChange={setHomeInverted} />} />
         <Route path="/work" element={<Work />} />
         <Route path="/studio" element={<Studio />} />
+        <Route path="/contact" element={<ContactSection />} />
         <Route path="/work/:slug" element={<CaseStudy />} />
         <Route path="/branding" element={<Branding />} />
       </Routes>
