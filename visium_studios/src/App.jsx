@@ -8,7 +8,7 @@ import Studio from "./pages/Studio";
 import CaseStudy from "./components/work/CaseStudy";
 import CustomCursor from "./shared/CustomCursor";
 import Loader from "./shared/Loader";
-import Branding from "./components/footer_components/Branding";
+import Branding from "./components/footer_components/branding/Branding";
 import ContactSection from "./components/home/ContactSection";
 import { useEffect, useState } from "react";
 import AOS from "aos";
