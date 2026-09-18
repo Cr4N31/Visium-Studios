@@ -66,11 +66,15 @@ function HeroText() {
             </motion.span>
           </span>
           <span className="block font-[400]">
-            <motion.span
-              className="block whitespace-nowrap"
-              variants={revealUp}
-            >
-              have a <span className="hero-copy__accent">visual language</span>
+            <motion.span className="block" variants={revealUp}>
+              have a{" "}
+              <span className="hero-copy__accent whitespace-nowrap">
+                visual
+              </span>
+              <br className="md:hidden" />
+              <span className="hero-copy__accent whitespace-nowrap">
+                language
+              </span>
             </motion.span>
           </span>
         </p>
