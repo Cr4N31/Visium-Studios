@@ -1,7 +1,6 @@
 import { FaLinkedinIn, FaInstagram, FaTwitter } from "react-icons/fa";
 
 import footer_img from "/assets/logo/fullWhite.png";
-import footer_img_black from "/assets/logo/Full Logo, Black - VISIŪM™.png";
 
 function Footer({ inverted = false }) {
   const isLight = false;
@@ -42,18 +41,22 @@ function Footer({ inverted = false }) {
     {
       name: "Instagram",
       icon: <FaInstagram />,
+      href: "https://www.instagram.com/visiumstudios.co?utm_source=ig_web_button_share_sheet&stkn=ZDNlZDc0MzIxNw==",
     },
     {
-      name: "TikTok",
+      name: "X",
       icon: <FaTwitter />,
+      href: "#",
     },
     {
       name: "YouTube",
       icon: <FaLinkedinIn />,
+      href: "#",
     },
     {
       name: "LinkedIn",
       icon: <FaLinkedinIn />,
+      href: "#",
     },
   ];
 
@@ -194,7 +197,7 @@ function Footer({ inverted = false }) {
             {connect.map((link) => (
               <a
                 key={link.name}
-                href="#"
+                href={link.href}
                 className={`
                   flex items-center gap-2
                   text-2xl
