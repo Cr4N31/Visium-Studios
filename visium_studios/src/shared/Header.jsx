@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback, useRef, memo } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import { useCurtainNavigate } from "../context/CurtainNavigationContext";
 import header_logo from "/assets/logo/fullWhite.png";
 import header_logo_black from "/assets/logo/Full Logo, Black - VISIŪM™.png";
 
@@ -120,7 +121,6 @@ function stepPhysics(bodies, W, H, dt) {
   }
 
   for (let iter = 0; iter < 4; iter++) {
-    // logo vs logo
     for (let i = 0; i < bodies.length; i++) {
       const a = bodies[i];
       if (!a.active) continue;
@@ -383,7 +383,6 @@ const BlobCursor = memo(function BlobCursor({ originRef }) {
       const speed = Math.hypot(vx, vy);
       if (speed > 0.5) s.angle = Math.atan2(vy, vx);
 
-      // squash and stretch along the direction of travel
       const targetStretch = reduceMotion ? 0 : Math.min(speed / 40, 0.45);
       s.stretch += (targetStretch - s.stretch) * 0.2;
 
@@ -490,7 +489,7 @@ const BlobCursor = memo(function BlobCursor({ originRef }) {
 });
 
 function MenuOverlay({ open, onClose, activeHref, originRef }) {
-  const navigate = useNavigate();
+  const navigateWithCurtain = useCurtainNavigate();
   const location = useLocation();
   const [hoveredHref, setHoveredHref] = useState(null);
 
@@ -514,19 +513,20 @@ function MenuOverlay({ open, onClose, activeHref, originRef }) {
 
       window.setTimeout(() => {
         if (isRoute) {
-          navigate(href);
+          navigateWithCurtain(href);
           return;
         }
 
         if (location.pathname !== "/") {
-          navigate("/");
-          waitForElementAndScroll(href);
+          navigateWithCurtain("/", {
+            onNavigated: () => waitForElementAndScroll(href),
+          });
         } else {
           waitForElementAndScroll(href);
         }
       }, EXIT_MS);
     },
-    [onClose, navigate, location.pathname],
+    [onClose, navigateWithCurtain, location.pathname],
   );
 
   const handleClose = useCallback(
@@ -623,7 +623,7 @@ function MenuOverlay({ open, onClose, activeHref, originRef }) {
 
 function Header({ inverted = false }) {
   const [isOpen, setOpen] = useState(false);
-  const navigate = useNavigate();
+  const navigateWithCurtain = useCurtainNavigate();
   const location = useLocation();
   const [activeSection, setActiveSection] = useState("/");
   const observerRef = useRef(null);
@@ -659,29 +659,37 @@ function Header({ inverted = false }) {
   const matchedRoute = matchRoute(location.pathname);
   const activeHref = matchedRoute ? matchedRoute.href : activeSection;
 
+  const handleLogoClick = useCallback(
+    (e) => {
+      e.preventDefault();
+      navigateWithCurtain("/");
+    },
+    [navigateWithCurtain],
+  );
+
   const handleDesktopNavClick = useCallback(
     (e, href) => {
       e.preventDefault();
 
       if (href.startsWith("/")) {
-        navigate(href);
+        navigateWithCurtain(href);
         return;
       }
 
       if (location.pathname !== "/") {
-        navigate("/");
-        waitForElementAndScroll(href);
+        navigateWithCurtain("/", {
+          onNavigated: () => waitForElementAndScroll(href),
+        });
         return;
       }
 
       waitForElementAndScroll(href);
     },
-    [navigate, location.pathname],
+    [navigateWithCurtain, location.pathname],
   );
 
   const handleMenuToggle = useCallback(
     (e) => {
-      // Remember where a mouse click happened so the blob dot starts there.
       const usedMouse =
         e.detail > 0 && !window.matchMedia("(pointer: coarse)").matches;
       menuOriginRef.current =
@@ -698,7 +706,7 @@ function Header({ inverted = false }) {
       }`}
     >
       <div className="hidden h-[68px] items-center justify-between px-6 md:flex lg:px-8">
-        <a href="/" aria-label="Visium Studios home">
+        <a href="/" aria-label="Visium Studios home" onClick={handleLogoClick}>
           <img
             src={
               inverted
