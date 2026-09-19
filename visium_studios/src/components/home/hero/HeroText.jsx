@@ -59,13 +59,13 @@ function HeroText() {
           style={{ left: blobLeft, top: blobTop, scale: smoothScale }}
         />
 
-        <p className="hero-copy__headline relative w-full text-center text-[clamp(2.25rem,9vw,5rem)] font-normal leading-[1.08] md:mt-24 md:leading-[1.06] lg:mt-20 md:text-[clamp(3rem,5vw,5rem)]">
-          <span className="block font-semibold leading-[1.06]">
+        <p className="hero-copy__headline relative w-full text-center text-[clamp(2.9rem,9vw,5rem)] font-normal leading-[1.08] md:mt-24 md:leading-[1.06] lg:mt-20 md:text-[clamp(3rem,5vw,5rem)]">
+          <span className="block font-[400] leading-[1.06]">
             <motion.span className="block" variants={revealUp}>
               <span className="hero-copy__accent">Ambition</span> should
             </motion.span>
           </span>
-          <span className="block leading-[1.06] font-semibold">
+          <span className="block leading-[1.06] font-[400]">
             <motion.span className="block" variants={revealUp}>
               have a{" "}
               <span className="hero-copy__accent whitespace-nowrap">
