@@ -28,7 +28,7 @@ function CaseStudy() {
       <header className="px-4 md:px-10 pt-32 pb-16 max-w-5xl">
         <motion.div initial="hidden" animate="show" variants={fadeUp}>
           <Link
-            to="/#work"
+            to="/work"
             className="text-white/50 text-xs uppercase tracking-widest"
           >
             ← Back to work
