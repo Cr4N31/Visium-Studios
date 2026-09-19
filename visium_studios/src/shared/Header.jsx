@@ -1,9 +1,11 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, memo } from "react";
 import { createPortal } from "react-dom";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useNavigate, useLocation } from "react-router-dom";
 import header_logo from "/assets/logo/fullWhite.png";
 import header_logo_black from "/assets/logo/Full Logo, Black - VISIŪM™.png";
+
+const falling_logo = "/assets/logo/Logo Icon - White.png";
 
 const navLinks = [
   { name: "Home", href: "/" },
@@ -21,14 +23,27 @@ const desktopNavLinks = [
 
 const HASH_LINKS = navLinks.filter((l) => l.href.startsWith("#"));
 
-// Route links, longest-href first, so a more specific route (if one is
-// ever added, e.g. "/work/featured") is checked before a shorter parent
-// route like "/work".
 const ROUTE_LINKS = navLinks
   .filter((l) => l.href.startsWith("/"))
   .sort((a, b) => b.href.length - a.href.length);
 
 const EXIT_MS = 250;
+
+const WIPE_EASE = [0.76, 0, 0.24, 1];
+const WIPE_IN = 0.7;
+const WIPE_OUT = 0.6;
+
+const BLOB_BASE = 48;
+const BLOB_IDLE = 10;
+const BLOB_HOVER = 48;
+const BLOB_HOVER_TOUCH = 76;
+
+const LOGO_COUNT = 16;
+const LOGO_START_DELAY = 1000;
+const LOGO_SPAWN_GAP = 130;
+const GRAVITY = 2400;
+const COLLIDER = 0.36;
+const RESTITUTION = 0.28;
 
 function todayLabel() {
   const d = new Date();
@@ -49,7 +64,6 @@ function waitForElementAndScroll(href, { retries = 30, interval = 50 } = {}) {
     if (attempts < retries) {
       window.setTimeout(tryScroll, interval);
     } else if (process.env.NODE_ENV !== "production") {
-      // eslint-disable-next-line no-console
       console.warn(
         `No element found for ${href} after ${retries * interval}ms — add id="${href.slice(1)}" to that section.`,
       );
@@ -59,9 +73,6 @@ function waitForElementAndScroll(href, { retries = 30, interval = 50 } = {}) {
   tryScroll();
 }
 
-// Finds which nav route (if any) the current pathname belongs to, so
-// "/work/some-slug" still lights up "Work", etc. Exact match or
-// path-segment-prefix match only (never a loose substring match).
 function matchRoute(pathname) {
   return ROUTE_LINKS.find(
     (link) => pathname === link.href || pathname.startsWith(`${link.href}/`),
@@ -69,19 +80,19 @@ function matchRoute(pathname) {
 }
 
 const overlayVariants = {
-  hidden: { opacity: 0 },
+  hidden: { clipPath: "inset(0% 0% 100% 0%)" },
   visible: {
-    opacity: 1,
+    clipPath: "inset(0% 0% 0% 0%)",
     transition: {
-      duration: 0.35,
-      ease: "easeOut",
-      when: "beforeChildren",
-      staggerChildren: 0.07,
+      duration: WIPE_IN,
+      ease: WIPE_EASE,
+      delayChildren: 0.4,
+      staggerChildren: 0.08,
     },
   },
   exit: {
-    opacity: 0,
-    transition: { duration: EXIT_MS / 1000, ease: "easeIn" },
+    clipPath: "inset(0% 0% 100% 0%)",
+    transition: { duration: WIPE_OUT, ease: WIPE_EASE },
   },
 };
 
@@ -95,15 +106,403 @@ const linkVariants = {
   exit: { opacity: 0, y: 12, transition: { duration: 0.2 } },
 };
 
-function MenuOverlay({ open, onClose, activeHref }) {
+function stepPhysics(bodies, W, H, dt) {
+  for (const b of bodies) {
+    if (!b.active) continue;
+    b.px = b.x;
+    b.py = b.y;
+    b.vy += GRAVITY * dt;
+    b.x += b.vx * dt;
+    b.y += b.vy * dt;
+    b.angle += b.av * dt;
+    b.av *= 0.995;
+    b.grounded = false;
+  }
+
+  for (let iter = 0; iter < 4; iter++) {
+    // logo vs logo
+    for (let i = 0; i < bodies.length; i++) {
+      const a = bodies[i];
+      if (!a.active) continue;
+      for (let j = i + 1; j < bodies.length; j++) {
+        const c = bodies[j];
+        if (!c.active) continue;
+
+        const dx = c.x - a.x;
+        const dy = c.y - a.y;
+        const min = a.r + c.r;
+        const d2 = dx * dx + dy * dy;
+        if (d2 >= min * min) continue;
+
+        const dist = Math.sqrt(d2) || 0.0001;
+        const nx = dx / dist;
+        const ny = dy / dist;
+        const ma = a.r * a.r;
+        const mc = c.r * c.r;
+        const mt = ma + mc;
+        const overlap = min - dist;
+
+        a.x -= nx * overlap * (mc / mt);
+        a.y -= ny * overlap * (mc / mt);
+        c.x += nx * overlap * (ma / mt);
+        c.y += ny * overlap * (ma / mt);
+
+        const rvx = c.vx - a.vx;
+        const rvy = c.vy - a.vy;
+        const vn = rvx * nx + rvy * ny;
+        if (vn < 0) {
+          const e = -vn > 120 ? RESTITUTION : 0;
+          const inv = 1 / ma + 1 / mc;
+          const imp = (-(1 + e) * vn) / inv;
+          a.vx -= (imp * nx) / ma;
+          a.vy -= (imp * ny) / ma;
+          c.vx += (imp * nx) / mc;
+          c.vy += (imp * ny) / mc;
+
+          const tx = -ny;
+          const ty = nx;
+          const vt = rvx * tx + rvy * ty;
+          const jt = (-vt * 0.12) / inv;
+          a.vx -= (jt * tx) / ma;
+          a.vy -= (jt * ty) / ma;
+          c.vx += (jt * tx) / mc;
+          c.vy += (jt * ty) / mc;
+
+          if (-vn > 120) {
+            a.av += (vt / a.r) * 0.05;
+            c.av += (vt / c.r) * 0.05;
+          }
+        }
+      }
+    }
+
+    for (const b of bodies) {
+      if (!b.active) continue;
+      if (b.x < b.r) {
+        b.x = b.r;
+        if (b.vx < 0) b.vx *= -0.3;
+      } else if (b.x > W - b.r) {
+        b.x = W - b.r;
+        if (b.vx > 0) b.vx *= -0.3;
+      }
+      if (b.y > H - b.r) {
+        b.y = H - b.r;
+        if (b.vy > 0) b.vy = b.vy > 160 ? -b.vy * RESTITUTION : 0;
+        b.grounded = true;
+      }
+    }
+  }
+
+  for (const b of bodies) {
+    if (!b.active) continue;
+    if (b.grounded) b.vx *= 0.97;
+
+    const moved = Math.hypot(b.x - b.px, b.y - b.py);
+    if (moved >= 0.3) {
+      if (b.grounded) b.av += (b.vx / b.r - b.av) * 0.15;
+    } else {
+      b.av *= 0.85;
+      if (moved < 0.05) {
+        b.vx *= 0.5;
+        b.vy *= 0.5;
+      }
+    }
+    b.rest = moved < 0.05 && Math.abs(b.av) < 0.05;
+  }
+}
+
+function isSettled(bodies) {
+  for (const b of bodies) {
+    if (!b.active || !b.rest) return false;
+  }
+  return true;
+}
+
+const FallingLogos = memo(function FallingLogos() {
+  const layerRef = useRef(null);
+  const itemRefs = useRef([]);
+  const reduceMotion = useReducedMotion();
+
+  useEffect(() => {
+    const layer = layerRef.current;
+    if (!layer || reduceMotion) return;
+
+    let { width: W, height: H } = layer.getBoundingClientRect();
+    const baseSize = Math.min(150, Math.max(60, Math.min(W * 0.26, H * 0.2)));
+
+    const bodies = Array.from({ length: LOGO_COUNT }, (_, i) => {
+      const size = baseSize * (0.6 + Math.random() * 0.55);
+      const r = size * COLLIDER;
+      const el = itemRefs.current[i];
+      if (el) {
+        el.style.width = `${size}px`;
+        el.style.height = `${size}px`;
+      }
+      return {
+        el,
+        size,
+        r,
+        x: r + Math.random() * Math.max(W - r * 2, 1),
+        y: -size,
+        vx: (Math.random() - 0.5) * 160,
+        vy: 150 + Math.random() * 250,
+        angle: Math.random() * Math.PI * 2,
+        av: (Math.random() - 0.5) * 5,
+        spawnAt: LOGO_START_DELAY + i * LOGO_SPAWN_GAP + Math.random() * 60,
+        active: false,
+        grounded: false,
+        rest: false,
+        px: 0,
+        py: 0,
+      };
+    });
+
+    const STEP = 1 / 120;
+    let raf = 0;
+    let last = 0;
+    let elapsed = 0;
+    let acc = 0;
+    let calm = 0;
+
+    const draw = () => {
+      for (const b of bodies) {
+        if (!b.active || !b.el) continue;
+        b.el.style.transform = `translate3d(${b.x - b.size / 2}px, ${b.y - b.size / 2}px, 0) rotate(${b.angle}rad)`;
+      }
+    };
+
+    const frame = (now) => {
+      if (!last) last = now;
+      const dt = Math.min((now - last) / 1000, 1 / 30);
+      last = now;
+      elapsed += dt * 1000;
+
+      for (const b of bodies) {
+        if (!b.active && elapsed >= b.spawnAt) {
+          b.active = true;
+          if (b.el) {
+            b.el.style.transform = `translate3d(${b.x - b.size / 2}px, ${b.y - b.size / 2}px, 0)`;
+            b.el.style.opacity = "1";
+          }
+        }
+      }
+
+      acc += dt;
+      while (acc >= STEP) {
+        stepPhysics(bodies, W, H, STEP);
+        acc -= STEP;
+      }
+      draw();
+
+      calm = isSettled(bodies) ? calm + 1 : 0;
+      if (calm > 40) {
+        raf = 0;
+        return;
+      }
+      raf = requestAnimationFrame(frame);
+    };
+
+    const wake = () => {
+      calm = 0;
+      last = 0;
+      if (!raf) raf = requestAnimationFrame(frame);
+    };
+
+    const onResize = () => {
+      const rect = layer.getBoundingClientRect();
+      W = rect.width;
+      H = rect.height;
+      wake();
+    };
+
+    raf = requestAnimationFrame(frame);
+    window.addEventListener("resize", onResize);
+
+    return () => {
+      window.removeEventListener("resize", onResize);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [reduceMotion]);
+
+  return (
+    <div
+      ref={layerRef}
+      aria-hidden="true"
+      className="pointer-events-none fixed inset-0 z-0 overflow-hidden"
+    >
+      {Array.from({ length: LOGO_COUNT }, (_, i) => (
+        <img
+          key={i}
+          ref={(el) => {
+            itemRefs.current[i] = el;
+          }}
+          src={falling_logo || undefined}
+          alt=""
+          draggable={false}
+          className="absolute left-0 top-0 select-none opacity-0 will-change-transform"
+        />
+      ))}
+    </div>
+  );
+});
+
+const BlobCursor = memo(function BlobCursor({ originRef }) {
+  const blobRef = useRef(null);
+  const reduceMotion = useReducedMotion();
+
+  useEffect(() => {
+    const el = blobRef.current;
+    if (!el) return;
+
+    const s = {
+      x: 0,
+      y: 0,
+      tx: 0,
+      ty: 0,
+      scale: 0,
+      tScale: 0,
+      stretch: 0,
+      angle: 0,
+      touch: false,
+      down: false,
+      seen: false,
+    };
+    let raf = 0;
+
+    const render = () => {
+      const follow = reduceMotion ? 1 : 0.2;
+      const px = s.x;
+      const py = s.y;
+
+      s.x += (s.tx - s.x) * follow;
+      s.y += (s.ty - s.y) * follow;
+      s.scale += (s.tScale - s.scale) * (reduceMotion ? 1 : 0.18);
+
+      const vx = s.x - px;
+      const vy = s.y - py;
+      const speed = Math.hypot(vx, vy);
+      if (speed > 0.5) s.angle = Math.atan2(vy, vx);
+
+      // squash and stretch along the direction of travel
+      const targetStretch = reduceMotion ? 0 : Math.min(speed / 40, 0.45);
+      s.stretch += (targetStretch - s.stretch) * 0.2;
+
+      el.style.transform = `translate3d(${s.x}px, ${s.y}px, 0) rotate(${s.angle}rad) scale(${s.scale * (1 + s.stretch)}, ${s.scale * (1 - s.stretch * 0.45)})`;
+
+      const settled =
+        Math.abs(s.tx - s.x) < 0.1 &&
+        Math.abs(s.ty - s.y) < 0.1 &&
+        Math.abs(s.tScale - s.scale) < 0.002 &&
+        s.stretch < 0.002;
+
+      raf = settled ? 0 : requestAnimationFrame(render);
+    };
+
+    const wake = () => {
+      if (!raf) raf = requestAnimationFrame(render);
+    };
+
+    const hoverScale = () =>
+      (s.touch ? BLOB_HOVER_TOUCH : BLOB_HOVER) / BLOB_BASE;
+    const idleScale = () => (s.touch ? 0 : BLOB_IDLE / BLOB_BASE);
+    const isTarget = (t) => t instanceof Element && !!t.closest("[data-blob]");
+
+    const place = (e, snap) => {
+      s.tx = e.clientX;
+      s.ty = e.clientY;
+      if (snap || !s.seen) {
+        s.x = s.tx;
+        s.y = s.ty;
+        s.seen = true;
+      }
+    };
+
+    const onMove = (e) => {
+      s.touch = e.pointerType === "touch";
+      place(e, false);
+      if (s.touch && !s.down) return;
+      s.tScale = isTarget(e.target) ? hoverScale() : idleScale();
+      wake();
+    };
+
+    const onDown = (e) => {
+      s.touch = e.pointerType === "touch";
+      if (!s.touch) return;
+      s.down = true;
+      place(e, true);
+      s.scale = 0;
+      s.tScale = isTarget(e.target) ? hoverScale() : 0;
+      wake();
+    };
+
+    const onUp = () => {
+      if (!s.touch) return;
+      s.down = false;
+      s.tScale = 0;
+      wake();
+    };
+
+    const onLeaveWindow = () => {
+      if (s.touch) return;
+      s.tScale = 0;
+      wake();
+    };
+
+    const origin = originRef?.current;
+    if (origin) {
+      s.tx = s.x = origin.x;
+      s.ty = s.y = origin.y;
+      s.seen = true;
+      s.tScale = BLOB_IDLE / BLOB_BASE;
+      wake();
+    }
+
+    window.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener("pointerdown", onDown, { passive: true });
+    window.addEventListener("pointerup", onUp, { passive: true });
+    window.addEventListener("pointercancel", onUp, { passive: true });
+    document.documentElement.addEventListener("mouseleave", onLeaveWindow);
+
+    return () => {
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerdown", onDown);
+      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onUp);
+      document.documentElement.removeEventListener("mouseleave", onLeaveWindow);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [originRef, reduceMotion]);
+
+  return (
+    <div
+      ref={blobRef}
+      aria-hidden="true"
+      className="pointer-events-none fixed left-0 top-0 z-30 rounded-full bg-white mix-blend-difference"
+      style={{
+        width: BLOB_BASE,
+        height: BLOB_BASE,
+        marginLeft: -BLOB_BASE / 2,
+        marginTop: -BLOB_BASE / 2,
+        transform: "translate3d(-100px, -100px, 0) scale(0)",
+      }}
+    />
+  );
+});
+
+function MenuOverlay({ open, onClose, activeHref, originRef }) {
   const navigate = useNavigate();
   const location = useLocation();
+  const [hoveredHref, setHoveredHref] = useState(null);
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
     };
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) setHoveredHref(null);
   }, [open]);
 
   const handleNavClick = useCallback(
@@ -141,6 +540,8 @@ function MenuOverlay({ open, onClose, activeHref }) {
 
   if (typeof document === "undefined") return null;
 
+  const underlinedHref = hoveredHref ?? activeHref;
+
   return createPortal(
     <AnimatePresence>
       {open && (
@@ -152,20 +553,23 @@ function MenuOverlay({ open, onClose, activeHref }) {
           exit="exit"
           className="fixed inset-0 z-[100] bg-black overflow-y-auto overscroll-contain"
         >
-          <div className="min-h-full flex flex-col">
+          <FallingLogos />
+          <BlobCursor originRef={originRef} />
+
+          <div className="relative z-10 min-h-full flex flex-col">
             <motion.div
               variants={linkVariants}
-              className="sticky top-0 z-10 flex items-center justify-between bg-black px-4 sm:px-6 pt-6 pb-4 shrink-0"
+              className="sticky top-0 z-10 flex items-center justify-between bg-transparent px-4 sm:px-6 pt-6 pb-4 shrink-0"
             >
               <span className="text-xs tracking-[0.2em] text-white font-mono">
                 {todayLabel()}
               </span>
               <span className="flex items-center gap-1.5 text-sm font-semibold text-white">
-                <img src={header_logo} className="w-4" />
-                VISIŪM
+                <img src={header_logo} className="w-20" />
               </span>
               <button
                 type="button"
+                data-blob
                 onClick={handleClose}
                 className="relative z-20 flex items-center gap-1 text-xs tracking-[0.2em] text-white/60 hover:text-white transition-colors px-2 py-2 -mr-2"
               >
@@ -188,15 +592,18 @@ function MenuOverlay({ open, onClose, activeHref }) {
 
             <nav className="flex-1 flex flex-col items-center justify-center gap-1 px-6 py-12 sm:py-16">
               {navLinks.map((link) => {
-                const isActive = link.href === activeHref;
+                const isUnderlined = link.href === underlinedHref;
                 return (
                   <motion.a
                     key={link.href}
                     href={link.href}
+                    data-blob
                     variants={linkVariants}
                     onClick={(e) => handleNavClick(e, link.href)}
-                    className={`text-[clamp(2.25rem,7vw,5.5rem)] font-medium text-white leading-[1.15] hover:opacity-60 transition-opacity text-center ${
-                      isActive
+                    onPointerEnter={() => setHoveredHref(link.href)}
+                    onPointerLeave={() => setHoveredHref(null)}
+                    className={`text-[clamp(2.25rem,7vw,5.5rem)] font-medium text-white leading-[1.15] text-center ${
+                      isUnderlined
                         ? "underline decoration-2 underline-offset-[10px]"
                         : ""
                     }`}
@@ -220,8 +627,8 @@ function Header({ inverted = false }) {
   const location = useLocation();
   const [activeSection, setActiveSection] = useState("/");
   const observerRef = useRef(null);
+  const menuOriginRef = useRef(null);
 
-  // Scroll-spy only matters on the homepage, where the hash sections live.
   useEffect(() => {
     if (location.pathname !== "/") return;
 
@@ -249,9 +656,6 @@ function Header({ inverted = false }) {
     return () => observerRef.current?.disconnect();
   }, [location.pathname]);
 
-  // Any real route (Work, Services, and anything added later) is matched
-  // generically against the current pathname. Only when there's no route
-  // match — i.e. we're actually on "/" — does the scroll-spy value apply.
   const matchedRoute = matchRoute(location.pathname);
   const activeHref = matchedRoute ? matchedRoute.href : activeSection;
 
@@ -273,6 +677,18 @@ function Header({ inverted = false }) {
       waitForElementAndScroll(href);
     },
     [navigate, location.pathname],
+  );
+
+  const handleMenuToggle = useCallback(
+    (e) => {
+      // Remember where a mouse click happened so the blob dot starts there.
+      const usedMouse =
+        e.detail > 0 && !window.matchMedia("(pointer: coarse)").matches;
+      menuOriginRef.current =
+        !isOpen && usedMouse ? { x: e.clientX, y: e.clientY } : null;
+      setOpen((open) => !open);
+    },
+    [isOpen],
   );
 
   return (
@@ -333,7 +749,7 @@ function Header({ inverted = false }) {
         <button
           type="button"
           className={`custom-menu-trigger${isOpen ? " custom-menu-trigger--open" : ""}`}
-          onClick={() => setOpen((open) => !open)}
+          onClick={handleMenuToggle}
           aria-label={isOpen ? "Close menu" : "Open menu"}
           aria-expanded={isOpen}
         >
@@ -346,6 +762,7 @@ function Header({ inverted = false }) {
         open={isOpen}
         onClose={() => setOpen(false)}
         activeHref={activeHref}
+        originRef={menuOriginRef}
       />
     </header>
   );
