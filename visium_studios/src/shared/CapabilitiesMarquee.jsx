@@ -11,7 +11,6 @@ function wrapX(value, width) {
 }
 
 function CapabilitiesMarquee() {
-  const trackRef = useRef(null);
   const groupRef = useRef(null);
   const x = useMotionValue(0);
   const [isPaused, setIsPaused] = useState(false);
@@ -38,19 +37,15 @@ function CapabilitiesMarquee() {
   };
 
   return (
-    <section
+    <motion.section
       className="overflow-hidden border-y border-white/10 -mt-32 py-10 md:py-14 select-none touch-none cursor-grab active:cursor-grabbing"
       onPointerDown={() => setIsPaused(true)}
       onPointerUp={() => setIsPaused(false)}
       onPointerLeave={() => setIsPaused(false)}
       onPointerCancel={() => setIsPaused(false)}
+      onPan={handlePan}
     >
-      <motion.div
-        ref={trackRef}
-        className="flex w-max items-center"
-        style={{ x }}
-        onPan={handlePan}
-      >
+      <motion.div className="flex w-max items-center" style={{ x }}>
         <div
           ref={groupRef}
           className="flex items-center gap-10 md:gap-16 pr-10 md:pr-16"
@@ -78,7 +73,7 @@ function CapabilitiesMarquee() {
           ))}
         </div>
       </motion.div>
-    </section>
+    </motion.section>
   );
 }
 
