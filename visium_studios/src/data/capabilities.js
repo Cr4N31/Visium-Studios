@@ -1,10 +1,14 @@
 const capabilities = [
-  "Digital Systems",
-  "Motion Design",
-  "Branding",
-  "Visual Identity",
-  "Art Direction",
-  "Web Design",
+  "ART DIRECTION",
+  "DIGITAL DESIGN",
+  "WEB DEVELOPMENT",
+  "BRAND IDENTITY",
+  "PRODUCT DESIGN",
+  "MOTION DESIGN",
+  "3D DESIGN",
+  "VIDEO PRODUCTION",
+  "SOCIAL CONTENT",
+  "CREATIVE DIRECTION",
 ];
 
 export default capabilities;
