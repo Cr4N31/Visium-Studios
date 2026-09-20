@@ -44,6 +44,11 @@ const team = [
     role: "Video & Post production artist",
     image: "/assets/team/Nathan Araujo.png",
   },
+  {
+    name: "Chike Emmanuel",
+    role: "Software Developer",
+    image: "/assets/team/Chike Emmanuel.png",
+  },
 ];
 
 export default team;
