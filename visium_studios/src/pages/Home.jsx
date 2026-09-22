@@ -15,17 +15,17 @@ function Home({ onThemeChange }) {
 
   useEffect(() => {
     const updateTheme = () => {
-      const services = document.querySelector("#services");
+      const featuredWork = document.querySelector("#work-preview");
       const contact = document.querySelector("#contact");
       const home = document.querySelector(".home-page");
 
-      if (!services || !contact || !home) return;
+      if (!featuredWork || !contact || !home) return;
 
-      const servicesReached =
-        services.getBoundingClientRect().top <= window.innerHeight * 0.75;
+      const featuredWorkReached =
+        featuredWork.getBoundingClientRect().top <= window.innerHeight * 0.82;
       const contactHasEnded =
         contact.getBoundingClientRect().bottom <= window.innerHeight * 0.9;
-      const nextValue = servicesReached && !contactHasEnded;
+      const nextValue = featuredWorkReached && !contactHasEnded;
 
       setIsInverted(nextValue);
       onThemeChange(nextValue);

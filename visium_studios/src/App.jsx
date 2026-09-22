@@ -8,7 +8,7 @@ import Home from "./pages/Home";
 import Work from "./pages/Work";
 import Studio from "./pages/Studio";
 import CaseStudy from "./components/work/CaseStudy";
-import CustomCursor from "./shared/CustomCursor";
+import CustomCursor from "./context/CustomCursor";
 import Branding from "./components/footer_components/branding/Branding";
 import LogoCreation from "./components/footer_components/branding/LogoCreation";
 import VisualIdentity from "./components/footer_components/branding/VisualIdentity";
@@ -43,6 +43,7 @@ function App() {
   }, []);
 
   const isBrandingPage = location.pathname === "/branding";
+  const isCaseStudyPage = /^\/work\/[^/]+$/.test(location.pathname);
   const cursorInverted = isBrandingPage ? false : homeInverted;
   const headerInverted = isBrandingPage ? false : homeInverted;
   const ctaInverted = isBrandingPage ? false : homeInverted;
@@ -71,8 +72,8 @@ function App() {
           <Route path="/branding/art-direction" element={<ArtDirection />} />
           <Route path="/branding/positioning" element={<Positioning />} />
         </Routes>
-        <CTA inverted={ctaInverted} />
-        <Footer inverted={false} />
+        {!isCaseStudyPage && <CTA inverted={ctaInverted} />}
+        {!isCaseStudyPage && <Footer inverted={false} />}
       </div>
     </CurtainNavigationProvider>
   );

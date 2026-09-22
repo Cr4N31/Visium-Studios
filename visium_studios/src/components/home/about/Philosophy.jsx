@@ -181,7 +181,7 @@ function ConstellationLines({ containerRef, nodeRefs, progress }) {
         <motion.path
           d={path}
           fill="none"
-          stroke="rgb(255, 255, 255)"
+          stroke="rgb(0, 0, 0)"
           strokeWidth="2.25"
           strokeLinecap="round"
           strokeLinejoin="round"

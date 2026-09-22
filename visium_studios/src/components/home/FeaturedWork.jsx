@@ -1,39 +1,42 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import projects from "../../data/projects";
-import FeaturedTakeover from "../home/featuredWork/FeaturedTakeover";
-import EditorialProjectCard from "../home/featuredWork/EditorialProjectCard";
+import EditorialProjectCard from "../work/EditorialProjectCard";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
   show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } },
 };
 
-// Pull only what's flagged featured — swapping mock data for real projects
-// later is just editing this array in projects.js, nothing here changes.
-const featured = projects.filter((p) => p.featured);
-const [heroProject, ...restFeatured] = featured;
+const gridProjects = projects.filter((p) => p.featured).slice(0, 4);
 
 function FeaturedWork() {
   return (
-    <section id="work-preview" className="bg-black text-white py-24 md:py-32">
-      {/* The takeover moment — full-bleed, dominates the viewport */}
-      {heroProject && <FeaturedTakeover project={heroProject} />}
+    <section
+      id="work-preview"
+      className="bg-black text-white py-24 md:py-32"
+      data-aos="fade-up"
+    >
+      <div className="p-12">
+        <motion.p
+          className="featured-work-title"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, amount: 0.7 }}
+          transition={{ duration: 0.2, ease: "easeOut" }}
+        >
+          Featured Work
+        </motion.p>
+      </div>
 
-      {/* Remaining featured work, editorial grid beneath the takeover */}
-      {restFeatured.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-14 px-4 md:px-10 mt-20 md:mt-28">
-          {restFeatured.map((project, i) => (
-            <EditorialProjectCard
-              key={project.id}
-              project={project}
-              index={i + 2}
-            />
+      {gridProjects.length > 0 && (
+        <div className="grid grid-cols-2 gap-4 md:gap-6 px-4 md:px-10 mt-4 md:mt-6 max-w-[1600px] mx-auto">
+          {gridProjects.map((project) => (
+            <EditorialProjectCard key={project.id} project={project} />
           ))}
         </div>
       )}
 
-      {/* CTA to the full Work page */}
       <motion.div
         className="flex justify-center mt-24 md:mt-32"
         initial="hidden"
