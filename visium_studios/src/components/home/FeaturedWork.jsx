@@ -18,19 +18,15 @@ function FeaturedWork() {
       data-aos="fade-up"
     >
       <div className="p-12">
-        <motion.p
-          className="featured-work-title"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, amount: 0.7 }}
-          transition={{ duration: 0.2, ease: "easeOut" }}
-        >
-          Featured Work
-        </motion.p>
+        <p className="md:text-8xl text-5xl">Featured Work</p>
+        <p className="mt-5">
+          A collection of visual experiences and works created and tailored for
+          ambitious and forward thinking teams
+        </p>
       </div>
 
       {gridProjects.length > 0 && (
-        <div className="grid grid-cols-2 gap-4 md:gap-6 px-4 md:px-10 mt-4 md:mt-6 max-w-[1600px] mx-auto">
+        <div className="grid md:grid-cols-2 grid-cols-1 gap-4 md:gap-6 px-4 md:px-10 mt-4 md:mt-6 max-w-[1600px] mx-auto">
           {gridProjects.map((project) => (
             <EditorialProjectCard key={project.id} project={project} />
           ))}
