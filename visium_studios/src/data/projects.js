@@ -8,7 +8,7 @@ const projects = [
     title: "Horizona",
     featured: true,
     tagline: "The future of aerial imaging.",
-    tags: ["Brand Identity", "Digital Product"],
+    tags: ["Brand Identity", "Digital Product", "Web Design"],
     size: "tall",
     thumbnail: "/assets/portfolio_images/Horizona/Preview Cover.png",
     coverImage: "/assets/portfolio_images/Horizona/Preview Cover.png",
@@ -90,53 +90,93 @@ const projects = [
   },
   {
     id: "02",
-    slug: "north-current",
-    title: "North Current",
+    slug: "rallow",
+    title: "Rallow™  — Streetwear",
     featured: true,
-    tagline:
-      "Repositioning a legacy shipping brand for a digital-first market.",
-    tags: ["Brand Strategy", "Visual Identity", "Web Design"],
+    tagline: "Wear Your Bold Side, Wear Your Rebellion.",
+    tags: ["Brand Strategy", "Visual Identity"],
     size: "wide",
-    thumbnail: "/placeholders/project-01.jpg",
+    thumbnail: "/assets/portfolio_images/Rallow/Preview Cover.png",
+    coverImage: "/assets/portfolio_images/Rallow/Preview Cover.png",
     year: "2025",
     client: "North Current Logistics",
     location: "Rotterdam, NL",
     externalUrl: "https://example.com",
-    brief:
-      "Lorem ipsum dolor sit amet consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    heroMedia: "/placeholders/project-01-hero.mp4",
+    brief: `Rallow is a Nigerian cutting-edge streetwear brand that channels the spirit of rebellion and individuality. Rooted in the defiance of the mainstream, Rallow draws inspiration from global street culture, blending fearless designs with contemporary fashion. It’s not just a brand—it’s a movement for those who dare to push boundaries. 
+        Designed for those who reject conformity, Rallow creates bold, premium pieces that resonate with rebels and risk-takers. Our ethos, "Wear Your Bold Side, Wear Your Rebellion," invites individuals to express their true selves through fashion, embracing a style that speaks louder than words. 
+        With every garment, Rallow empowers their customers to stand out, fight the norm, and redefine what streetwear means.
+        `,
+    heroMedia: "/assets/portfolio_images/Rallow/VIDEO 01.gif",
     sections: [
       {
         label: "Context",
-        content:
-          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut enim ad minim veniam, quis nostrud exercitation ullamco.",
+        content: `The Rallow logo is a powerful visual representation of the brand's core values: rebellion, individuality, and breaking the mold. The geometric design features three connected squares, each modified with chamfered corners at the top left and bottom right, symbolizing defiance and disruption of traditional forms. These chamfered corners signify the brand’s willingness to break away from conventional paths and embrace the unconventional.
+                  The connection of the squares represents unity and strength, reflecting the Rallow community—individuals who come together through shared ideals of boldness and nonconformity. The linear alignment of the squares showcases order amidst rebellion, with an underlying structure that supports creativity and expression.
+                  The use of sharp, clean lines adds a modern and edgy feel to the logo, aligning perfectly with Rallow’s streetwear aesthetic. This minimalist yet striking design creates a memorable brand mark that stands out in the fashion landscape, echoing Rallow’s commitment to making bold statements through simplicity and strength.
+                  `,
       },
       {
         label: "Problem",
-        content:
-          "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur excepteur sint.",
+        content: `In a world saturated with fashion brands, finding streetwear that truly embodies individuality and rebellion is a challenge. Many existing brands fail to offer apparel that resonates with those seeking to express their unique identity while defying societal norms. Streetwear is often repetitive, lacking the bold statement and distinct style that today’s generation craves.
+                  Rallow was born out of the need to create streetwear that challenges convention, empowers self-expression, and redefines what it means to wear defiance. The goal is to provide clothing that not only looks great but carries a message—one that speaks to a culture of rebellion and authenticity, filling the gap for those who want to stand out and break away from the ordinary.
+                  `,
       },
       {
         label: "Approach",
-        content:
-          "Occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum sed ut perspiciatis.",
-      },
-      {
-        label: "System",
-        content:
-          "Unde omnis iste natus error sit voluptatem accusantium doloremque laudantium totam rem aperiam eaque ipsa quae.",
+        content: `To address the challenge of standing out in a crowded market, Rallow's branding solution focuses on creating a strong, unified visual identity that reflects its rebellious ethos. The design is built around bold typography, striking geometric forms, and a dynamic color palette that speaks to the brand’s defiant nature. Every element, from the logo to the custom clothing designs, works in harmony to communicate Rallow’s message of individuality and bold self-expression.
+                  By embracing clean, modern design choices paired with disruptive messaging, Rallow establishes a distinct presence in the streetwear landscape. This cohesive identity not only connects with its audience on a personal level but also reinforces its core values of rebellion, independence, and authenticity. Through this powerful visual language, Rallow positions itself as more than just a brand—it's a movement for those who refuse to conform.
+                  `,
       },
       {
         label: "Result",
-        content:
-          "Ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo nemo enim ipsam voluptatem.",
+        content: `Rallow’s logo animation captures the brand’s bold essence through fluid, intentional movement. The disconnected outlines of the geometric marks appear first, one by one, symbolizing individual expression. As they unite and fill with color, the animation reflects the brand’s rebellious journey toward unity and strength.
+                  Each letter of the brand name then emerges in sequence, creating a smooth, layered reveal that adds depth and intrigue. The consistent motion and transitions maintain a cohesive visual flow, reinforcing Rallow’s bold and unapologetic identity in every frame.
+                  `,
       },
     ],
     gallery: [
-      "/placeholders/project-01-g1.jpg",
-      "/placeholders/project-01-g2.jpg",
-      "/placeholders/project-01-g3.jpg",
-      "/placeholders/project-01-g4.jpg",
+      "/assets/portfolio_images/Rallow/A - P1.png",
+      "/assets/portfolio_images/Rallow/A - P11.png",
+      "/assets/portfolio_images/Rallow/A - P21.png",
+      "/assets/portfolio_images/Rallow/A - P31.png",
+      "/assets/portfolio_images/Rallow/B - P2.png",
+      "/assets/portfolio_images/Rallow/B - P12.png",
+      "/assets/portfolio_images/Rallow/B - P22.png",
+      "/assets/portfolio_images/Rallow/B - P32.png",
+      "/assets/portfolio_images/Rallow/C - 23.png",
+      "/assets/portfolio_images/Rallow/C - P3.png",
+      "/assets/portfolio_images/Rallow/C - P13.png",
+      "/assets/portfolio_images/Rallow/C - P33.png",
+      "/assets/portfolio_images/Rallow/D - P4.png",
+      "/assets/portfolio_images/Rallow/D - P14.png",
+      "/assets/portfolio_images/Rallow/D - P24.png",
+      "/assets/portfolio_images/Rallow/D - P34.png",
+      "/assets/portfolio_images/Rallow/E - P5.png",
+      "/assets/portfolio_images/Rallow/E - P15.png",
+      "/assets/portfolio_images/Rallow/E - P25.png",
+      "/assets/portfolio_images/Rallow/E - P35.png",
+      "/assets/portfolio_images/Rallow/F - P6.png",
+      "/assets/portfolio_images/Rallow/F - P16.png",
+      "/assets/portfolio_images/Rallow/F - P26.png",
+      "/assets/portfolio_images/Rallow/F - P36.png",
+      "/assets/portfolio_images/Rallow/G - 27.png",
+      "/assets/portfolio_images/Rallow/G - P7.png",
+      "/assets/portfolio_images/Rallow/G - P17.png",
+      "/assets/portfolio_images/Rallow/G - P37.png",
+      "/assets/portfolio_images/Rallow/H - P8.png",
+      "/assets/portfolio_images/Rallow/H - P28.png",
+      "/assets/portfolio_images/Rallow/H -P18.png",
+      "/assets/portfolio_images/Rallow/I - P9.png",
+      "/assets/portfolio_images/Rallow/I - P19.png",
+      "/assets/portfolio_images/Rallow/I - P29.png",
+      "/assets/portfolio_images/Rallow/I - P39.png",
+      "/assets/portfolio_images/Rallow/J - P10.png",
+      "/assets/portfolio_images/Rallow/J - P20.png",
+      "/assets/portfolio_images/Rallow/J - P30.png",
+    ],
+    src: [
+      "/assets/portfolio_images/Rallow/VIDEO 02.gif",
+      "/assets/portfolio_images/Rallow/VIDEO 03.gif",
     ],
   },
   {

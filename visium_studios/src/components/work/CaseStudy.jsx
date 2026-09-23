@@ -171,7 +171,10 @@ function CaseStudy() {
           )}
         </section>
 
-        <section className="mb-12 grid gap-8 md:grid-cols-[0.7fr_1.3fr]">
+        <section
+          className="mb-12 grid gap-8 md:grid-cols-[0.7fr_1.3fr]"
+          data-aos="fade-up"
+        >
           <div className="text-[10px] uppercase tracking-[0.28em] text-white/45">
             Overview
           </div>
@@ -234,7 +237,10 @@ function CaseStudy() {
                 key={`${project.slug}-gallery-${index}`}
                 className={media.className || "col-span-1"}
               >
-                <div className="overflow-hidden rounded-[1.5rem] border border-white/10 bg-[#111111]">
+                <div
+                  className="overflow-hidden rounded-[1.5rem] border border-white/10 bg-[#111111]"
+                  data-aos="fade-up"
+                >
                   {isVideo ? (
                     <video
                       autoPlay
@@ -243,6 +249,7 @@ function CaseStudy() {
                       playsInline
                       preload="auto"
                       className="h-[240px] w-full object-cover md:h-[360px]"
+                      data-aos="fade-in"
                     >
                       <source src={encodeURI(src)} type="video/mp4" />
                     </video>
@@ -251,6 +258,7 @@ function CaseStudy() {
                       src={encodeURI(src)}
                       alt={project.title}
                       className="h-[240px] w-full object-cover md:h-[360px]"
+                      data-aos="fade-in"
                     />
                   )}
                 </div>
