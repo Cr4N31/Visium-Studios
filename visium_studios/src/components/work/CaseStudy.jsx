@@ -122,7 +122,7 @@ function CaseStudy() {
     .slice(0, 2);
 
   return (
-    <main className="bg-[#050505] text-white">
+    <main className="bg-[#050505] text-white" data-aos="fade-up">
       <div className="mx-auto max-w-[1200px] px-4 pb-24 pt-4 md:px-8">
         <div className="mb-8 mt-24 flex items-center justify-between">
           <Link

@@ -20,9 +20,9 @@ function Work() {
         viewport={{ once: true, amount: 0.4 }}
         variants={fadeUp}
       >
-        <span className="font-serif text-3xl md:text-5xl mt-3 leading-tight">
+        <h1 className="font-serif font-medium tracking-[-0.07em] text-3xl md:text-8xl mt-3 leading-tight">
           From the thinkers and builders behind Visium.
-        </span>
+        </h1>
         <p className="text-white/60 mt-4 max-w-xl">
           These are a collections of projects and trusted clients that have been
           handled by visium, since it started. Ranging from brand designs,
