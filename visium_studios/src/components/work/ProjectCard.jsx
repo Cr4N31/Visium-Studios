@@ -29,7 +29,10 @@ const imageScale = {
 };
 
 function ProjectCard({ project }) {
-  const { slug, title, tagline, tags, size, thumbnail, id } = project;
+  const { slug, title, tagline, tags, size, thumbnail, coverImage, id } =
+    project;
+  const imageSrc = thumbnail || coverImage || "";
+  const imageUrl = imageSrc ? encodeURI(imageSrc) : "";
 
   return (
     <motion.div
@@ -44,14 +47,14 @@ function ProjectCard({ project }) {
           variants={imageScale}
           className="absolute inset-0 bg-white/10 flex items-center justify-center"
           style={{
-            backgroundImage: `url(${thumbnail})`,
+            backgroundImage: imageUrl ? `url(${imageUrl})` : "none",
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
         >
           {/* Fallback label if no image is wired up yet */}
           <span className="text-white/20 text-xs uppercase tracking-widest">
-            {thumbnail ? "" : "Image placeholder"}
+            {imageSrc ? "" : "Image placeholder"}
           </span>
         </motion.div>
 
