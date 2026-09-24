@@ -2,8 +2,8 @@
 // exist. Kept as plain text per the direction doc's typographic-grid spec.
 
 const clients = [
-  "Northwind",
-  "Halcyon Labs",
+  "Horizona",
+  "Rallow",
   "Foundry & Co.",
   "Atrium Group",
   "Meridian",
