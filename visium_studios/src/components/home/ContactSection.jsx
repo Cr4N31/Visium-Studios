@@ -1,4 +1,5 @@
 import { useState } from "react";
+import emailjs from "@emailjs/browser";
 
 const initialForm = {
   name: "",
@@ -10,17 +11,51 @@ const initialForm = {
 function ContactSection({ onSubmit }) {
   const [form, setForm] = useState(initialForm);
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState(false);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setForm((current) => ({ ...current, [name]: value }));
+
+    setForm((current) => ({
+      ...current,
+      [name]: value,
+    }));
+
     setSubmitted(false);
+    setError(false);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    onSubmit?.(form);
-    setSubmitted(true);
+
+    setSending(true);
+    setSubmitted(false);
+    setError(false);
+
+    try {
+      await emailjs.send(
+        "service_dngp5p9",
+        "template_7l9xkee",
+        {
+          name: form.name,
+          email: form.email,
+          company: form.company,
+          project: form.project,
+        },
+        "Z0kwV0vRdbvJqqVZ0",
+      );
+
+      onSubmit?.(form);
+
+      setSubmitted(true);
+      setForm(initialForm);
+    } catch (error) {
+      console.error("EmailJS Error:", error);
+      setError(true);
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -34,12 +69,14 @@ function ContactSection({ onSubmit }) {
           <p className="mb-8 text-xs uppercase tracking-[0.2em] text-white/40">
             09 / Contact
           </p>
+
           <h2
             id="contact-heading"
             className="max-w-4xl text-[clamp(3rem,8vw,8rem)] font-semibold leading-[0.9] tracking-[-0.04em] text-white"
           >
             Let&apos;s build something worth looking at.
           </h2>
+
           <p className="mt-8 max-w-md text-base leading-relaxed text-white/50 md:text-lg">
             Tell us what you&apos;re building, where it needs to go, and what
             should feel different when it gets there.
@@ -59,6 +96,7 @@ function ContactSection({ onSubmit }) {
                 placeholder="Your name"
               />
             </label>
+
             <label className="flex flex-col gap-3 text-xs uppercase tracking-[0.16em] text-white/50">
               Email
               <input
@@ -100,16 +138,27 @@ function ContactSection({ onSubmit }) {
           <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
             <button
               type="submit"
-              className="group flex items-center gap-6 border border-white/40 px-5 py-3 text-xs uppercase tracking-[0.16em] text-white transition-colors hover:bg-white hover:text-black"
+              disabled={sending}
+              className="group flex items-center gap-6 border border-white/40 px-5 py-3 text-xs uppercase tracking-[0.16em] text-white transition-colors hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-50"
             >
-              Start a project
-              <span className="text-xl leading-none transition-transform group-hover:translate-x-1">
-                →
-              </span>
+              {sending ? "Sending..." : "Start a project"}
+
+              {!sending && (
+                <span className="text-xl leading-none transition-transform group-hover:translate-x-1">
+                  →
+                </span>
+              )}
             </button>
+
             {submitted && (
               <p className="text-sm text-white/60" role="status">
                 Thanks. We&apos;ll be in touch soon.
+              </p>
+            )}
+
+            {error && (
+              <p className="text-sm text-white/60" role="alert">
+                Something went wrong. Please try again.
               </p>
             )}
           </div>
