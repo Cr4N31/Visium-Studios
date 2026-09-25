@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+
 import Hero from "../components/home/Hero";
 import CapabilitiesMarquee from "../shared/CapabilitiesMarquee";
 import VisiumApproach from "../components/home/VisiumApproach";
@@ -11,55 +12,44 @@ import ClientsCarousel from "../context/ClientsCarousel";
 import ContactSection from "../components/home/ContactSection";
 import StackedHero from "../shared/StackedHero";
 
-// Hero → VisiumApproach already follow the guideline, so the original
-// #visium-approach threshold stays first, same 0.82 trigger as before.
-// Everything after is new: walk each id in scroll order and keep whichever
-// zone's top we've most recently crossed — same single global flip as
-// before, just with five more waypoints instead of one.
-const ZONES = [
-  { id: "visium-approach", theme: "white" }, // 03 — unchanged from before
-  { id: "work-preview", theme: "black" }, // 04
-  { id: "visium-standard", theme: "white" }, // 05
-  { id: "studio-preview", theme: "black" }, // 06
-  { id: "studio-notes", theme: "white" }, // 07
-  { id: "final-cta", theme: "black" }, // 08
-];
-
 function Home({ onThemeChange }) {
   const [isInverted, setIsInverted] = useState(false);
 
   useEffect(() => {
     const updateTheme = () => {
+      const approach = document.querySelector("#visium-approach");
       const contact = document.querySelector("#contact");
-      const home = document.querySelector(".home-page");
-      if (!contact || !home) return;
 
+      if (!approach || !contact) return;
+
+      // Hero starts black.
+      // Once VisiumApproach reaches 82% of the viewport,
+      // switch to white and keep it white.
       const triggerLine = window.innerHeight * 0.82;
 
-      let currentTheme = "black";
-      for (const zone of ZONES) {
-        const el = document.querySelector(`#${zone.id}`);
-        if (!el) continue;
-        if (el.getBoundingClientRect().top <= triggerLine) {
-          currentTheme = zone.theme;
-        }
-      }
+      const approachReached =
+        approach.getBoundingClientRect().top <= triggerLine;
 
+      // Once Contact has essentially finished,
+      // return to the normal black theme.
       const contactHasEnded =
         contact.getBoundingClientRect().bottom <= window.innerHeight * 0.9;
-      const nextValue = contactHasEnded ? false : currentTheme === "white";
+
+      const nextValue = contactHasEnded ? false : approachReached;
 
       setIsInverted(nextValue);
       onThemeChange(nextValue);
     };
 
     updateTheme();
+
     window.addEventListener("scroll", updateTheme, { passive: true });
     window.addEventListener("resize", updateTheme);
 
     return () => {
       window.removeEventListener("scroll", updateTheme);
       window.removeEventListener("resize", updateTheme);
+
       onThemeChange(false);
     };
   }, [onThemeChange]);
@@ -69,30 +59,40 @@ function Home({ onThemeChange }) {
       <StackedHero>
         <Hero />
       </StackedHero>
+
       <div className="relative z-10 bg-black rounded-t-[32px]">
         <div className="flex flex-col gap-12 py-8">
           <CapabilitiesMarquee />
+
           <VisiumApproach />
+
           <div id="work-preview">
             <FeaturedWork />
           </div>
+
           <div id="visium-standard">
             <VisiumStandard />
           </div>
+
           <div id="studio-preview">
             <Studio />
           </div>
+
           <div id="studio-notes">
             <StudioNotes />
           </div>
+
           <div id="final-cta">
             <FinalCta />
           </div>
+
           <ClientsCarousel />
+
           <ContactSection />
         </div>
       </div>
     </main>
   );
 }
+
 export default Home;
