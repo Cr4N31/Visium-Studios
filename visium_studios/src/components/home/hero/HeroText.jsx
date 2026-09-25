@@ -78,7 +78,7 @@ function HeroText() {
             </motion.span>
           </span>
         </p>
-        <p className="text-white/90">
+        <p className="text-white/90 text-center">
           We build the visual systems that set ambitions brands apart
         </p>
         <a
