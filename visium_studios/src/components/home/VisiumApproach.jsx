@@ -169,7 +169,7 @@ function TypeBlock({ label }) {
 function Statement() {
   return (
     <>
-      <p className="text-3xl text-black tracking-[-0.07em] md:text-5xl">
+      <p className="text-3xl tracking-[-0.07em] md:text-5xl">
         WE DON&apos;T DESIGN ASSETS.
         <br /> WE BUILD SYSTEMS.
       </p>
@@ -179,7 +179,7 @@ function Statement() {
             <span className="block text-xs tracking-[0.08em] text-black/40">
               {p.n}
             </span>
-            <p className="mt-2 text-sm font-medium tracking-[-0.02em] text-black md:text-base">
+            <p className="mt-2 text-sm font-medium tracking-[-0.02em] md:text-base">
               {p.title}
             </p>
             <p className="mt-2 text-sm text-black/70">{p.body}</p>
@@ -247,7 +247,7 @@ function VisiumApproach() {
     return (
       <section
         id="visium-approach"
-        className="relative bg-black px-4 py-24 text-white md:px-10 md:py-32"
+        className="relative bg-white px-4 py-24 text-black md:px-10 md:py-32"
       >
         <span className="mb-10 block text-xs tracking-[0.08em] text-black/50">
           THE VISIUM APPROACH
@@ -283,15 +283,34 @@ function VisiumApproach() {
     <section
       id="visium-approach"
       ref={trackRef}
-      className="relative h-[420vh] bg-black text-white"
+      className="relative h-[420vh] bg-white text-black"
     >
-      <motion.div className="px-4 md:px-10 py-24 md:py-32">
-        <span className="relative text-xs tracking-[0.08em] text-black/80">
+      <div className="sticky top-0 h-screen w-full overflow-hidden">
+        <span className="absolute left-4 top-6 z-30 text-xs tracking-[0.08em] text-black/50 md:left-10 md:top-8">
           THE VISIUM APPROACH
         </span>
-        <Statement />
-      </motion.div>
-      <div className="sticky top-0 h-screen w-full overflow-hidden">
+
+        <div className="absolute right-4 top-6 z-30 h-4 md:right-10 md:top-8">
+          <motion.span
+            style={{ opacity: fragmentsLabel }}
+            className="absolute right-0 text-xs tracking-[0.08em] text-black/50"
+          >
+            FRAGMENTS
+          </motion.span>
+          <motion.span
+            style={{ opacity: alignmentLabel }}
+            className="absolute right-0 text-xs tracking-[0.08em] text-black/50"
+          >
+            ALIGNMENT
+          </motion.span>
+          <motion.span
+            style={{ opacity: systemLabel }}
+            className="absolute right-0 text-xs tracking-[0.08em] text-black/50"
+          >
+            SYSTEM
+          </motion.span>
+        </div>
+
         <div className="absolute inset-0 mx-[4%] my-[10%] md:mx-[8%] md:my-[8%]">
           <motion.div
             className="pointer-events-none absolute inset-0 z-10"
@@ -316,6 +335,13 @@ function VisiumApproach() {
           {fragments.map((f) => (
             <Fragment key={f.id} data={f} progress={scrollYProgress} />
           ))}
+
+          <motion.div
+            className={`absolute left-[4%] top-[40%] z-20 w-[92%] bg-white px-[4%] py-[4%] ${RADIUS}`}
+            style={{ opacity: textOpacity, y: textY }}
+          >
+            <Statement />
+          </motion.div>
         </div>
       </div>
     </section>
