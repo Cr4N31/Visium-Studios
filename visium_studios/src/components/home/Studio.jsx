@@ -1,7 +1,9 @@
 import team from "../../data/team";
 
 function Studio() {
-  return (
+  {
+    /*
+      return (
     <section className="overflow-hidden">
       <div>
         <h1>The Studio</h1>
@@ -21,4 +23,8 @@ function Studio() {
     </section>
   );
 }
+     */
+  }
+}
+
 export default Studio;
