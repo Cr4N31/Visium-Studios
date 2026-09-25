@@ -1,15 +1,18 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   motion,
-  useMotionValue,
-  useReducedMotion,
+  AnimatePresence,
   useScroll,
   useTransform,
+  useReducedMotion,
 } from "framer-motion";
-
 import projects from "../../data/projects";
 
 const RADIUS = "rounded-[4px]";
+const COLUMNS = 4;
+const GUTTER = 1.4;
+const SLIDE_INTERVAL = 4200;
+const TYPE_LABELS = ["IDENTITY", "GRID", "MOTION"];
 
 const principles = [
   {
@@ -29,608 +32,189 @@ const principles = [
   },
 ];
 
-/* -------------------------------------------------------
-   HORIZONA
-------------------------------------------------------- */
+function isPlaceholder(src) {
+  return typeof src === "string" && src.startsWith("/placeholders/");
+}
 
-const horizona = projects.find((project) => project.slug === "horizona");
+function buildMediaPool() {
+  const pool = projects.flatMap((project) =>
+    [
+      project.thumbnail,
+      project.coverImage,
+      project.heroMedia,
+      ...(project.gallery ?? []),
+      ...(project.src ?? []),
+    ]
+      .filter((src) => Boolean(src) && !isPlaceholder(src))
+      .map((src) => ({ src, alt: project.title ?? "" })),
+  );
+  const seen = new Set();
+  return pool.filter((item) =>
+    seen.has(item.src) ? false : seen.add(item.src),
+  );
+}
 
-const HORIZONA_GALLERY = horizona?.gallery ?? [];
+const media = buildMediaPool();
 
-const PARTS = [
-  {
-    id: "logo",
-    label: "LOGO",
-    description: "The mark establishes the visual language.",
-    media: horizona?.coverImage,
-    side: "left",
-    type: "image",
-  },
-  {
-    id: "website",
-    label: "WEBSITE",
-    description: "The identity extends into the digital experience.",
-    media: horizona?.heroMedia,
-    side: "right",
-    type: "gif",
-  },
-  {
-    id: "ui",
-    label: "UI",
-    description: "The system adapts to functional interfaces.",
-    media: HORIZONA_GALLERY[0],
-    side: "left",
-    type: "image",
-  },
-  {
-    id: "image",
-    label: "IMAGE",
-    description: "The visual language shapes the imagery.",
-    media: HORIZONA_GALLERY[3],
-    side: "right",
-    type: "image",
-  },
-  {
-    id: "typography",
-    label: "TYPOGRAPHY",
-    description: "Type gives the system its voice.",
-    media: HORIZONA_GALLERY[6],
-    side: "left",
-    type: "image",
-  },
-];
+function buildFragments() {
+  const total = 16;
+  const typeSlots = new Set([2, 6, 10]);
+  let typeCursor = 0;
+  const items = [];
+  for (let i = 0; i < total; i += 1) {
+    if (typeSlots.has(i)) {
+      items.push({
+        id: `type-${typeCursor}`,
+        kind: "type",
+        label: TYPE_LABELS[typeCursor],
+      });
+      typeCursor += 1;
+    } else {
+      items.push({
+        id: `photo-${i}`,
+        kind: "photo",
+        start: (i * 5) % Math.max(media.length, 1),
+      });
+    }
+  }
+  return items;
+}
 
-/* -------------------------------------------------------
-   STATEMENT
-------------------------------------------------------- */
+function layoutMasonry(items) {
+  const colHeights = Array(COLUMNS).fill(0);
+  const placed = items.map((item, i) => {
+    const col = colHeights.indexOf(Math.min(...colHeights));
+    const height = item.kind === "type" ? 13 : 15 + ((i * 11) % 4) * 4;
+    const top = colHeights[col];
+    colHeights[col] += height + GUTTER;
+    return { ...item, col, rawTop: top, rawHeight: height };
+  });
+  const scale = 100 / Math.max(...colHeights);
+  return placed.map((item) => ({
+    ...item,
+    aligned: {
+      top: `${(item.rawTop * scale).toFixed(2)}%`,
+      left: `${((item.col * 100) / COLUMNS).toFixed(2)}%`,
+      w: `${(100 / COLUMNS - GUTTER).toFixed(2)}%`,
+      h: `${(item.rawHeight * scale).toFixed(2)}%`,
+    },
+  }));
+}
+
+function scatterFor(item, i) {
+  const dx = ((i * 47) % 60) - 30;
+  const dy = ((i * 83) % 50) - 10;
+  const rotate = ((i * 29) % 20) - 10;
+  const top = Math.max(-6, Math.min(96, parseFloat(item.aligned.top) + dy));
+  const left = Math.max(-8, Math.min(96, parseFloat(item.aligned.left) + dx));
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    w: item.aligned.w,
+    h: item.aligned.h,
+    rotate,
+  };
+}
+
+const fragments = layoutMasonry(buildFragments()).map((item, i) => ({
+  ...item,
+  scattered: scatterFor(item, i),
+}));
+
+function Slideshow({ start }) {
+  const [index, setIndex] = useState(start);
+
+  useEffect(() => {
+    if (media.length === 0) return undefined;
+    const id = setInterval(
+      () => setIndex((v) => (v + 1) % media.length),
+      SLIDE_INTERVAL,
+    );
+    return () => clearInterval(id);
+  }, []);
+
+  const current = media[index % Math.max(media.length, 1)];
+  if (!current) return null;
+
+  return (
+    <div className={`relative h-full w-full overflow-hidden ${RADIUS}`}>
+      <AnimatePresence mode="wait">
+        <motion.img
+          key={current.src}
+          src={current.src}
+          alt={current.alt}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.8, ease: "easeInOut" }}
+          className="absolute inset-0 h-full w-full object-cover grayscale-[10%] contrast-[1.05]"
+        />
+      </AnimatePresence>
+    </div>
+  );
+}
+
+function TypeBlock({ label }) {
+  return (
+    <div
+      className={`flex h-full w-full items-center justify-start overflow-hidden ${RADIUS} bg-black px-[6%]`}
+    >
+      <span className="text-[clamp(1.25rem,3.4vw,2.6rem)] font-medium tracking-[-0.04em] leading-[0.9] text-white">
+        {label}
+      </span>
+    </div>
+  );
+}
 
 function Statement() {
   return (
-    <div className="relative z-10 max-w-5xl">
-      <p>
-        <span className="block text-[clamp(2.5rem,6vw,6rem)] font-semibold leading-[0.86] tracking-[-0.075em] text-black">
-          WE DON&apos;T DESIGN ASSETS.
-          <br />
-          WE BUILD SYSTEMS.
-        </span>
+    <>
+      <p className="text-3xl text-black tracking-[-0.07em] md:text-5xl">
+        WE DON&apos;T DESIGN ASSETS.
+        <br /> WE BUILD SYSTEMS.
       </p>
-
-      <p className="mt-6 max-w-2xl text-sm leading-relaxed text-black/60 md:text-base">
-        A brand doesn&apos;t live in a logo, a website or a campaign alone. We
-        connect identity, digital and motion into a visual system that stays
-        recognisable wherever the brand shows up.
-      </p>
-    </div>
-  );
-}
-
-/* -------------------------------------------------------
-   ANIMATED PRINCIPLE BACKGROUND
-
-   This is intentionally restrained:
-   - oversized type
-   - Horizona imagery
-   - thin editorial rules
-   - slow scroll movement
-
-   It sits behind the principles instead of competing
-   with the actual copy.
-------------------------------------------------------- */
-
-function PrinciplesBackdrop({ progress }) {
-  const backgroundY = useTransform(progress, [0, 0.2], ["8vh", "-8vh"]);
-
-  const backgroundX = useTransform(progress, [0, 0.2], ["-4vw", "4vw"]);
-
-  const imageOpacity = useTransform(progress, [0, 0.08, 0.2], [0, 0.28, 0]);
-
-  const wordOpacity = useTransform(progress, [0, 0.08, 0.18], [0.04, 0.09, 0]);
-
-  const lineScale = useTransform(progress, [0, 0.2], [0.65, 1]);
-
-  return (
-    <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
-      {/* Giant editorial word */}
-
-      <motion.div
-        className="absolute -left-[8vw] top-[28%] whitespace-nowrap text-[28vw] font-semibold leading-none tracking-[-0.1em] text-black"
-        style={{
-          opacity: wordOpacity,
-          x: backgroundX,
-          y: backgroundY,
-        }}
-      >
-        SYSTEM
-      </motion.div>
-
-      {/* Horizona image moving behind the principles */}
-
-      <motion.div
-        className="absolute -right-[12%] top-[15%] w-[38vw] max-w-[520px] overflow-hidden rounded-[4px] md:w-[26vw]"
-        style={{
-          opacity: imageOpacity,
-          x: backgroundX,
-          y: backgroundY,
-          rotate: -4,
-        }}
-      >
-        <img
-          src={HORIZONA_GALLERY[1]}
-          alt=""
-          className="aspect-[4/3] w-full object-cover grayscale"
-        />
-      </motion.div>
-
-      <motion.div
-        className="absolute -left-[8%] bottom-[4%] w-[30vw] max-w-[420px] overflow-hidden rounded-[4px]"
-        style={{
-          opacity: imageOpacity,
-          x: useTransform(progress, [0, 0.2], ["4vw", "-4vw"]),
-          y: useTransform(progress, [0, 0.2], ["-3vh", "5vh"]),
-          rotate: 5,
-        }}
-      >
-        <img
-          src={HORIZONA_GALLERY[8]}
-          alt=""
-          className="aspect-[4/3] w-full object-cover grayscale"
-        />
-      </motion.div>
-
-      {/* Editorial line */}
-
-      <motion.div
-        className="absolute left-0 top-[50%] h-px w-full origin-left bg-black/10"
-        style={{
-          scaleX: lineScale,
-        }}
-      />
-
-      <div className="absolute left-[50%] top-0 h-full w-px bg-black/[0.035]" />
-
-      <div className="absolute left-[25%] top-0 h-full w-px bg-black/[0.025]" />
-
-      <div className="absolute left-[75%] top-0 h-full w-px bg-black/[0.025]" />
-    </div>
-  );
-}
-
-/* -------------------------------------------------------
-   PRINCIPLES
-------------------------------------------------------- */
-
-function Principles({ progress }) {
-  return (
-    <div className="relative z-10 mt-16 md:mt-24">
-      <div className="grid grid-cols-1 gap-0 border-t border-black/10 md:grid-cols-3">
-        {principles.map((principle, index) => {
-          const start = 0.05 + index * 0.035;
-          const end = start + 0.06;
-
-          const opacity = useTransform(progress, [start, end], [0, 1]);
-
-          const y = useTransform(progress, [start, end], [24, 0]);
-
-          const lineScale = useTransform(progress, [start, end], [0, 1]);
-
-          return (
-            <motion.div
-              key={principle.n}
-              className="relative min-h-[190px] overflow-hidden border-b border-black/10 px-0 py-7 md:min-h-[230px] md:border-b-0 md:border-r md:px-6 md:py-8 first:md:pl-0 last:md:border-r-0 last:md:pr-0"
-              style={{
-                opacity,
-                y,
-              }}
-            >
-              {/* Animated background index */}
-
-              <motion.span
-                className="pointer-events-none absolute -right-2 -top-8 text-[7rem] font-semibold leading-none tracking-[-0.1em] text-black/[0.035]"
-                style={{
-                  y: useTransform(progress, [start, end], [20, -5]),
-                }}
-              >
-                {principle.n}
-              </motion.span>
-
-              {/* Animated top rule */}
-
-              <motion.div
-                className="absolute left-0 top-0 h-px w-full origin-left bg-black"
-                style={{
-                  scaleX: lineScale,
-                }}
-              />
-
-              <span className="relative block text-[10px] tracking-[0.12em] text-black/40">
-                {principle.n}
-              </span>
-
-              <p className="relative mt-3 text-sm font-medium tracking-[-0.025em] text-black md:text-base">
-                {principle.title}
-              </p>
-
-              <p className="relative mt-3 max-w-sm text-sm leading-relaxed text-black/55">
-                {principle.body}
-              </p>
-            </motion.div>
-          );
-        })}
+      <div className="mt-8 grid grid-cols-1 gap-6 md:mt-10 md:grid-cols-3 md:gap-8">
+        {principles.map((p) => (
+          <div key={p.n}>
+            <span className="block text-xs tracking-[0.08em] text-black/40">
+              {p.n}
+            </span>
+            <p className="mt-2 text-sm font-medium tracking-[-0.02em] text-black md:text-base">
+              {p.title}
+            </p>
+            <p className="mt-2 text-sm text-black/70">{p.body}</p>
+          </div>
+        ))}
       </div>
-    </div>
+    </>
   );
 }
 
-/* -------------------------------------------------------
-   MEDIA
-------------------------------------------------------- */
-
-function PartMedia({ src, alt, scrollX, scrollY }) {
-  const [hovered, setHovered] = useState(false);
-
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-
-  const handleMouseMove = (event) => {
-    /*
-      Disable mouse-parallax on touch devices naturally:
-      pointer events from a touchscreen don't produce
-      useful hover geometry.
-    */
-
-    if (window.matchMedia("(pointer: coarse)").matches) {
-      return;
-    }
-
-    const rect = event.currentTarget.getBoundingClientRect();
-
-    const x = ((event.clientX - rect.left) / rect.width - 0.5) * 2;
-
-    const y = ((event.clientY - rect.top) / rect.height - 0.5) * 2;
-
-    mouseX.set(x * 8);
-    mouseY.set(y * 8);
-  };
-
-  const handleMouseLeave = () => {
-    setHovered(false);
-    mouseX.set(0);
-    mouseY.set(0);
-  };
+function Fragment({ data, progress }) {
+  const { scattered, aligned, kind, label, start } = data;
+  const top = useTransform(progress, [0.08, 0.5], [scattered.top, aligned.top]);
+  const left = useTransform(
+    progress,
+    [0.08, 0.5],
+    [scattered.left, aligned.left],
+  );
+  const width = useTransform(progress, [0.08, 0.5], [scattered.w, aligned.w]);
+  const height = useTransform(progress, [0.08, 0.5], [scattered.h, aligned.h]);
+  const rotate = useTransform(progress, [0.08, 0.5], [scattered.rotate, 0]);
 
   return (
     <motion.div
-      className="relative overflow-hidden rounded-[4px]"
-      style={{
-        x: scrollX,
-        y: scrollY,
-      }}
-      animate={{
-        scale: hovered ? 1.012 : 1,
-      }}
-      transition={{
-        duration: 0.5,
-        ease: [0.22, 1, 0.36, 1],
-      }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+      className="absolute"
+      style={{ top, left, width, height, rotate }}
     >
-      <motion.div
-        className="relative aspect-[4/3] w-full overflow-hidden rounded-[4px]"
-        style={{
-          x: mouseX,
-          y: mouseY,
-          scale: hovered ? 1.025 : 1,
-        }}
-        transition={{
-          duration: 0.6,
-          ease: [0.22, 1, 0.36, 1],
-        }}
-      >
-        <img
-          src={src}
-          alt={alt}
-          className="absolute inset-0 h-full w-full object-cover"
-        />
-      </motion.div>
+      {kind === "photo" ? (
+        <Slideshow start={start} />
+      ) : (
+        <TypeBlock label={label} />
+      )}
     </motion.div>
   );
 }
-
-/* -------------------------------------------------------
-   PART
-
-   IMPORTANT:
-
-   Each part has its OWN exclusive window.
-
-   It does NOT remain visible after its window ends.
-
-   This solves the visual stacking/fade problem.
-------------------------------------------------------- */
-
-function Part({ data, progress, index }) {
-  const { label, description, media, side } = data;
-
-  const isLeft = side === "left";
-
-  /*
-    Five clean windows.
-
-    Every window has:
-
-    ENTER
-    HOLD
-    EXIT
-    GAP
-
-    The gap guarantees the previous asset is completely
-    gone before the next one begins.
-  */
-
-  const windowStart = 0.08 + index * 0.125;
-
-  const enterStart = windowStart;
-  const enterEnd = windowStart + 0.035;
-
-  const holdStart = enterEnd;
-  const holdEnd = windowStart + 0.075;
-
-  const exitStart = holdEnd;
-  const exitEnd = windowStart + 0.105;
-
-  const initialX = isLeft ? "-9vw" : "9vw";
-
-  const x = useTransform(
-    progress,
-    [enterStart, enterEnd, holdEnd, exitEnd],
-    [initialX, "0vw", "0vw", isLeft ? "-6vw" : "6vw"],
-  );
-
-  const y = useTransform(
-    progress,
-    [enterStart, enterEnd, exitEnd],
-    [index % 2 === 0 ? 24 : -24, 0, index % 2 === 0 ? -16 : 16],
-  );
-
-  /*
-    THIS is the important fix.
-
-    Instead of:
-
-    0 → 1 and then staying there,
-
-    each asset does:
-
-    0 → 1 → 1 → 0
-
-    before the next asset enters.
-  */
-
-  const opacity = useTransform(
-    progress,
-    [enterStart, enterEnd, holdEnd, exitStart, exitEnd],
-    [0, 1, 1, 0, 0],
-  );
-
-  const scale = useTransform(
-    progress,
-    [enterStart, enterEnd, exitStart, exitEnd],
-    [0.96, 1, 1, 0.97],
-  );
-
-  const rotate = useTransform(
-    progress,
-    [enterStart, enterEnd, exitEnd],
-    [isLeft ? -1.5 : 1.5, 0, isLeft ? -1 : 1],
-  );
-
-  const mediaX = useTransform(
-    progress,
-    [enterStart, enterEnd, exitEnd],
-    [0, 0, isLeft ? 5 : -5],
-  );
-
-  const mediaY = useTransform(
-    progress,
-    [enterStart, enterEnd, exitEnd],
-    [0, 0, index % 2 === 0 ? -4 : 4],
-  );
-
-  return (
-    <motion.article
-      className={`absolute top-[47%] w-[84vw] max-w-[560px] -translate-y-1/2 md:top-[50%] md:w-[36vw] md:max-w-[520px] ${
-        isLeft ? "left-[6vw] md:left-[8vw]" : "right-[6vw] md:right-[8vw]"
-      }`}
-      style={{
-        x,
-        y,
-        opacity,
-        scale,
-        rotate,
-        zIndex: 10,
-      }}
-    >
-      <div className="mb-3 flex items-end justify-between gap-4">
-        <div>
-          <span className="block text-[10px] tracking-[0.12em] text-black/40">
-            0{index + 1}
-          </span>
-
-          <h3 className="mt-1 text-xl font-medium tracking-[-0.05em] text-black md:text-2xl">
-            {label}
-          </h3>
-        </div>
-
-        <span className="hidden max-w-[180px] text-right text-xs leading-relaxed text-black/50 md:block">
-          {description}
-        </span>
-      </div>
-
-      <PartMedia
-        src={media}
-        alt={`Horizona ${label}`}
-        scrollX={mediaX}
-        scrollY={mediaY}
-      />
-    </motion.article>
-  );
-}
-
-/* -------------------------------------------------------
-   CONNECTION FIELD
-
-   Appears only AFTER all five individual assets
-   have completed their individual sequence.
-------------------------------------------------------- */
-
-function ConnectionField({ progress }) {
-  const opacity = useTransform(progress, [0.68, 0.74, 0.82], [0, 0.35, 0]);
-
-  const scale = useTransform(progress, [0.68, 0.78], [0.8, 1]);
-
-  return (
-    <motion.div
-      className="pointer-events-none absolute inset-0 z-10"
-      style={{
-        opacity,
-        scale,
-      }}
-    >
-      <div className="absolute left-1/2 top-1/2 h-px w-[60vw] -translate-x-1/2 bg-black/10" />
-
-      <div className="absolute left-1/2 top-1/2 h-[45vh] w-px -translate-y-1/2 bg-black/10" />
-
-      <div className="absolute left-[25%] top-[25%] h-2 w-2 rounded-full bg-black/20" />
-
-      <div className="absolute right-[25%] top-[65%] h-2 w-2 rounded-full bg-black/20" />
-    </motion.div>
-  );
-}
-
-/* -------------------------------------------------------
-   FINAL SYSTEM
-
-   This only appears once the individual pieces have
-   completely disappeared.
-
-   So there is NO visual overlap between:
-   PARTS and SYSTEM.
-------------------------------------------------------- */
-
-function SystemComposition({ progress }) {
-  const opacity = useTransform(progress, [0.76, 0.84, 0.96], [0, 1, 1]);
-
-  const y = useTransform(progress, [0.76, 0.84], [35, 0]);
-
-  const scale = useTransform(progress, [0.76, 0.84], [0.94, 1]);
-
-  return (
-    <motion.div
-      className="pointer-events-none absolute inset-0 z-30 flex items-center justify-center px-4 md:px-0"
-      style={{
-        opacity,
-        y,
-        scale,
-      }}
-    >
-      <div className="relative h-[48vh] w-[92vw] max-w-[1050px] md:h-[54vh] md:w-[76vw]">
-        {/* Logo */}
-
-        <motion.div
-          className="absolute left-[2%] top-[7%] w-[42%] overflow-hidden rounded-[4px] md:left-[12%] md:w-[32%]"
-          style={{
-            rotate: useTransform(progress, [0.82, 0.94], [-3, -1]),
-          }}
-        >
-          <img
-            src={horizona?.coverImage}
-            alt="Horizona visual identity"
-            className="aspect-[4/3] h-full w-full object-cover"
-          />
-        </motion.div>
-
-        {/* Website */}
-
-        <motion.div
-          className="absolute right-[1%] top-[4%] w-[46%] overflow-hidden rounded-[4px] md:right-[8%] md:w-[38%]"
-          style={{
-            rotate: useTransform(progress, [0.82, 0.94], [3, 1]),
-          }}
-        >
-          <img
-            src={horizona?.heroMedia}
-            alt="Horizona website"
-            className="aspect-[4/3] h-full w-full object-cover"
-          />
-        </motion.div>
-
-        {/* UI */}
-
-        <motion.div
-          className="absolute bottom-[3%] left-[8%] w-[40%] overflow-hidden rounded-[4px] md:bottom-[4%] md:left-[22%] md:w-[30%]"
-          style={{
-            rotate: useTransform(progress, [0.82, 0.94], [2, 0.5]),
-          }}
-        >
-          <img
-            src={HORIZONA_GALLERY[0]}
-            alt="Horizona UI"
-            className="aspect-[4/3] h-full w-full object-cover"
-          />
-        </motion.div>
-
-        {/* Image */}
-
-        <motion.div
-          className="absolute bottom-[7%] right-[3%] w-[43%] overflow-hidden rounded-[4px] md:bottom-[8%] md:right-[14%] md:w-[32%]"
-          style={{
-            rotate: useTransform(progress, [0.82, 0.94], [-2, -0.5]),
-          }}
-        >
-          <img
-            src={HORIZONA_GALLERY[3]}
-            alt="Horizona imagery"
-            className="aspect-[4/3] h-full w-full object-cover"
-          />
-        </motion.div>
-
-        {/* Typography */}
-
-        <motion.div
-          className="absolute left-[32%] top-[37%] z-10 w-[34%] overflow-hidden rounded-[4px] md:left-[39%] md:w-[25%]"
-          style={{
-            rotate: useTransform(progress, [0.82, 0.94], [1, 0]),
-          }}
-        >
-          <img
-            src={HORIZONA_GALLERY[6]}
-            alt="Horizona typography"
-            className="aspect-[4/3] h-full w-full object-cover"
-          />
-        </motion.div>
-
-        {/* Center label */}
-
-        <motion.div
-          className="absolute left-1/2 top-1/2 z-20 -translate-x-1/2 -translate-y-1/2 whitespace-nowrap"
-          style={{
-            opacity: useTransform(progress, [0.84, 0.92], [0, 1]),
-          }}
-        >
-          <span className="text-[10px] tracking-[0.16em] text-black/50">
-            ONE VISUAL SYSTEM
-          </span>
-        </motion.div>
-      </div>
-    </motion.div>
-  );
-}
-
-/* -------------------------------------------------------
-   MAIN COMPONENT
-------------------------------------------------------- */
 
 function VisiumApproach() {
   const trackRef = useRef(null);
@@ -641,50 +225,55 @@ function VisiumApproach() {
     offset: ["start start", "end end"],
   });
 
-  /* -----------------------------------------------------
-     REDUCED MOTION
-  ----------------------------------------------------- */
+  const fragmentsLabel = useTransform(
+    scrollYProgress,
+    [0, 0.12, 0.22],
+    [1, 1, 0],
+  );
+  const alignmentLabel = useTransform(
+    scrollYProgress,
+    [0.18, 0.3, 0.42, 0.5],
+    [0, 1, 1, 0],
+  );
+  const systemLabel = useTransform(scrollYProgress, [0.42, 0.55, 1], [0, 1, 1]);
+  const gridOpacity = useTransform(scrollYProgress, [0.28, 0.5], [0, 1]);
+  const textOpacity = useTransform(scrollYProgress, [0.5, 0.62], [0, 1]);
+  const textY = useTransform(scrollYProgress, [0.5, 0.62], [24, 0]);
+
+  const columns = [25, 50, 75];
+  const rows = [20, 40, 60, 80];
 
   if (prefersReducedMotion) {
     return (
       <section
         id="visium-approach"
-        className="relative overflow-hidden bg-white px-4 py-24 text-black md:px-10 md:py-32"
+        className="relative bg-black px-4 py-24 text-white md:px-10 md:py-32"
       >
         <span className="mb-10 block text-xs tracking-[0.08em] text-black/50">
           THE VISIUM APPROACH
         </span>
-
-        <Statement />
-
-        <Principles progress={{}} />
-
-        <div className="mx-auto mt-20 grid max-w-6xl grid-cols-1 gap-14 md:grid-cols-2">
-          {PARTS.map((part, index) => (
-            <article key={part.id}>
-              <div className="mb-3">
-                <span className="text-[10px] tracking-[0.12em] text-black/40">
-                  0{index + 1}
-                </span>
-
-                <h3 className="mt-1 text-xl font-medium tracking-[-0.05em]">
-                  {part.label}
-                </h3>
-              </div>
-
-              <div className="aspect-[4/3] overflow-hidden rounded-[4px]">
-                <img
-                  src={part.media}
-                  alt={`Horizona ${part.label}`}
-                  className="h-full w-full object-cover"
-                />
-              </div>
-            </article>
+        <div className="relative mx-auto aspect-[4/3] w-full max-w-5xl">
+          {fragments.map((f) => (
+            <div
+              key={f.id}
+              className="absolute"
+              style={{
+                top: f.aligned.top,
+                left: f.aligned.left,
+                width: f.aligned.w,
+                height: f.aligned.h,
+              }}
+            >
+              {f.kind === "photo" ? (
+                <Slideshow start={f.start} />
+              ) : (
+                <TypeBlock label={f.label} />
+              )}
+            </div>
           ))}
         </div>
-
-        <div className="mx-auto mt-20 max-w-4xl">
-          <SystemComposition progress={{}} />
+        <div className="mx-auto mt-16 max-w-2xl">
+          <Statement />
         </div>
       </section>
     );
@@ -694,98 +283,40 @@ function VisiumApproach() {
     <section
       id="visium-approach"
       ref={trackRef}
-      className="relative h-[620vh] overflow-hidden bg-white text-black md:h-[650vh]"
+      className="relative h-[420vh] bg-black text-white"
     >
-      {/* -------------------------------------------------
-          INTRO / STATEMENT
-      ------------------------------------------------- */}
-
-      <div className="relative min-h-[100svh] px-4 pt-[16svh] md:px-10 md:pt-[18vh]">
-        <div className="relative mx-auto max-w-[1600px]">
-          <div className="mb-10 flex items-center justify-between md:mb-16">
-            <span className="text-[10px] tracking-[0.12em] text-black/45 md:text-xs">
-              THE VISIUM APPROACH
-            </span>
-
-            <span className="hidden text-xs tracking-[0.12em] text-black/30 md:block">
-              FROM PARTS TO SYSTEM
-            </span>
-          </div>
-
-          <Statement />
-
-          <Principles progress={scrollYProgress} />
-        </div>
-
-        <PrinciplesBackdrop progress={scrollYProgress} />
-      </div>
-
-      {/* -------------------------------------------------
-          STICKY VISUAL STAGE
-      ------------------------------------------------- */}
-
-      <div className="sticky top-0 h-[100svh] w-full overflow-hidden">
-        {/* Editorial frame */}
-
-        <div className="pointer-events-none absolute inset-x-[5%] top-[12%] bottom-[7%] border-t border-black/10 md:inset-x-[8%] md:top-[10%]">
-          <span className="absolute left-0 top-2 text-[9px] tracking-[0.14em] text-black/30 md:text-[10px]">
-            PARTS
-          </span>
-
-          <motion.span
-            className="absolute right-0 top-2 text-[9px] tracking-[0.14em] text-black/30 md:text-[10px]"
-            style={{
-              opacity: useTransform(scrollYProgress, [0.74, 0.84], [0, 1]),
-            }}
+      <motion.div className="px-4 md:px-10 py-24 md:py-32">
+        <span className="relative text-xs tracking-[0.08em] text-black/80">
+          THE VISIUM APPROACH
+        </span>
+        <Statement />
+      </motion.div>
+      <div className="sticky top-0 h-screen w-full overflow-hidden">
+        <div className="absolute inset-0 mx-[4%] my-[10%] md:mx-[8%] md:my-[8%]">
+          <motion.div
+            className="pointer-events-none absolute inset-0 z-10"
+            style={{ opacity: gridOpacity }}
           >
-            SYSTEM
-          </motion.span>
-        </div>
+            {columns.map((c) => (
+              <span
+                key={c}
+                className="absolute top-0 h-full w-px bg-black/10"
+                style={{ left: `${c}%` }}
+              />
+            ))}
+            {rows.map((r) => (
+              <span
+                key={r}
+                className="absolute left-0 w-full h-px bg-black/10"
+                style={{ top: `${r}%` }}
+              />
+            ))}
+          </motion.div>
 
-        {/* -------------------------------------------------
-            INDIVIDUAL PARTS
-        ------------------------------------------------- */}
-
-        <div className="absolute inset-0">
-          {PARTS.map((part, index) => (
-            <Part
-              key={part.id}
-              data={part}
-              index={index}
-              progress={scrollYProgress}
-            />
+          {fragments.map((f) => (
+            <Fragment key={f.id} data={f} progress={scrollYProgress} />
           ))}
         </div>
-
-        {/* -------------------------------------------------
-            CONNECTION
-        ------------------------------------------------- */}
-
-        <ConnectionField progress={scrollYProgress} />
-
-        {/* -------------------------------------------------
-            FINAL SYSTEM
-        ------------------------------------------------- */}
-
-        <SystemComposition progress={scrollYProgress} />
-
-        {/* -------------------------------------------------
-            FINAL MESSAGE
-        ------------------------------------------------- */}
-
-        <motion.div
-          className="absolute bottom-[7%] left-1/2 z-40 w-[90%] -translate-x-1/2 text-center md:w-auto"
-          style={{
-            opacity: useTransform(scrollYProgress, [0.88, 0.96], [0, 1]),
-            y: useTransform(scrollYProgress, [0.88, 0.96], [20, 0]),
-          }}
-        >
-          <p className="text-[clamp(1.5rem,3vw,3rem)] font-medium leading-[0.95] tracking-[-0.06em]">
-            DIFFERENT EXPRESSIONS.
-            <br />
-            ONE SYSTEM.
-          </p>
-        </motion.div>
       </div>
     </section>
   );
