@@ -1,5 +1,11 @@
+import {
+  useRef,
+  useState,
+  useEffect,
+  useLayoutEffect,
+  useCallback,
+} from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
 
 /* =====================================================================
    SECTION 1 — FRAGMENTS (unchanged logic)
@@ -9,23 +15,23 @@ const DESKTOP_LAYOUT = [
   {
     top: "22%",
     left: "20%",
-    width: "24%",
+    width: "40%",
     stack: { x: -4, y: 10, rotate: -1.4 },
   }, // Logo
-  { top: "18%", left: "76%", width: "28%", stack: { x: 4, y: 5, rotate: 1.2 } }, // Website
+  { top: "18%", left: "76%", width: "50%", stack: { x: 4, y: 5, rotate: 1.2 } }, // Website
   {
     top: "66%",
     left: "24%",
-    width: "22%",
+    width: "50%",
     stack: { x: -3, y: -4, rotate: -0.8 },
   }, // UI
   {
     top: "70%",
     left: "78%",
-    width: "24%",
+    width: "30%",
     stack: { x: 3, y: -9, rotate: 1.6 },
   }, // Image
-  { top: "46%", left: "50%", width: "22%", stack: { x: 0, y: 0, rotate: 0 } }, // Typography
+  { top: "46%", left: "50%", width: "30%", stack: { x: 0, y: 0, rotate: 0 } }, // Typography
 ];
 
 const MOBILE_LAYOUT = [
@@ -218,7 +224,7 @@ function VisiumApproach() {
               style={{ opacity: statementOpacity, y: statementY }}
             >
               <div className="text-center">
-                <p className="text-xl uppercase tracking-[0.35em] text-white/50">
+                <p className="text-xl bg-white uppercase tracking-[0.35em] text-white/50">
                   From parts to
                 </p>
                 <h2 className="mt-3 text-5xl font-semibold tracking-[-0.07em] md:text-8xl">
@@ -234,7 +240,10 @@ function VisiumApproach() {
 }
 
 /* =====================================================================
-   SECTION 2 — PRINCIPLES (renders right after the fragments section)
+   SECTION 2 — PRINCIPLES
+   Constellation-line effect ported from Services: a smooth SVG path
+   connects each principle's title, drawn in as the section scrolls,
+   with glowing nodes that light up as the line reaches them.
 ===================================================================== */
 
 const principles = [
@@ -258,9 +267,6 @@ const principles = [
   },
 ];
 
-// Shared fade-in-on-scroll variants for the text and image sides.
-// Image fades in slightly after the text (delay) so the row reads
-// left-to-right / text-first rather than both halves popping at once.
 const fadeUp = {
   hidden: { opacity: 0, y: 32 },
   visible: (delay = 0) => ({
@@ -270,16 +276,150 @@ const fadeUp = {
   }),
 };
 
-function PrincipleRow({ principle, index }) {
+// Same curve-through-points helper as Services, unchanged.
+function buildSmoothPath(points) {
+  if (!points.length) return "";
+  if (points.length === 1) return `M ${points[0].x} ${points[0].y}`;
+  if (points.length === 2) {
+    return `M ${points[0].x} ${points[0].y} L ${points[1].x} ${points[1].y}`;
+  }
+
+  let d = `M ${points[0].x} ${points[0].y}`;
+
+  for (let i = 1; i < points.length - 1; i += 1) {
+    const current = points[i];
+    const next = points[i + 1];
+    const midX = (current.x + next.x) / 2;
+    const midY = (current.y + next.y) / 2;
+    d += ` Q ${current.x} ${current.y} ${midX} ${midY}`;
+  }
+
+  const last = points[points.length - 1];
+  d += ` T ${last.x} ${last.y}`;
+
+  return d;
+}
+
+function ConstellationNode({ point, progress, arriveAt }) {
+  const glow = useTransform(
+    progress,
+    [Math.max(arriveAt - 0.06, 0), arriveAt, Math.min(arriveAt + 0.12, 1)],
+    [0, 1, 0.45],
+  );
+
+  return (
+    <motion.circle
+      cx={point.x}
+      cy={point.y}
+      r="2.5"
+      fill="#ffffff"
+      style={{ opacity: glow }}
+    />
+  );
+}
+
+function ConstellationLines({ containerRef, nodeRefs, progress }) {
+  const [points, setPoints] = useState([]);
+  const [size, setSize] = useState({ width: 0, height: 0 });
+
+  const measure = useCallback(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const containerRect = container.getBoundingClientRect();
+    const next = nodeRefs.current
+      .filter(Boolean)
+      .map((node) => {
+        const rect = node.getBoundingClientRect();
+        const anchor = node.dataset.anchor === "left" ? 0.18 : 0.82;
+
+        return {
+          x: rect.left - containerRect.left + rect.width * anchor,
+          y: rect.top - containerRect.top + rect.height * 0.5,
+        };
+      })
+      .filter(
+        (point) =>
+          Number.isFinite(point.x) && Number.isFinite(point.y) && point.x >= 0,
+      );
+
+    setPoints(next);
+    setSize({ width: containerRect.width, height: containerRect.height });
+  }, [containerRef, nodeRefs]);
+
+  useLayoutEffect(() => {
+    const update = () => {
+      if (typeof window === "undefined") return;
+      requestAnimationFrame(measure);
+    };
+
+    update();
+
+    const ro = new ResizeObserver(update);
+    if (containerRef.current) ro.observe(containerRef.current);
+
+    window.addEventListener("resize", update);
+
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(update);
+    }
+
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", update);
+    };
+  }, [measure, containerRef]);
+
+  const path = points.length > 1 ? buildSmoothPath(points) : "";
+  const pathProgress = useTransform(progress, [0, 1], [0, 1]);
+
+  return (
+    <svg
+      className="pointer-events-none absolute inset-0 z-0 hidden md:block"
+      width={size.width}
+      height={size.height}
+      viewBox={`0 0 ${size.width} ${size.height}`}
+      preserveAspectRatio="xMidYMid meet"
+    >
+      {path ? (
+        <motion.path
+          d={path}
+          fill="none"
+          stroke="#0f0f0f"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          style={{ pathLength: pathProgress, opacity: 0.35 }}
+        />
+      ) : null}
+
+      {points.map((point, index) => (
+        <ConstellationNode
+          key={`${point.x}-${point.y}-${index}`}
+          point={point}
+          progress={progress}
+          arriveAt={Math.max(
+            points.length > 1 ? index / (points.length - 1) : 0,
+            0,
+          )}
+        />
+      ))}
+    </svg>
+  );
+}
+
+function PrincipleRow({ principle, index, titleRef }) {
   const isReversed = index % 2 === 1;
   const tiltDirection = isReversed ? -1 : 1;
-  // "01", "02", "03" — derived so principles doesn't need its own id field
+  // Anchor the constellation point on the side of the title that faces
+  // the image/center — mirrors the left/right convention from Services.
+  const anchor = isReversed ? "left" : "right";
   const number = String(index + 1).padStart(2, "0");
 
   return (
     <div
       className={`
-        flex flex-col items-center gap-10 py-16
+        relative z-10 flex flex-col items-center gap-10 py-16
         md:flex-row md:gap-16 md:py-24
         ${isReversed ? "md:flex-row-reverse" : ""}
       `}
@@ -294,7 +434,11 @@ function PrincipleRow({ principle, index }) {
         custom={0}
       >
         <p className="mb-4 text-sm tracking-[0.3em] text-white/40">{number}</p>
-        <h3 className="mb-5 text-3xl font-semibold tracking-[-0.03em] md:text-4xl">
+        <h3
+          ref={titleRef}
+          data-anchor={anchor}
+          className="mb-5 text-3xl font-semibold tracking-[-0.03em] md:text-4xl"
+        >
           {principle.title}
         </h3>
         <p className="max-w-md text-base leading-relaxed text-white/60 md:text-lg">
@@ -339,8 +483,20 @@ function PrincipleRow({ principle, index }) {
 }
 
 function VisiumPrinciples() {
+  const sectionRef = useRef(null);
+  const containerRef = useRef(null);
+  const nodeRefs = useRef([]);
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start 85%", "end 40%"],
+  });
+
   return (
-    <section className="bg-black px-4 py-24 text-white md:px-12 md:py-32">
+    <section
+      ref={sectionRef}
+      className="bg-black px-4 py-24 text-white md:px-12 md:py-32"
+    >
       <motion.div
         className="mb-4 flex flex-col"
         initial="hidden"
@@ -356,14 +512,25 @@ function VisiumPrinciples() {
         </h2>
       </motion.div>
 
-      <div className="divide-y divide-white/10">
-        {principles.map((principle, index) => (
-          <PrincipleRow
-            key={principle.title}
-            principle={principle}
-            index={index}
-          />
-        ))}
+      <div ref={containerRef} className="relative">
+        <ConstellationLines
+          containerRef={containerRef}
+          nodeRefs={nodeRefs}
+          progress={scrollYProgress}
+        />
+
+        <div className="divide-y divide-white/10">
+          {principles.map((principle, index) => (
+            <PrincipleRow
+              key={principle.title}
+              principle={principle}
+              index={index}
+              titleRef={(el) => {
+                nodeRefs.current[index] = el;
+              }}
+            />
+          ))}
+        </div>
       </div>
     </section>
   );

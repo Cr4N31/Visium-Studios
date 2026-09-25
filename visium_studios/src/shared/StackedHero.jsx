@@ -29,7 +29,7 @@ function StackedHero({ children, extraScrollVh = 60 }) {
     offset: ["start start", "end start"],
   });
 
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 0.85]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1, 0.65]);
   const opacity = useTransform(scrollYProgress, [0, 1], [1, 0.4]);
   const borderRadius = useTransform(scrollYProgress, [0, 1], [0, 32]);
 
