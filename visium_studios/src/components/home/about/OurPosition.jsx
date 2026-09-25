@@ -1,6 +1,6 @@
 import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import VideoMotion from "../VideoMotion";
+import VideoMotion from "../../../shared/VideoMotion";
 
 function OurPosition() {
   const ref = useRef(null);

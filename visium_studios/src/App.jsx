@@ -2,7 +2,6 @@
 import { Routes, Route, useLocation } from "react-router-dom";
 import { CurtainNavigationProvider } from "./context/CurtainNavigationContext";
 import Header from "./shared/Header";
-import CTA from "./shared/CTA";
 import Footer from "./shared/Footer";
 import Home from "./pages/Home";
 import Work from "./pages/Work";
@@ -72,7 +71,6 @@ function App() {
           <Route path="/branding/art-direction" element={<ArtDirection />} />
           <Route path="/branding/positioning" element={<Positioning />} />
         </Routes>
-        {!isCaseStudyPage && <CTA inverted={ctaInverted} />}
         {!isCaseStudyPage && <Footer inverted={false} />}
       </div>
     </CurtainNavigationProvider>

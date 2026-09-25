@@ -10,7 +10,7 @@ const revealUp = {
   show: { y: "0%", transition: { duration: 1, ease: [0.65, 0, 0.35, 1] } },
 };
 
-import VideoMotion from "../VideoMotion";
+import VideoMotion from "../../../shared/VideoMotion";
 
 function HeroText() {
   const pointerX = useMotionValue(50);
@@ -48,7 +48,7 @@ function HeroText() {
       animate="show"
     >
       <motion.div
-        className="hero-copy relative z-20 flex w-full items-center justify-center px-4 sm:px-6 md:px-4"
+        className="hero-copy relative z-20 flex flex-col gap-6 w-full items-center justify-center px-4 sm:px-6 md:px-4"
         onPointerEnter={() => blobScale.set(1)}
         onPointerLeave={() => blobScale.set(0)}
         onPointerMove={handlePointerMove}
@@ -78,6 +78,15 @@ function HeroText() {
             </motion.span>
           </span>
         </p>
+        <p className="text-white/90">
+          We build the visual systems that set ambitions brands apart
+        </p>
+        <a
+          href="/work"
+          className="border text-white border-white px-2 py-2 border-2"
+        >
+          View Our Work ↗
+        </a>
       </motion.div>
 
       <div className="w-full px-4 aspect-[4/5] sm:px-6 sm:aspect-[3/4] md:h-[100vh] md:aspect-video md:px-0 md:mt-10">

@@ -10,7 +10,7 @@ function EntryPoints() {
   const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [0.25, 1, 0.25]);
 
   return (
-    <section ref={ref} className="px-4 py-20 sm:px-6 md:px-8 md:py-32">
+    <section ref={ref} className="px-4 md:px-10 py-24 md:py-32">
       <motion.div
         style={{ opacity }}
         data-aos="fade-up"

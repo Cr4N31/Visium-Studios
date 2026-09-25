@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import clients from "../../data/clients";
+import clients from "../data/clients";
 
 const rows = [clients.slice(0, 5), clients.slice(5)];
 
