@@ -17,7 +17,7 @@ function FeaturedWork() {
       className="bg-black text-white py-24 md:py-32"
       data-aos="fade-up"
     >
-      <div className="p-12">
+      <div className="p-4 md:p-12">
         <p className="md:text-8xl text-5xl">Selected Work</p>
         <p className="mt-5">
           A collection of visual experiences and works created and tailored for

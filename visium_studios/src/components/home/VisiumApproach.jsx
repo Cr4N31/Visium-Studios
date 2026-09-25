@@ -1,321 +1,251 @@
+import { motion, useScroll, useTransform } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import {
-  motion,
-  AnimatePresence,
-  useScroll,
-  useTransform,
-  useReducedMotion,
-} from "framer-motion";
-import projects from "../../data/projects";
 
-const RADIUS = "rounded-[4px]";
-const COLUMNS = 4;
-const GUTTER = 1.4;
-const SLIDE_INTERVAL = 4200;
-const TYPE_LABELS = ["IDENTITY", "GRID", "MOTION"];
-
-const principles = [
+/*
+ * Explicit, bounded positions for each fragment as % of the
+ * container. Because these are percentages (not px/vw), they
+ * scale naturally with the container at any screen size —
+ * no measurement, no resize listeners, nothing that can
+ * overflow or desync on mobile.
+ *
+ * top/left = center anchor point (translate(-50%,-50%))
+ * width    = % of container width
+ * stack    = the small offset (in % points) applied once the
+ *            fragment joins the stack, giving the folder-tab
+ *            "peeking out" look rather than a flat overlap.
+ */
+const DESKTOP_LAYOUT = [
   {
-    n: "01",
-    title: "THINK IN SYSTEMS",
-    body: "Every touchpoint should feel like part of the same brand, not a collection of disconnected decisions.",
-  },
+    top: "22%",
+    left: "20%",
+    width: "24%",
+    stack: { x: -4, y: 10, rotate: -1.4 },
+  }, // Logo
+  { top: "18%", left: "76%", width: "28%", stack: { x: 4, y: 5, rotate: 1.2 } }, // Website
   {
-    n: "02",
-    title: "DESIGN WITH INTENTION",
-    body: "Every element has a role. We remove what doesn't contribute and refine what does.",
-  },
+    top: "66%",
+    left: "24%",
+    width: "22%",
+    stack: { x: -3, y: -4, rotate: -0.8 },
+  }, // UI
   {
-    n: "03",
-    title: "BUILD TO MOVE",
-    body: "Brands evolve. Their visual systems should be built to adapt across platforms, products and new stages of growth.",
-  },
+    top: "70%",
+    left: "78%",
+    width: "24%",
+    stack: { x: 3, y: -9, rotate: 1.6 },
+  }, // Image
+  { top: "46%", left: "50%", width: "22%", stack: { x: 0, y: 0, rotate: 0 } }, // Typography
 ];
 
-function isPlaceholder(src) {
-  return typeof src === "string" && src.startsWith("/placeholders/");
-}
+const MOBILE_LAYOUT = [
+  {
+    top: "14%",
+    left: "32%",
+    width: "48%",
+    stack: { x: -3, y: 6, rotate: -1.2 },
+  }, // Logo
+  { top: "30%", left: "70%", width: "50%", stack: { x: 3, y: 3, rotate: 1.1 } }, // Website
+  {
+    top: "52%",
+    left: "28%",
+    width: "46%",
+    stack: { x: -2, y: -3, rotate: -0.7 },
+  }, // UI
+  {
+    top: "72%",
+    left: "66%",
+    width: "48%",
+    stack: { x: 2, y: -6, rotate: 1.3 },
+  }, // Image
+  { top: "90%", left: "50%", width: "44%", stack: { x: 0, y: 0, rotate: 0 } }, // Typography
+];
 
-function buildMediaPool() {
-  const pool = projects.flatMap((project) =>
-    [
-      project.thumbnail,
-      project.coverImage,
-      project.heroMedia,
-      ...(project.gallery ?? []),
-      ...(project.src ?? []),
-    ]
-      .filter((src) => Boolean(src) && !isPlaceholder(src))
-      .map((src) => ({ src, alt: project.title ?? "" })),
-  );
-  const seen = new Set();
-  return pool.filter((item) =>
-    seen.has(item.src) ? false : seen.add(item.src),
-  );
-}
+function Fragment({ fragment, index, isLast, progress, start, end, layout }) {
+  const targetTop = `${50 + layout.stack.y}%`;
+  const targetLeft = `${50 + layout.stack.x}%`;
 
-const media = buildMediaPool();
+  const top = useTransform(progress, [start, end], [layout.top, targetTop]);
+  const left = useTransform(progress, [start, end], [layout.left, targetLeft]);
+  const rotate = useTransform(progress, [start, end], [0, layout.stack.rotate]);
+  const scale = useTransform(progress, [start, end], [1, 1 - index * 0.02]);
 
-function buildFragments() {
-  const total = 16;
-  const typeSlots = new Set([2, 6, 10]);
-  let typeCursor = 0;
-  const items = [];
-  for (let i = 0; i < total; i += 1) {
-    if (typeSlots.has(i)) {
-      items.push({
-        id: `type-${typeCursor}`,
-        kind: "type",
-        label: TYPE_LABELS[typeCursor],
-      });
-      typeCursor += 1;
-    } else {
-      items.push({
-        id: `photo-${i}`,
-        kind: "photo",
-        start: (i * 5) % Math.max(media.length, 1),
-      });
-    }
-  }
-  return items;
-}
+  // Subtle idle breathe on the final piece once fully assembled
+  const breatheScale = isLast
+    ? useTransform(progress, [end, 0.88, 1], [1 - index * 0.02, 0.985, 1])
+    : scale;
 
-function layoutMasonry(items) {
-  const colHeights = Array(COLUMNS).fill(0);
-  const placed = items.map((item, i) => {
-    const col = colHeights.indexOf(Math.min(...colHeights));
-    const height = item.kind === "type" ? 13 : 15 + ((i * 11) % 4) * 4;
-    const top = colHeights[col];
-    colHeights[col] += height + GUTTER;
-    return { ...item, col, rawTop: top, rawHeight: height };
-  });
-  const scale = 100 / Math.max(...colHeights);
-  return placed.map((item) => ({
-    ...item,
-    aligned: {
-      top: `${(item.rawTop * scale).toFixed(2)}%`,
-      left: `${((item.col * 100) / COLUMNS).toFixed(2)}%`,
-      w: `${(100 / COLUMNS - GUTTER).toFixed(2)}%`,
-      h: `${(item.rawHeight * scale).toFixed(2)}%`,
-    },
-  }));
-}
-
-function scatterFor(item, i) {
-  const dx = ((i * 47) % 60) - 30;
-  const dy = ((i * 83) % 50) - 10;
-  const rotate = ((i * 29) % 20) - 10;
-  const top = Math.max(-6, Math.min(96, parseFloat(item.aligned.top) + dy));
-  const left = Math.max(-8, Math.min(96, parseFloat(item.aligned.left) + dx));
-  return {
-    top: `${top}%`,
-    left: `${left}%`,
-    w: item.aligned.w,
-    h: item.aligned.h,
-    rotate,
-  };
-}
-
-const fragments = layoutMasonry(buildFragments()).map((item, i) => ({
-  ...item,
-  scattered: scatterFor(item, i),
-}));
-
-function Slideshow({ start }) {
-  const [index, setIndex] = useState(start);
-
-  useEffect(() => {
-    if (media.length === 0) return undefined;
-    const id = setInterval(
-      () => setIndex((v) => (v + 1) % media.length),
-      SLIDE_INTERVAL,
-    );
-    return () => clearInterval(id);
-  }, []);
-
-  const current = media[index % Math.max(media.length, 1)];
-  if (!current) return null;
-
-  return (
-    <div className={`relative h-full w-full overflow-hidden ${RADIUS}`}>
-      <AnimatePresence mode="wait">
-        <motion.img
-          key={current.src}
-          src={current.src}
-          alt={current.alt}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.8, ease: "easeInOut" }}
-          className="absolute inset-0 h-full w-full object-cover grayscale-[10%] contrast-[1.05]"
-        />
-      </AnimatePresence>
-    </div>
-  );
-}
-
-function TypeBlock({ label }) {
-  return (
-    <div
-      className={`flex h-full w-full items-center justify-start overflow-hidden ${RADIUS} bg-black px-[6%]`}
-    >
-      <span className="text-[clamp(1.25rem,3.4vw,2.6rem)] font-medium tracking-[-0.04em] leading-[0.9] text-white">
-        {label}
-      </span>
-    </div>
-  );
-}
-
-function Statement() {
-  return (
-    <>
-      <p className="text-3xl text-black tracking-[-0.07em] md:text-5xl">
-        WE DON&apos;T DESIGN ASSETS.
-        <br /> WE BUILD SYSTEMS.
-      </p>
-      <div className="mt-8 grid grid-cols-1 gap-6 md:mt-10 md:grid-cols-3 md:gap-8">
-        {principles.map((p) => (
-          <div key={p.n}>
-            <span className="block text-xs tracking-[0.08em] text-black/40">
-              {p.n}
-            </span>
-            <p className="mt-2 text-sm font-medium tracking-[-0.02em] text-black md:text-base">
-              {p.title}
-            </p>
-            <p className="mt-2 text-sm text-black/70">{p.body}</p>
-          </div>
-        ))}
-      </div>
-    </>
-  );
-}
-
-function Fragment({ data, progress }) {
-  const { scattered, aligned, kind, label, start } = data;
-  const top = useTransform(progress, [0.08, 0.5], [scattered.top, aligned.top]);
-  const left = useTransform(
+  const labelOpacity = useTransform(
     progress,
-    [0.08, 0.5],
-    [scattered.left, aligned.left],
+    [start, start + (end - start) * 0.5, end],
+    [1, 0.5, 0],
   );
-  const width = useTransform(progress, [0.08, 0.5], [scattered.w, aligned.w]);
-  const height = useTransform(progress, [0.08, 0.5], [scattered.h, aligned.h]);
-  const rotate = useTransform(progress, [0.08, 0.5], [scattered.rotate, 0]);
+
+  const shadowOpacity = useTransform(progress, [start, end], [0, 1]);
 
   return (
-    <motion.div
-      className="absolute"
-      style={{ top, left, width, height, rotate }}
+    <motion.li
+      className="absolute -translate-x-1/2 -translate-y-1/2"
+      style={{
+        top,
+        left,
+        width: layout.width,
+        rotate,
+        scale: isLast ? breatheScale : scale,
+        zIndex: index + 1,
+      }}
     >
-      {kind === "photo" ? (
-        <Slideshow start={start} />
-      ) : (
-        <TypeBlock label={label} />
-      )}
-    </motion.div>
+      <motion.p
+        className="mb-3 text-xs uppercase tracking-wider md:text-sm"
+        style={{ opacity: labelOpacity }}
+      >
+        <span className="font-semibold">{fragment.name}</span>
+      </motion.p>
+
+      <div className="relative overflow-hidden">
+        <motion.div
+          className="pointer-events-none absolute inset-0"
+          style={{
+            opacity: shadowOpacity,
+            boxShadow: "0 18px 40px rgba(0,0,0,0.45)",
+          }}
+        />
+        <img
+          src={fragment.img}
+          alt={fragment.name}
+          className="block w-full h-auto object-cover"
+        />
+      </div>
+    </motion.li>
   );
 }
 
 function VisiumApproach() {
-  const trackRef = useRef(null);
-  const prefersReducedMotion = useReducedMotion();
+  const fragments = [
+    {
+      id: 1,
+      name: "Logo",
+      img: "/assets/portfolio_images/Horizona/G - P7.png",
+    },
+    {
+      id: 2,
+      name: "Website",
+      img: "/assets/portfolio_images/Horizona/Video 02.gif",
+    },
+    { id: 3, name: "UI", img: "/assets/portfolio_images/Horizona/B - P12.png" },
+    {
+      id: 4,
+      name: "Image",
+      img: "/assets/portfolio_images/Horizona/H - P8.png",
+    },
+    {
+      id: 5,
+      name: "Typography",
+      img: "/assets/portfolio_images/Horizona/C - P3.png",
+    },
+  ];
+
+  const sectionRef = useRef(null);
+
+  // Only listens for a width breakpoint crossing, not continuous
+  // resize — so mobile address-bar show/hide (which changes
+  // height, not width) never triggers a re-layout mid-scroll.
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mql = window.matchMedia("(max-width: 767px)");
+    setIsMobile(mql.matches);
+    const handler = (e) => setIsMobile(e.matches);
+    mql.addEventListener("change", handler);
+    return () => mql.removeEventListener("change", handler);
+  }, []);
+
+  const layoutMap = isMobile ? MOBILE_LAYOUT : DESKTOP_LAYOUT;
 
   const { scrollYProgress } = useScroll({
-    target: trackRef,
+    target: sectionRef,
     offset: ["start start", "end end"],
   });
 
-  const fragmentsLabel = useTransform(
-    scrollYProgress,
-    [0, 0.12, 0.22],
-    [1, 1, 0],
-  );
-  const alignmentLabel = useTransform(
-    scrollYProgress,
-    [0.18, 0.3, 0.42, 0.5],
-    [0, 1, 1, 0],
-  );
-  const systemLabel = useTransform(scrollYProgress, [0.42, 0.55, 1], [0, 1, 1]);
-  const gridOpacity = useTransform(scrollYProgress, [0.28, 0.5], [0, 1]);
-  const textOpacity = useTransform(scrollYProgress, [0.5, 0.62], [0, 1]);
-  const textY = useTransform(scrollYProgress, [0.5, 0.62], [24, 0]);
+  const fragmentProgress = useTransform(scrollYProgress, [0, 1], [0, 1]);
 
-  const columns = [25, 50, 75];
-  const rows = [20, 40, 60, 80];
+  const statementOpacity = useTransform(
+    fragmentProgress,
+    [0.75, 0.9, 1],
+    [0, 0, 1],
+  );
+  const statementY = useTransform(
+    fragmentProgress,
+    [0.75, 0.9],
+    ["40px", "0px"],
+  );
 
-  if (prefersReducedMotion) {
-    return (
-      <section
-        id="visium-approach"
-        className="relative bg-black px-4 py-24 text-white md:px-10 md:py-32"
-      >
-        <span className="mb-10 block text-xs tracking-[0.08em] text-black/50">
-          THE VISIUM APPROACH
-        </span>
-        <div className="relative mx-auto aspect-[4/3] w-full max-w-5xl">
-          {fragments.map((f) => (
-            <div
-              key={f.id}
-              className="absolute"
-              style={{
-                top: f.aligned.top,
-                left: f.aligned.left,
-                width: f.aligned.w,
-                height: f.aligned.h,
-              }}
-            >
-              {f.kind === "photo" ? (
-                <Slideshow start={f.start} />
-              ) : (
-                <TypeBlock label={f.label} />
-              )}
-            </div>
-          ))}
-        </div>
-        <div className="mx-auto mt-16 max-w-2xl">
-          <Statement />
-        </div>
-      </section>
-    );
-  }
+  const stagger = 0.14;
+  const duration = 0.24;
 
   return (
     <section
+      ref={sectionRef}
       id="visium-approach"
-      ref={trackRef}
-      className="relative h-[420vh] bg-black text-white"
+      className="bg-black px-4 py-24 text-white md:px-12 md:py-32"
     >
-      <motion.div className="px-4 md:px-10 py-24 md:py-32">
-        <span className="relative text-xs tracking-[0.08em] text-black/80">
-          THE VISIUM APPROACH
+      {/* INTRO — UNTOUCHED */}
+      <div className="flex flex-col">
+        <p>
+          <span className="text-xl">The Visium Approach</span>
+        </p>
+        <h1 className="mb-4">
+          <span className="text-4xl font-semibold tracking-[-0.08em] md:text-7xl">
+            WE DON'T DESIGN ASSETS. <br />
+            WE BUILD SYSTEMS.
+          </span>
+        </h1>
+        <span className="max-w-3xl">
+          A brand doesn't live in a logo, a website or a campaign alone. We
+          connect identity, digital and motion into a visual system that stays
+          recognisable wherever the brand shows up.
         </span>
-        <Statement />
-      </motion.div>
-      <div className="sticky top-0 h-screen w-full overflow-hidden">
-        <div className="absolute inset-0 mx-[4%] my-[10%] md:mx-[8%] md:my-[8%]">
-          <motion.div
-            className="pointer-events-none absolute inset-0 z-10"
-            style={{ opacity: gridOpacity }}
-          >
-            {columns.map((c) => (
-              <span
-                key={c}
-                className="absolute top-0 h-full w-px bg-black/10"
-                style={{ left: `${c}%` }}
-              />
-            ))}
-            {rows.map((r) => (
-              <span
-                key={r}
-                className="absolute left-0 w-full h-px bg-black/10"
-                style={{ top: `${r}%` }}
-              />
-            ))}
-          </motion.div>
+      </div>
 
-          {fragments.map((f) => (
-            <Fragment key={f.id} data={f} progress={scrollYProgress} />
-          ))}
+      {/* FRAGMENT AREA */}
+      <div className="relative mt-24 h-[400vh] md:h-[600vh]">
+        {/*
+          pt-24/md:pt-28 keeps every fragment clear of a fixed
+          site header — percentages for the children below are
+          computed against this padded box, so the safe area is
+          respected automatically at every breakpoint.
+        */}
+        <div className="sticky top-0 h-[100dvh] overflow-hidden pt-24 pb-10 md:pt-28">
+          <ul className="relative h-full w-full">
+            {fragments.map((fragment, index) => {
+              const start = index * stagger;
+              const end = start + duration;
+              return (
+                <Fragment
+                  key={fragment.id}
+                  fragment={fragment}
+                  index={index}
+                  isLast={index === fragments.length - 1}
+                  progress={fragmentProgress}
+                  start={start}
+                  end={end}
+                  layout={layoutMap[index]}
+                />
+              );
+            })}
+
+            <motion.div
+              className="pointer-events-none absolute inset-0 z-50 flex items-center justify-center"
+              style={{ opacity: statementOpacity, y: statementY }}
+            >
+              <div className="text-center">
+                <p className="text-xl uppercase tracking-[0.35em] text-white/50">
+                  From parts to
+                </p>
+                <h2 className="mt-3 text-5xl font-semibold tracking-[-0.07em] md:text-8xl">
+                  SYSTEM.
+                </h2>
+              </div>
+            </motion.div>
+          </ul>
         </div>
       </div>
     </section>
