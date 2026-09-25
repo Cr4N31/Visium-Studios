@@ -1,19 +1,10 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 
-/*
- * Explicit, bounded positions for each fragment as % of the
- * container. Because these are percentages (not px/vw), they
- * scale naturally with the container at any screen size —
- * no measurement, no resize listeners, nothing that can
- * overflow or desync on mobile.
- *
- * top/left = center anchor point (translate(-50%,-50%))
- * width    = % of container width
- * stack    = the small offset (in % points) applied once the
- *            fragment joins the stack, giving the folder-tab
- *            "peeking out" look rather than a flat overlap.
- */
+/* =====================================================================
+   SECTION 1 — FRAGMENTS (unchanged logic)
+===================================================================== */
+
 const DESKTOP_LAYOUT = [
   {
     top: "22%",
@@ -69,7 +60,6 @@ function Fragment({ fragment, index, isLast, progress, start, end, layout }) {
   const rotate = useTransform(progress, [start, end], [0, layout.stack.rotate]);
   const scale = useTransform(progress, [start, end], [1, 1 - index * 0.02]);
 
-  // Subtle idle breathe on the final piece once fully assembled
   const breatheScale = isLast
     ? useTransform(progress, [end, 0.88, 1], [1 - index * 0.02, 0.985, 1])
     : scale;
@@ -146,9 +136,6 @@ function VisiumApproach() {
 
   const sectionRef = useRef(null);
 
-  // Only listens for a width breakpoint crossing, not continuous
-  // resize — so mobile address-bar show/hide (which changes
-  // height, not width) never triggers a re-layout mid-scroll.
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
     const mql = window.matchMedia("(max-width: 767px)");
@@ -207,12 +194,6 @@ function VisiumApproach() {
 
       {/* FRAGMENT AREA */}
       <div className="relative mt-24 h-[400vh] md:h-[600vh]">
-        {/*
-          pt-24/md:pt-28 keeps every fragment clear of a fixed
-          site header — percentages for the children below are
-          computed against this padded box, so the safe area is
-          respected automatically at every breakpoint.
-        */}
         <div className="sticky top-0 h-[100dvh] overflow-hidden pt-24 pb-10 md:pt-28">
           <ul className="relative h-full w-full">
             {fragments.map((fragment, index) => {
@@ -252,4 +233,153 @@ function VisiumApproach() {
   );
 }
 
-export default VisiumApproach;
+/* =====================================================================
+   SECTION 2 — PRINCIPLES (renders right after the fragments section)
+===================================================================== */
+
+const principles = [
+  {
+    gif: "/assets/portfolio_images/Horizona/Video 01.gif",
+    title: "THINK IN SYSTEMS",
+    description:
+      "Every touchpoint should feel like part of the same brand, not a collection of disconnected decisions.",
+  },
+  {
+    gif: "/assets/portfolio_images/Horizona/Video 02.gif",
+    title: "DESIGN WITH INTENTION",
+    description:
+      "Every element has a role. We remove what doesn't contribute and refine what does.",
+  },
+  {
+    gif: "/assets/portfolio_images/Horizona/Video 03.gif",
+    title: "BUILD TO MOVE",
+    description:
+      "Brands evolve. Their visual systems should be built to adapt across platforms, products and new stages of growth.",
+  },
+];
+
+// Shared fade-in-on-scroll variants for the text and image sides.
+// Image fades in slightly after the text (delay) so the row reads
+// left-to-right / text-first rather than both halves popping at once.
+const fadeUp = {
+  hidden: { opacity: 0, y: 32 },
+  visible: (delay = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1], delay },
+  }),
+};
+
+function PrincipleRow({ principle, index }) {
+  const isReversed = index % 2 === 1;
+  const tiltDirection = isReversed ? -1 : 1;
+  // "01", "02", "03" — derived so principles doesn't need its own id field
+  const number = String(index + 1).padStart(2, "0");
+
+  return (
+    <div
+      className={`
+        flex flex-col items-center gap-10 py-16
+        md:flex-row md:gap-16 md:py-24
+        ${isReversed ? "md:flex-row-reverse" : ""}
+      `}
+    >
+      {/* TEXT SIDE — fades/lifts in first */}
+      <motion.div
+        className="w-full md:w-1/2"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.4 }}
+        variants={fadeUp}
+        custom={0}
+      >
+        <p className="mb-4 text-sm tracking-[0.3em] text-white/40">{number}</p>
+        <h3 className="mb-5 text-3xl font-semibold tracking-[-0.03em] md:text-4xl">
+          {principle.title}
+        </h3>
+        <p className="max-w-md text-base leading-relaxed text-white/60 md:text-lg">
+          {principle.description}
+        </p>
+      </motion.div>
+
+      {/* IMAGE SIDE — trapezium-style perspective tilt, fades in second */}
+      <motion.div
+        className="w-full md:w-1/2"
+        style={{ perspective: "1400px" }}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.4 }}
+        variants={fadeUp}
+        custom={0.15}
+      >
+        <motion.div
+          className="relative overflow-hidden bg-white/5"
+          style={{
+            transform: `perspective(1400px) rotateY(${
+              tiltDirection * 8
+            }deg) rotateX(2deg)`,
+            transformStyle: "preserve-3d",
+          }}
+          whileHover={{
+            rotateY: 0,
+            rotateX: 0,
+            scale: 1.03,
+          }}
+          transition={{ type: "spring", stiffness: 120, damping: 16 }}
+        >
+          <img
+            src={principle.gif}
+            alt={principle.title}
+            className="block h-auto w-full object-cover"
+          />
+        </motion.div>
+      </motion.div>
+    </div>
+  );
+}
+
+function VisiumPrinciples() {
+  return (
+    <section className="bg-black px-4 py-24 text-white md:px-12 md:py-32">
+      <motion.div
+        className="mb-4 flex flex-col"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.6 }}
+        variants={fadeUp}
+      >
+        <p>
+          <span className="text-xl">Our Principles</span>
+        </p>
+        <h2 className="max-w-2xl text-3xl font-semibold tracking-[-0.06em] md:text-5xl">
+          WHAT GUIDES EVERY SYSTEM WE BUILD.
+        </h2>
+      </motion.div>
+
+      <div className="divide-y divide-white/10">
+        {principles.map((principle, index) => (
+          <PrincipleRow
+            key={principle.title}
+            principle={principle}
+            index={index}
+          />
+        ))}
+      </div>
+    </section>
+  );
+}
+
+/* =====================================================================
+   MERGED EXPORT — fragments, then principles, in document order
+===================================================================== */
+
+function VisiumApproachSection() {
+  return (
+    <>
+      <VisiumApproach />
+      <VisiumPrinciples />
+    </>
+  );
+}
+
+export default VisiumApproachSection;
