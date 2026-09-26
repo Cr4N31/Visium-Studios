@@ -72,11 +72,11 @@ function FinalCTA() {
 
           <Link
             to="/contact"
-            className="group inline-flex w-fit items-center gap-5 border-b border-white/40 pb-3 text-sm font-medium uppercase tracking-[0.16em] text-white transition-colors hover:border-white"
+            className="group w-fit text-2xl  flex items-center justify-center gap-5 bg-white rounded-full text-black px-4 py-3 text-sm font-semibold uppercase tracking-[0.16em] transition-colors"
           >
-            <span>Start a project</span>
+            <span className="font-semibold">Start a project</span>
 
-            <span className="text-2xl leading-none transition-transform duration-300 group-hover:translate-x-2">
+            <span className="leading-none font-semibold transition-transform duration-300 group-hover:translate-x-2">
               →
             </span>
           </Link>
