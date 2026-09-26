@@ -5,6 +5,7 @@ import {
   useLayoutEffect,
   useCallback,
 } from "react";
+
 import {
   motion,
   useScroll,
@@ -15,21 +16,10 @@ import {
 
 /* =====================================================================
    SECTION 1 — SCROLL-SCRUBBED CANVAS FRAME SEQUENCE
-   (replaces both the old fragment stack AND the <video> scrubbing
-   approach, which was laggy because every scroll tick forced the
-   browser's video decoder to re-seek/decode)
-
-   Instead, every frame is a preloaded image. Scroll progress (0 -> 1)
-   picks an index into that array and draws it to a canvas with
-   drawImage — no decode/seek cost, so it stays smooth even on fast
-   scroll or trackpad flicks.
-
-   Frames live at /assets/portfolio_images/Horizona/sequence/frame_000.jpg
-   .. frame_089.jpg (see horizona-frame-sequence.zip). If you regenerate
-   them, keep the same zero-padded naming and update FRAME_COUNT.
 ===================================================================== */
 
 const FRAME_COUNT = 90;
+
 const FRAME_PATH = (i) => `/sequence/frame_${String(i).padStart(3, "0")}.jpg`;
 
 function useFrameSequence(frameCount, pathFn) {
@@ -38,18 +28,24 @@ function useFrameSequence(frameCount, pathFn) {
 
   useEffect(() => {
     let cancelled = false;
+
     const images = new Array(frameCount);
     imagesRef.current = images;
 
     let loaded = 0;
+
     for (let i = 0; i < frameCount; i += 1) {
       const img = new Image();
+
       img.decoding = "async";
+
       img.onload = () => {
         if (cancelled) return;
+
         loaded += 1;
         setLoadedCount(loaded);
       };
+
       img.src = pathFn(i);
       images[i] = img;
     }
@@ -59,7 +55,11 @@ function useFrameSequence(frameCount, pathFn) {
     };
   }, [frameCount, pathFn]);
 
-  return { imagesRef, loadedCount, isReady: loadedCount >= frameCount };
+  return {
+    imagesRef,
+    loadedCount,
+    isReady: loadedCount >= frameCount,
+  };
 }
 
 function VisiumApproach() {
@@ -72,49 +72,103 @@ function VisiumApproach() {
     FRAME_PATH,
   );
 
+  /* ---------------------------------------------------------------
+     MOBILE DETECTION
+  ---------------------------------------------------------------- */
+
   useEffect(() => {
     const mql = window.matchMedia("(max-width: 767px)");
+
     setIsMobile(mql.matches);
-    const handler = (e) => setIsMobile(e.matches);
+
+    const handler = (event) => {
+      setIsMobile(event.matches);
+    };
+
     mql.addEventListener("change", handler);
-    return () => mql.removeEventListener("change", handler);
+
+    return () => {
+      mql.removeEventListener("change", handler);
+    };
   }, []);
+
+  /* ---------------------------------------------------------------
+     SCROLL PROGRESS
+  ---------------------------------------------------------------- */
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start start", "end end"],
   });
 
-  // Draw a given frame index to the canvas, covering it like object-fit: cover.
-  const drawFrame = useCallback((index) => {
-    const canvas = canvasRef.current;
-    const img = imagesRef.current[index];
-    if (!canvas || !img || !img.complete || img.naturalWidth === 0) return;
+  /* ---------------------------------------------------------------
+     DRAW FRAME
+  ---------------------------------------------------------------- */
 
-    const ctx = canvas.getContext("2d");
-    const cw = canvas.width;
-    const ch = canvas.height;
-    const iw = img.naturalWidth;
-    const ih = img.naturalHeight;
+  const drawFrame = useCallback(
+    (index) => {
+      const canvas = canvasRef.current;
+      const img = imagesRef.current[index];
 
-    const scale = Math.max(cw / iw, ch / ih);
-    const dw = iw * scale;
-    const dh = ih * scale;
-    const dx = (cw - dw) / 2;
-    const dy = (ch - dh) / 2;
+      if (!canvas || !img || !img.complete || img.naturalWidth === 0) {
+        return;
+      }
 
-    ctx.clearRect(0, 0, cw, ch);
-    ctx.drawImage(img, dx, dy, dw, dh);
-  }, []);
+      const ctx = canvas.getContext("2d");
+
+      if (!ctx) return;
+
+      const cw = canvas.width;
+      const ch = canvas.height;
+
+      const iw = img.naturalWidth;
+      const ih = img.naturalHeight;
+
+      /*
+        Mobile:
+        Show the complete frame.
+
+        Desktop:
+        Keep the original cover behavior.
+      */
+
+      const scale = isMobile
+        ? Math.min(cw / iw, ch / ih)
+        : Math.max(cw / iw, ch / ih);
+
+      const dw = iw * scale;
+      const dh = ih * scale;
+
+      const dx = (cw - dw) / 2;
+      const dy = (ch - dh) / 2;
+
+      ctx.fillStyle = "#fff";
+      ctx.fillRect(0, 0, cw, ch);
+
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
+
+      ctx.drawImage(img, dx, dy, dw, dh);
+    },
+    [imagesRef, isMobile],
+  );
+
+  /* ---------------------------------------------------------------
+     FRAME PROGRESS
+  ---------------------------------------------------------------- */
 
   const currentIndexRef = useRef(-1);
+
   const frameProgress = useMotionValue(0);
 
   const renderAtProgress = useCallback(
     (progress) => {
       const clamped = Math.min(Math.max(progress, 0), 1);
+
       const index = Math.round(clamped * (FRAME_COUNT - 1));
+
       frameProgress.set(index);
+
       if (index !== currentIndexRef.current) {
         currentIndexRef.current = index;
         drawFrame(index);
@@ -123,46 +177,73 @@ function VisiumApproach() {
     [drawFrame, frameProgress],
   );
 
-  // Keep the canvas backing store sized to the viewport (with DPR) so
-  // frames stay crisp, and redraw the current frame on resize.
+  /* ---------------------------------------------------------------
+     CANVAS RESIZE
+  ---------------------------------------------------------------- */
+
   useLayoutEffect(() => {
     const canvas = canvasRef.current;
+
     if (!canvas) return;
 
     const resize = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
       const rect = canvas.getBoundingClientRect();
+
+      if (!rect.width || !rect.height) return;
+
       canvas.width = Math.round(rect.width * dpr);
       canvas.height = Math.round(rect.height * dpr);
+
+      currentIndexRef.current = -1;
+
       renderAtProgress(scrollYProgress.get());
     };
 
     resize();
+
     window.addEventListener("resize", resize);
-    return () => window.removeEventListener("resize", resize);
+
+    return () => {
+      window.removeEventListener("resize", resize);
+    };
   }, [renderAtProgress, scrollYProgress]);
 
-  // Draw the first frame as soon as images are ready, and keep drawing
-  // in sync with scroll from then on.
+  /* ---------------------------------------------------------------
+     INITIAL FRAME
+  ---------------------------------------------------------------- */
+
   useEffect(() => {
-    if (isReady) renderAtProgress(scrollYProgress.get());
+    if (!isReady) return;
+
+    currentIndexRef.current = -1;
+
+    renderAtProgress(scrollYProgress.get());
   }, [isReady, renderAtProgress, scrollYProgress]);
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
     if (!isReady) return;
+
     renderAtProgress(latest);
   });
+
+  /* ---------------------------------------------------------------
+     OVERLAY ANIMATIONS
+  ---------------------------------------------------------------- */
 
   const statementOpacity = useTransform(
     scrollYProgress,
     [0.88, 0.97, 1],
     [0, 0, 1],
   );
+
   const statementY = useTransform(
     scrollYProgress,
     [0.88, 0.97],
     ["40px", "0px"],
   );
+
   const partsOpacity = useTransform(
     frameProgress,
     [18, 20, 24, 35],
@@ -176,63 +257,156 @@ function VisiumApproach() {
   );
 
   const partsScale = useTransform(frameProgress, [18, 20], [0.96, 1]);
+
   return (
     <section
       ref={sectionRef}
       id="visium-approach"
-      className="bg-black text-white "
+      className="bg-black text-white"
     >
-      {/* INTRO — UNTOUCHED */}
-      <div className="flex flex-col md:px-12 md:py-32 px-4 py-24">
+      {/* ==========================================================
+          INTRO
+      ========================================================== */}
+
+      <div className="flex flex-col px-4 py-24 md:px-12 md:py-32">
         <p>
           <span className="text-xl">The Visium Approach</span>
         </p>
+
         <h1 className="mb-4">
-          <span className="text-4xl font-semibold tracking-[-0.08em] md:text-7xl">
+          <span className="block max-w-5xl text-4xl font-semibold leading-[0.95] tracking-[-0.08em] md:text-7xl">
             WE DON'T DESIGN ASSETS. <br />
             WE BUILD SYSTEMS.
           </span>
         </h1>
-        <span className="max-w-3xl">
+
+        <span className="block max-w-3xl text-base leading-relaxed text-white/70 md:text-lg">
           A brand doesn't live in a logo, a website or a campaign alone. We
           connect identity, digital and motion into a visual system that stays
           recognisable wherever the brand shows up.
         </span>
       </div>
 
-      {/* SCROLL-SCRUBBED CANVAS AREA */}
-      <div className={`relative mt-24 ${isMobile ? "h-[300vh]" : "h-[400vh]"}`}>
-        <div className="sticky top-0 h-[100dvh] w-full overflow-hidden bg-black">
-          <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
+      {/* ==========================================================
+          SCROLL SEQUENCE
+
+          IMPORTANT:
+          No overflow property here.
+
+          This container is what gives sticky its 300vh/400vh
+          scrolling range.
+      ========================================================== */}
+
+      <div
+        className={`
+          relative w-full
+          ${isMobile ? "h-[300vh]" : "h-[400vh]"}
+        `}
+      >
+        {/* ========================================================
+            STICKY VIEWPORT
+
+            This stays locked to the viewport while the parent
+            container is being scrolled.
+        ========================================================= */}
+
+        <div
+          className="
+            sticky
+            top-0
+            z-0
+            h-[100dvh]
+            w-full
+            overflow-hidden
+            bg-black
+          "
+        >
+          <canvas
+            ref={canvasRef}
+            className="absolute inset-0 block h-full w-full"
+          />
+
+          {/* ======================================================
+              LOADING
+          ====================================================== */}
 
           {!isReady && (
-            <div className="absolute inset-0 z-20 flex items-center justify-center bg-black text-sm text-white/40">
+            <div className="absolute inset-0 z-30 flex items-center justify-center bg-black px-6 text-center text-sm text-white/40">
               Loading… {Math.round((loadedCount / FRAME_COUNT) * 100)}%
             </div>
           )}
 
+          {/* ======================================================
+              FROM PARTS
+          ====================================================== */}
+
           <motion.div
-            className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center"
+            className="
+              pointer-events-none
+              absolute
+              inset-0
+              z-10
+              flex
+              items-center
+              justify-center
+              px-4
+            "
             style={{
               opacity: partsOpacity,
               y: partsY,
               scale: partsScale,
             }}
           >
-            <h2 className="text-center text-5xl font-semibold uppercase tracking-[-0.06em] text-white md:text-8xl lg:text-9xl">
+            <h2
+              className="
+                max-w-[95vw]
+                text-center
+                text-[clamp(2.75rem,12vw,9rem)]
+                font-semibold
+                uppercase
+                leading-[0.9]
+                tracking-[-0.06em]
+                text-white
+              "
+            >
               FROM PARTS
             </h2>
           </motion.div>
 
+          {/* ======================================================
+              TO SYSTEM
+          ====================================================== */}
+
           <motion.div
-            className="pointer-events-none absolute top-30 inset-0 z-10 flex items-center justify-center"
-            style={{ opacity: statementOpacity, y: statementY }}
+            className="
+              pointer-events-none
+              absolute
+              inset-0
+              z-10
+              flex
+              items-center
+              justify-center
+              px-4
+            "
+            style={{
+              opacity: statementOpacity,
+              y: statementY,
+            }}
           >
             <div className="text-center">
-              <p className="text-xl bg-white uppercase tracking-[0.35em] text-white/50">
+              <p className="mb-1 text-xs uppercase tracking-[0.35em] text-white/50 md:text-xl">
                 To
               </p>
-              <h2 className="mt-3 text-5xl font-semibold tracking-[-0.07em] text-white md:text-8xl">
+
+              <h2
+                className="
+                  text-[clamp(3rem,15vw,8rem)]
+                  font-semibold
+                  leading-none
+                  tracking-[-0.07em]
+                  text-white
+                "
+              >
                 SYSTEM.
               </h2>
             </div>
@@ -244,7 +418,7 @@ function VisiumApproach() {
 }
 
 /* =====================================================================
-   SECTION 2 — PRINCIPLES (unchanged)
+   SECTION 2 — PRINCIPLES
 ===================================================================== */
 
 const principles = [
@@ -269,17 +443,29 @@ const principles = [
 ];
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 32 },
+  hidden: {
+    opacity: 0,
+    y: 32,
+  },
+
   visible: (delay = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1], delay },
+    transition: {
+      duration: 0.7,
+      ease: [0.22, 1, 0.36, 1],
+      delay,
+    },
   }),
 };
 
 function buildSmoothPath(points) {
   if (!points.length) return "";
-  if (points.length === 1) return `M ${points[0].x} ${points[0].y}`;
+
+  if (points.length === 1) {
+    return `M ${points[0].x} ${points[0].y}`;
+  }
+
   if (points.length === 2) {
     return `M ${points[0].x} ${points[0].y} L ${points[1].x} ${points[1].y}`;
   }
@@ -289,12 +475,15 @@ function buildSmoothPath(points) {
   for (let i = 1; i < points.length - 1; i += 1) {
     const current = points[i];
     const next = points[i + 1];
+
     const midX = (current.x + next.x) / 2;
     const midY = (current.y + next.y) / 2;
+
     d += ` Q ${current.x} ${current.y} ${midX} ${midY}`;
   }
 
   const last = points[points.length - 1];
+
   d += ` T ${last.x} ${last.y}`;
 
   return d;
@@ -320,21 +509,28 @@ function ConstellationNode({ point, progress, arriveAt }) {
 
 function ConstellationLines({ containerRef, nodeRefs, progress }) {
   const [points, setPoints] = useState([]);
-  const [size, setSize] = useState({ width: 0, height: 0 });
+  const [size, setSize] = useState({
+    width: 0,
+    height: 0,
+  });
 
   const measure = useCallback(() => {
     const container = containerRef.current;
+
     if (!container) return;
 
     const containerRect = container.getBoundingClientRect();
+
     const next = nodeRefs.current
       .filter(Boolean)
       .map((node) => {
         const rect = node.getBoundingClientRect();
+
         const anchor = node.dataset.anchor === "left" ? 0.18 : 0.82;
 
         return {
           x: rect.left - containerRect.left + rect.width * anchor,
+
           y: rect.top - containerRect.top + rect.height * 0.5,
         };
       })
@@ -344,19 +540,27 @@ function ConstellationLines({ containerRef, nodeRefs, progress }) {
       );
 
     setPoints(next);
-    setSize({ width: containerRect.width, height: containerRect.height });
+
+    setSize({
+      width: containerRect.width,
+      height: containerRect.height,
+    });
   }, [containerRef, nodeRefs]);
 
   useLayoutEffect(() => {
     const update = () => {
       if (typeof window === "undefined") return;
+
       requestAnimationFrame(measure);
     };
 
     update();
 
     const ro = new ResizeObserver(update);
-    if (containerRef.current) ro.observe(containerRef.current);
+
+    if (containerRef.current) {
+      ro.observe(containerRef.current);
+    }
 
     window.addEventListener("resize", update);
 
@@ -371,6 +575,7 @@ function ConstellationLines({ containerRef, nodeRefs, progress }) {
   }, [measure, containerRef]);
 
   const path = points.length > 1 ? buildSmoothPath(points) : "";
+
   const pathProgress = useTransform(progress, [0, 1], [0, 1]);
 
   return (
@@ -389,7 +594,10 @@ function ConstellationLines({ containerRef, nodeRefs, progress }) {
           strokeWidth="1.5"
           strokeLinecap="round"
           strokeLinejoin="round"
-          style={{ pathLength: pathProgress, opacity: 0.35 }}
+          style={{
+            pathLength: pathProgress,
+            opacity: 0.35,
+          }}
         />
       ) : null}
 
@@ -410,27 +618,35 @@ function ConstellationLines({ containerRef, nodeRefs, progress }) {
 
 function PrincipleRow({ principle, index, titleRef }) {
   const isReversed = index % 2 === 1;
+
   const tiltDirection = isReversed ? -1 : 1;
+
   const anchor = isReversed ? "left" : "right";
+
   const number = String(index + 1).padStart(2, "0");
 
   return (
     <div
       className={`
-        relative z-10 flex flex-col items-center gap-10 py-16
+        relative z-10 flex min-w-0 flex-col
+        items-center gap-10 py-16
         md:flex-row md:gap-16 md:py-24
         ${isReversed ? "md:flex-row-reverse" : ""}
       `}
     >
       <motion.div
-        className="w-full md:w-1/2"
+        className="w-full min-w-0 md:w-1/2"
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.4 }}
+        viewport={{
+          once: true,
+          amount: 0.4,
+        }}
         variants={fadeUp}
         custom={0}
       >
         <p className="mb-4 text-sm tracking-[0.3em] text-white/40">{number}</p>
+
         <h3
           ref={titleRef}
           data-anchor={anchor}
@@ -438,26 +654,33 @@ function PrincipleRow({ principle, index, titleRef }) {
         >
           {principle.title}
         </h3>
+
         <p className="max-w-md text-base leading-relaxed text-white/60 md:text-lg">
           {principle.description}
         </p>
       </motion.div>
 
       <motion.div
-        className="w-full md:w-1/2"
-        style={{ perspective: "1400px" }}
+        className="w-full min-w-0 md:w-1/2"
+        style={{
+          perspective: "1400px",
+        }}
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.4 }}
+        viewport={{
+          once: true,
+          amount: 0.4,
+        }}
         variants={fadeUp}
         custom={0.15}
       >
         <motion.div
-          className="relative overflow-hidden bg-white/5"
+          className="relative w-full min-w-0 overflow-hidden bg-white/5"
           style={{
             transform: `perspective(1400px) rotateY(${
               tiltDirection * 8
             }deg) rotateX(2deg)`,
+
             transformStyle: "preserve-3d",
           }}
           whileHover={{
@@ -465,12 +688,16 @@ function PrincipleRow({ principle, index, titleRef }) {
             rotateX: 0,
             scale: 1.03,
           }}
-          transition={{ type: "spring", stiffness: 120, damping: 16 }}
+          transition={{
+            type: "spring",
+            stiffness: 120,
+            damping: 16,
+          }}
         >
           <img
             src={principle.gif}
             alt={principle.title}
-            className="block h-auto w-full object-cover"
+            className="block h-auto w-full max-w-full object-cover"
           />
         </motion.div>
       </motion.div>
@@ -491,24 +718,28 @@ function VisiumPrinciples() {
   return (
     <section
       ref={sectionRef}
-      className="bg-black px-4 py-24 text-white md:px-12 md:py-32"
+      className="overflow-x-hidden bg-black px-4 py-24 text-white md:px-12 md:py-32"
     >
       <motion.div
         className="mb-4 flex flex-col"
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, amount: 0.6 }}
+        viewport={{
+          once: true,
+          amount: 0.6,
+        }}
         variants={fadeUp}
       >
         <p>
           <span className="text-xl">Our Principles</span>
         </p>
+
         <h2 className="max-w-2xl text-3xl font-semibold tracking-[-0.06em] md:text-5xl">
           WHAT GUIDES EVERY SYSTEM WE BUILD.
         </h2>
       </motion.div>
 
-      <div ref={containerRef} className="relative">
+      <div ref={containerRef} className="relative min-w-0">
         <ConstellationLines
           containerRef={containerRef}
           nodeRefs={nodeRefs}
