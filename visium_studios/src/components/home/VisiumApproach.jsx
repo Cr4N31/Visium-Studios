@@ -394,7 +394,7 @@ function VisiumApproach() {
             }}
           >
             <div className="text-center">
-              <p className="mb-1 text-xs uppercase tracking-[0.35em] text-white/50 md:text-xl">
+              <p className="mb-1 text-xs inline-block p-1 bg-white uppercase tracking-[0.35em] text-white/50 md:text-xl">
                 To
               </p>
 
@@ -403,6 +403,7 @@ function VisiumApproach() {
                   text-[clamp(3rem,15vw,8rem)]
                   font-semibold
                   leading-none
+                  bg-white
                   tracking-[-0.07em]
                   text-white
                 "
@@ -412,6 +413,36 @@ function VisiumApproach() {
             </div>
           </motion.div>
         </div>
+      </div>
+      <div
+        className="flex items-center
+        justify-center"
+      >
+        <a
+          href="/work/horizona"
+          className="
+        mt-6
+        inline-flex
+        items-center
+        justify-center
+        rounded-full
+        border
+        border-black
+        bg-transparent
+        px-6
+        py-3
+        text-sm
+        font-medium
+        text-black
+        transition-all
+        duration-300
+        z-100
+        hover:bg-black
+        hover:text-white
+      "
+        >
+          View Case Study
+        </a>
       </div>
     </section>
   );
