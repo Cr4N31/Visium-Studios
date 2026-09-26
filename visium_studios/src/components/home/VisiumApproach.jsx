@@ -5,144 +5,73 @@ import {
   useLayoutEffect,
   useCallback,
 } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useMotionValueEvent,
+  useMotionValue,
+} from "framer-motion";
 
 /* =====================================================================
-   SECTION 1 — FRAGMENTS (unchanged logic)
+   SECTION 1 — SCROLL-SCRUBBED CANVAS FRAME SEQUENCE
+   (replaces both the old fragment stack AND the <video> scrubbing
+   approach, which was laggy because every scroll tick forced the
+   browser's video decoder to re-seek/decode)
+
+   Instead, every frame is a preloaded image. Scroll progress (0 -> 1)
+   picks an index into that array and draws it to a canvas with
+   drawImage — no decode/seek cost, so it stays smooth even on fast
+   scroll or trackpad flicks.
+
+   Frames live at /assets/portfolio_images/Horizona/sequence/frame_000.jpg
+   .. frame_089.jpg (see horizona-frame-sequence.zip). If you regenerate
+   them, keep the same zero-padded naming and update FRAME_COUNT.
 ===================================================================== */
 
-const DESKTOP_LAYOUT = [
-  {
-    top: "22%",
-    left: "20%",
-    width: "40%",
-    stack: { x: -4, y: 10, rotate: -1.4 },
-  }, // Logo
-  { top: "18%", left: "76%", width: "50%", stack: { x: 4, y: 5, rotate: 1.2 } }, // Website
-  {
-    top: "66%",
-    left: "24%",
-    width: "50%",
-    stack: { x: -3, y: -4, rotate: -0.8 },
-  }, // UI
-  {
-    top: "70%",
-    left: "78%",
-    width: "30%",
-    stack: { x: 3, y: -9, rotate: 1.6 },
-  }, // Image
-  { top: "46%", left: "50%", width: "30%", stack: { x: 0, y: 0, rotate: 0 } }, // Typography
-];
+const FRAME_COUNT = 90;
+const FRAME_PATH = (i) => `/sequence/frame_${String(i).padStart(3, "0")}.jpg`;
 
-const MOBILE_LAYOUT = [
-  {
-    top: "14%",
-    left: "32%",
-    width: "48%",
-    stack: { x: -3, y: 6, rotate: -1.2 },
-  }, // Logo
-  { top: "30%", left: "70%", width: "50%", stack: { x: 3, y: 3, rotate: 1.1 } }, // Website
-  {
-    top: "52%",
-    left: "28%",
-    width: "46%",
-    stack: { x: -2, y: -3, rotate: -0.7 },
-  }, // UI
-  {
-    top: "72%",
-    left: "66%",
-    width: "48%",
-    stack: { x: 2, y: -6, rotate: 1.3 },
-  }, // Image
-  { top: "90%", left: "50%", width: "44%", stack: { x: 0, y: 0, rotate: 0 } }, // Typography
-];
+function useFrameSequence(frameCount, pathFn) {
+  const imagesRef = useRef([]);
+  const [loadedCount, setLoadedCount] = useState(0);
 
-function Fragment({ fragment, index, isLast, progress, start, end, layout }) {
-  const targetTop = `${50 + layout.stack.y}%`;
-  const targetLeft = `${50 + layout.stack.x}%`;
+  useEffect(() => {
+    let cancelled = false;
+    const images = new Array(frameCount);
+    imagesRef.current = images;
 
-  const top = useTransform(progress, [start, end], [layout.top, targetTop]);
-  const left = useTransform(progress, [start, end], [layout.left, targetLeft]);
-  const rotate = useTransform(progress, [start, end], [0, layout.stack.rotate]);
-  const scale = useTransform(progress, [start, end], [1, 1 - index * 0.02]);
+    let loaded = 0;
+    for (let i = 0; i < frameCount; i += 1) {
+      const img = new Image();
+      img.decoding = "async";
+      img.onload = () => {
+        if (cancelled) return;
+        loaded += 1;
+        setLoadedCount(loaded);
+      };
+      img.src = pathFn(i);
+      images[i] = img;
+    }
 
-  const breatheScale = isLast
-    ? useTransform(progress, [end, 0.88, 1], [1 - index * 0.02, 0.985, 1])
-    : scale;
+    return () => {
+      cancelled = true;
+    };
+  }, [frameCount, pathFn]);
 
-  const labelOpacity = useTransform(
-    progress,
-    [start, start + (end - start) * 0.5, end],
-    [1, 0.5, 0],
-  );
-
-  const shadowOpacity = useTransform(progress, [start, end], [0, 1]);
-
-  return (
-    <motion.li
-      className="absolute -translate-x-1/2 -translate-y-1/2"
-      style={{
-        top,
-        left,
-        width: layout.width,
-        rotate,
-        scale: isLast ? breatheScale : scale,
-        zIndex: index + 1,
-      }}
-    >
-      <motion.p
-        className="mb-3 text-xs uppercase tracking-wider md:text-sm"
-        style={{ opacity: labelOpacity }}
-      >
-        <span className="font-semibold">{fragment.name}</span>
-      </motion.p>
-
-      <div className="relative overflow-hidden">
-        <motion.div
-          className="pointer-events-none absolute inset-0"
-          style={{
-            opacity: shadowOpacity,
-            boxShadow: "0 18px 40px rgba(0,0,0,0.45)",
-          }}
-        />
-        <img
-          src={fragment.img}
-          alt={fragment.name}
-          className="block w-full h-auto object-cover"
-        />
-      </div>
-    </motion.li>
-  );
+  return { imagesRef, loadedCount, isReady: loadedCount >= frameCount };
 }
 
 function VisiumApproach() {
-  const fragments = [
-    {
-      id: 1,
-      name: "Logo",
-      img: "/assets/portfolio_images/Horizona/G - P7.png",
-    },
-    {
-      id: 2,
-      name: "Website",
-      img: "/assets/portfolio_images/Horizona/Video 02.gif",
-    },
-    { id: 3, name: "UI", img: "/assets/portfolio_images/Horizona/B - P12.png" },
-    {
-      id: 4,
-      name: "Image",
-      img: "/assets/portfolio_images/Horizona/H - P8.png",
-    },
-    {
-      id: 5,
-      name: "Typography",
-      img: "/assets/portfolio_images/Horizona/C - P3.png",
-    },
-  ];
-
   const sectionRef = useRef(null);
-
+  const canvasRef = useRef(null);
   const [isMobile, setIsMobile] = useState(false);
+
+  const { imagesRef, isReady, loadedCount } = useFrameSequence(
+    FRAME_COUNT,
+    FRAME_PATH,
+  );
+
   useEffect(() => {
     const mql = window.matchMedia("(max-width: 767px)");
     setIsMobile(mql.matches);
@@ -151,37 +80,110 @@ function VisiumApproach() {
     return () => mql.removeEventListener("change", handler);
   }, []);
 
-  const layoutMap = isMobile ? MOBILE_LAYOUT : DESKTOP_LAYOUT;
-
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start start", "end end"],
   });
 
-  const fragmentProgress = useTransform(scrollYProgress, [0, 1], [0, 1]);
+  // Draw a given frame index to the canvas, covering it like object-fit: cover.
+  const drawFrame = useCallback((index) => {
+    const canvas = canvasRef.current;
+    const img = imagesRef.current[index];
+    if (!canvas || !img || !img.complete || img.naturalWidth === 0) return;
+
+    const ctx = canvas.getContext("2d");
+    const cw = canvas.width;
+    const ch = canvas.height;
+    const iw = img.naturalWidth;
+    const ih = img.naturalHeight;
+
+    const scale = Math.max(cw / iw, ch / ih);
+    const dw = iw * scale;
+    const dh = ih * scale;
+    const dx = (cw - dw) / 2;
+    const dy = (ch - dh) / 2;
+
+    ctx.clearRect(0, 0, cw, ch);
+    ctx.drawImage(img, dx, dy, dw, dh);
+  }, []);
+
+  const currentIndexRef = useRef(-1);
+  const frameProgress = useMotionValue(0);
+
+  const renderAtProgress = useCallback(
+    (progress) => {
+      const clamped = Math.min(Math.max(progress, 0), 1);
+      const index = Math.round(clamped * (FRAME_COUNT - 1));
+      frameProgress.set(index);
+      if (index !== currentIndexRef.current) {
+        currentIndexRef.current = index;
+        drawFrame(index);
+      }
+    },
+    [drawFrame, frameProgress],
+  );
+
+  // Keep the canvas backing store sized to the viewport (with DPR) so
+  // frames stay crisp, and redraw the current frame on resize.
+  useLayoutEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const resize = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = Math.round(rect.width * dpr);
+      canvas.height = Math.round(rect.height * dpr);
+      renderAtProgress(scrollYProgress.get());
+    };
+
+    resize();
+    window.addEventListener("resize", resize);
+    return () => window.removeEventListener("resize", resize);
+  }, [renderAtProgress, scrollYProgress]);
+
+  // Draw the first frame as soon as images are ready, and keep drawing
+  // in sync with scroll from then on.
+  useEffect(() => {
+    if (isReady) renderAtProgress(scrollYProgress.get());
+  }, [isReady, renderAtProgress, scrollYProgress]);
+
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    if (!isReady) return;
+    renderAtProgress(latest);
+  });
 
   const statementOpacity = useTransform(
-    fragmentProgress,
-    [0.75, 0.9, 1],
+    scrollYProgress,
+    [0.88, 0.97, 1],
     [0, 0, 1],
   );
   const statementY = useTransform(
-    fragmentProgress,
-    [0.75, 0.9],
+    scrollYProgress,
+    [0.88, 0.97],
     ["40px", "0px"],
   );
+  const partsOpacity = useTransform(
+    frameProgress,
+    [18, 20, 24, 35],
+    [0, 1, 0.5, 0],
+  );
 
-  const stagger = 0.14;
-  const duration = 0.24;
+  const partsY = useTransform(
+    frameProgress,
+    [18, 20, 24],
+    ["20px", "0px", "0px"],
+  );
 
+  const partsScale = useTransform(frameProgress, [18, 20], [0.96, 1]);
   return (
     <section
       ref={sectionRef}
       id="visium-approach"
-      className="bg-black px-4 py-24 text-white md:px-12 md:py-32"
+      className="bg-black text-white "
     >
       {/* INTRO — UNTOUCHED */}
-      <div className="flex flex-col">
+      <div className="flex flex-col md:px-12 md:py-32 px-4 py-24">
         <p>
           <span className="text-xl">The Visium Approach</span>
         </p>
@@ -198,41 +200,43 @@ function VisiumApproach() {
         </span>
       </div>
 
-      {/* FRAGMENT AREA */}
-      <div className="relative mt-24 h-[400vh] md:h-[600vh]">
-        <div className="sticky top-0 h-[100dvh] overflow-hidden pt-24 pb-10 md:pt-28">
-          <ul className="relative h-full w-full">
-            {fragments.map((fragment, index) => {
-              const start = index * stagger;
-              const end = start + duration;
-              return (
-                <Fragment
-                  key={fragment.id}
-                  fragment={fragment}
-                  index={index}
-                  isLast={index === fragments.length - 1}
-                  progress={fragmentProgress}
-                  start={start}
-                  end={end}
-                  layout={layoutMap[index]}
-                />
-              );
-            })}
+      {/* SCROLL-SCRUBBED CANVAS AREA */}
+      <div className={`relative mt-24 ${isMobile ? "h-[300vh]" : "h-[400vh]"}`}>
+        <div className="sticky top-0 h-[100dvh] w-full overflow-hidden bg-black">
+          <canvas ref={canvasRef} className="absolute inset-0 h-full w-full" />
 
-            <motion.div
-              className="pointer-events-none absolute inset-0 z-50 flex items-center justify-center"
-              style={{ opacity: statementOpacity, y: statementY }}
-            >
-              <div className="text-center">
-                <p className="text-xl bg-white uppercase tracking-[0.35em] text-white/50">
-                  From parts to
-                </p>
-                <h2 className="mt-3 text-5xl font-semibold tracking-[-0.07em] md:text-8xl">
-                  SYSTEM.
-                </h2>
-              </div>
-            </motion.div>
-          </ul>
+          {!isReady && (
+            <div className="absolute inset-0 z-20 flex items-center justify-center bg-black text-sm text-white/40">
+              Loading… {Math.round((loadedCount / FRAME_COUNT) * 100)}%
+            </div>
+          )}
+
+          <motion.div
+            className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center"
+            style={{
+              opacity: partsOpacity,
+              y: partsY,
+              scale: partsScale,
+            }}
+          >
+            <h2 className="text-center text-5xl font-semibold uppercase tracking-[-0.06em] text-white md:text-8xl lg:text-9xl">
+              FROM PARTS
+            </h2>
+          </motion.div>
+
+          <motion.div
+            className="pointer-events-none absolute top-30 inset-0 z-10 flex items-center justify-center"
+            style={{ opacity: statementOpacity, y: statementY }}
+          >
+            <div className="text-center">
+              <p className="text-xl bg-white uppercase tracking-[0.35em] text-white/50">
+                To
+              </p>
+              <h2 className="mt-3 text-5xl font-semibold tracking-[-0.07em] text-white md:text-8xl">
+                SYSTEM.
+              </h2>
+            </div>
+          </motion.div>
         </div>
       </div>
     </section>
@@ -240,10 +244,7 @@ function VisiumApproach() {
 }
 
 /* =====================================================================
-   SECTION 2 — PRINCIPLES
-   Constellation-line effect ported from Services: a smooth SVG path
-   connects each principle's title, drawn in as the section scrolls,
-   with glowing nodes that light up as the line reaches them.
+   SECTION 2 — PRINCIPLES (unchanged)
 ===================================================================== */
 
 const principles = [
@@ -276,7 +277,6 @@ const fadeUp = {
   }),
 };
 
-// Same curve-through-points helper as Services, unchanged.
 function buildSmoothPath(points) {
   if (!points.length) return "";
   if (points.length === 1) return `M ${points[0].x} ${points[0].y}`;
@@ -411,8 +411,6 @@ function ConstellationLines({ containerRef, nodeRefs, progress }) {
 function PrincipleRow({ principle, index, titleRef }) {
   const isReversed = index % 2 === 1;
   const tiltDirection = isReversed ? -1 : 1;
-  // Anchor the constellation point on the side of the title that faces
-  // the image/center — mirrors the left/right convention from Services.
   const anchor = isReversed ? "left" : "right";
   const number = String(index + 1).padStart(2, "0");
 
@@ -424,7 +422,6 @@ function PrincipleRow({ principle, index, titleRef }) {
         ${isReversed ? "md:flex-row-reverse" : ""}
       `}
     >
-      {/* TEXT SIDE — fades/lifts in first */}
       <motion.div
         className="w-full md:w-1/2"
         initial="hidden"
@@ -446,7 +443,6 @@ function PrincipleRow({ principle, index, titleRef }) {
         </p>
       </motion.div>
 
-      {/* IMAGE SIDE — trapezium-style perspective tilt, fades in second */}
       <motion.div
         className="w-full md:w-1/2"
         style={{ perspective: "1400px" }}
@@ -537,7 +533,7 @@ function VisiumPrinciples() {
 }
 
 /* =====================================================================
-   MERGED EXPORT — fragments, then principles, in document order
+   MERGED EXPORT
 ===================================================================== */
 
 function VisiumApproachSection() {

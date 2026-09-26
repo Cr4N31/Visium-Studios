@@ -18,7 +18,7 @@ function Home({ onThemeChange }) {
   useEffect(() => {
     const updateTheme = () => {
       const approach = document.querySelector("#visium-approach");
-      const contact = document.querySelector("#contact");
+      const contact = document.querySelector("#final-cta");
 
       if (!approach || !contact) return;
 
@@ -30,10 +30,8 @@ function Home({ onThemeChange }) {
       const approachReached =
         approach.getBoundingClientRect().top <= triggerLine;
 
-      // Once Contact has essentially finished,
-      // return to the normal black theme.
       const contactHasEnded =
-        contact.getBoundingClientRect().bottom <= window.innerHeight * 0.9;
+        contact.getBoundingClientRect().top <= triggerLine;
 
       const nextValue = contactHasEnded ? false : approachReached;
 
@@ -87,8 +85,6 @@ function Home({ onThemeChange }) {
           </div>
 
           <ClientsCarousel />
-
-          <ContactSection />
         </div>
       </div>
     </main>

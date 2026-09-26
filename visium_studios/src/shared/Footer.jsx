@@ -81,15 +81,16 @@ function Footer({ inverted = false }) {
             flex w-fit items-center gap-4
             rounded-full
             px-7 py-4
-            text-sm font-semibold
+            text-sm 
             uppercase tracking-wide
             transition-all duration-300
             hover:gap-6
             ${themeClasses.button}
           `}
         >
-          Let's talk
-          <span>→</span>
+          <span className="font-semibold">Let's talk</span>
+
+          <span className="font-semibold">→</span>
         </a>
       </div>
 

@@ -139,7 +139,7 @@ function ContactSection({ onSubmit }) {
             <button
               type="submit"
               disabled={sending}
-              className="group flex items-center gap-6 border border-white/40 px-5 py-3 text-xs uppercase tracking-[0.16em] text-white transition-colors hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-50"
+              className="group flex items-center gap-6 bg-white px-5 py-3 text-xs uppercase tracking-[0.16em] text-black font-semibold rounded-full transition-colors hero-cta disabled:cursor-not-allowed disabled:opacity-50"
             >
               {sending ? "Sending..." : "Start a project"}
 
