@@ -12,15 +12,110 @@ import {
   useTransform,
   useMotionValueEvent,
   useMotionValue,
+  useMotionTemplate,
 } from "framer-motion";
+
+import room_Image from "/assets/img/room.webp";
 
 /* =====================================================================
    SECTION 1 — SCROLL-SCRUBBED CANVAS FRAME SEQUENCE
+   -> SHRINKS INTO A FRAMED PICTURE ON THE ROOM WALL
 ===================================================================== */
 
 const FRAME_COUNT = 90;
 
 const FRAME_PATH = (i) => `/sequence/frame_${String(i).padStart(3, "0")}.jpg`;
+
+/*
+  The full scroll range for this section is split into two phases:
+
+  Phase A (0 -> PHASE_A_END of raw scrollYProgress):
+    the existing frame-sequence scrub + "FROM PARTS" / "TO SYSTEM"
+    statement reveal. Untouched pacing-wise — just remapped into the
+    first slice of a longer scroll track.
+
+  Phase B (PHASE_A_END -> 1):
+    the new bit. room_Image is what "moves" here: it starts zoomed in
+    (as if the camera were pressed right up against the TV) and pulls
+    back to its natural scale, while the canvas shrinks by the exact
+    inverse amount and settles into the black TV rect burned into
+    room_Image — so it reads as the camera zooming out of the screen,
+    not as the picture sliding into a frame. room_Image sits underneath
+    the canvas the entire time at full opacity — it's revealed by the
+    canvas shrinking away, never by a cross-fade, so there's no seam.
+    The canvas is deliberately over-scaled to *cover* the TV rect
+    (rather than letterbox inside it) and then clipped back to the
+    rect's exact bounds, so it fills the screen edge-to-edge with no
+    black bars and no bleed onto the bezel.
+
+  560vh / 420vh keep the *original* 400vh / 300vh frame-sequence
+  scroll distance intact (400/560 === 300/420 === 5/7) and add a
+  matching new slice on top for the room reveal.
+*/
+const PHASE_A_END = 5 / 7;
+
+// Measured directly from room.webp (3840x2143): the black TV rect the
+// sequence shrinks into. Re-measure these if the room photo changes.
+const ROOM_IMAGE_NATIVE = { width: 3840, height: 2143 };
+const ROOM_SCREEN_RECT = { x: 1307, y: 733, width: 1221, height: 682 };
+
+function getRoomFrameTransform(containerWidth, containerHeight) {
+  if (!containerWidth || !containerHeight) {
+    return { scale: 1, x: 0, y: 0 };
+  }
+
+  // room_Image is rendered with object-fit: cover — replicate that math
+  // to find where the screen rect actually lands on screen at this
+  // viewport size.
+  const coverScale = Math.max(
+    containerWidth / ROOM_IMAGE_NATIVE.width,
+    containerHeight / ROOM_IMAGE_NATIVE.height,
+  );
+
+  const displayedWidth = ROOM_IMAGE_NATIVE.width * coverScale;
+  const displayedHeight = ROOM_IMAGE_NATIVE.height * coverScale;
+
+  const offsetX = (containerWidth - displayedWidth) / 2;
+  const offsetY = (containerHeight - displayedHeight) / 2;
+
+  const screenLeft = offsetX + ROOM_SCREEN_RECT.x * coverScale;
+  const screenTop = offsetY + ROOM_SCREEN_RECT.y * coverScale;
+  const screenWidth = ROOM_SCREEN_RECT.width * coverScale;
+  const screenHeight = ROOM_SCREEN_RECT.height * coverScale;
+
+  // The canvas is currently full-bleed (containerWidth x containerHeight).
+  // Shrink it uniformly and let it overshoot slightly ("cover" into the
+  // screen rect) so it fills the TV edge-to-edge — a touch of crop at
+  // the edges beats visible black bars top/bottom.
+  const scale = Math.max(
+    screenWidth / containerWidth,
+    screenHeight / containerHeight,
+  );
+
+  const finalWidth = containerWidth * scale;
+  const finalHeight = containerHeight * scale;
+
+  const x = screenLeft + (screenWidth - finalWidth) / 2;
+  const y = screenTop + (screenHeight - finalHeight) / 2;
+
+  // "Cover" fit means the shrunk canvas can overshoot the screen rect
+  // slightly on one axis (that's what fills it edge-to-edge). Work out
+  // how much of that overshoot to trim, expressed in the canvas's own
+  // untransformed coordinate space — clip-path is evaluated on the
+  // element's own box before its transform is applied, so this needs
+  // to be the inverse of the transform above, not screen-space pixels.
+  const localLeft = (screenLeft - x) / scale;
+  const localTop = (screenTop - y) / scale;
+  const localRight = (screenLeft + screenWidth - x) / scale;
+  const localBottom = (screenTop + screenHeight - y) / scale;
+
+  const clipLeft = Math.max(0, localLeft);
+  const clipTop = Math.max(0, localTop);
+  const clipRight = Math.max(0, containerWidth - localRight);
+  const clipBottom = Math.max(0, containerHeight - localBottom);
+
+  return { scale, x, y, clipLeft, clipTop, clipRight, clipBottom };
+}
 
 function useFrameSequence(frameCount, pathFn) {
   const imagesRef = useRef([]);
@@ -65,7 +160,21 @@ function useFrameSequence(frameCount, pathFn) {
 function VisiumApproach() {
   const sectionRef = useRef(null);
   const canvasRef = useRef(null);
+  // Measures the pinned viewport itself (not the canvas) — the canvas
+  // gets CSS-transformed during phase B, and getBoundingClientRect()
+  // reflects applied transforms, so measuring the canvas mid-shrink
+  // would feed bad numbers back into the resize math.
+  const viewportRef = useRef(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [roomFrame, setRoomFrame] = useState({
+    scale: 1,
+    x: 0,
+    y: 0,
+    clipLeft: 0,
+    clipTop: 0,
+    clipRight: 0,
+    clipBottom: 0,
+  });
 
   const { imagesRef, isReady, loadedCount } = useFrameSequence(
     FRAME_COUNT,
@@ -99,6 +208,11 @@ function VisiumApproach() {
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start start", "end end"],
+  });
+
+  // Phase B (0 -> 1 across the room-reveal slice of the scroll track).
+  const phaseB = useTransform(scrollYProgress, [PHASE_A_END, 1], [0, 1], {
+    clamp: true,
   });
 
   /* ---------------------------------------------------------------
@@ -177,28 +291,39 @@ function VisiumApproach() {
     [drawFrame, frameProgress],
   );
 
+  // Raw scrollYProgress -> local 0..1 progress *within phase A only*,
+  // so the frame sequence keeps exactly its original pacing regardless
+  // of how much extra scroll distance phase B adds.
+  const toFrameSeqProgress = useCallback(
+    (raw) => Math.min(raw / PHASE_A_END, 1),
+    [],
+  );
+
   /* ---------------------------------------------------------------
      CANVAS RESIZE
   ---------------------------------------------------------------- */
 
   useLayoutEffect(() => {
     const canvas = canvasRef.current;
+    const viewport = viewportRef.current;
 
-    if (!canvas) return;
+    if (!canvas || !viewport) return;
 
     const resize = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
-      const rect = canvas.getBoundingClientRect();
+      const rect = viewport.getBoundingClientRect();
 
       if (!rect.width || !rect.height) return;
 
       canvas.width = Math.round(rect.width * dpr);
       canvas.height = Math.round(rect.height * dpr);
 
+      setRoomFrame(getRoomFrameTransform(rect.width, rect.height));
+
       currentIndexRef.current = -1;
 
-      renderAtProgress(scrollYProgress.get());
+      renderAtProgress(toFrameSeqProgress(scrollYProgress.get()));
     };
 
     resize();
@@ -208,7 +333,7 @@ function VisiumApproach() {
     return () => {
       window.removeEventListener("resize", resize);
     };
-  }, [renderAtProgress, scrollYProgress]);
+  }, [renderAtProgress, scrollYProgress, toFrameSeqProgress]);
 
   /* ---------------------------------------------------------------
      INITIAL FRAME
@@ -219,28 +344,36 @@ function VisiumApproach() {
 
     currentIndexRef.current = -1;
 
-    renderAtProgress(scrollYProgress.get());
-  }, [isReady, renderAtProgress, scrollYProgress]);
+    renderAtProgress(toFrameSeqProgress(scrollYProgress.get()));
+  }, [isReady, renderAtProgress, scrollYProgress, toFrameSeqProgress]);
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
     if (!isReady) return;
 
-    renderAtProgress(latest);
+    renderAtProgress(toFrameSeqProgress(latest));
   });
 
   /* ---------------------------------------------------------------
      OVERLAY ANIMATIONS
   ---------------------------------------------------------------- */
 
+  // Statement appears near the end of phase A (same pacing the original
+  // 0.88/0.97 thresholds had), then clears itself out early in phase B
+  // so it doesn't sit on top of the shrinking picture.
   const statementOpacity = useTransform(
     scrollYProgress,
-    [0.88, 0.97, 1],
-    [0, 0, 1],
+    [
+      0.88 * PHASE_A_END,
+      0.97 * PHASE_A_END,
+      PHASE_A_END + 0.08 * (1 - PHASE_A_END),
+      PHASE_A_END + 0.25 * (1 - PHASE_A_END),
+    ],
+    [0, 1, 1, 0],
   );
 
   const statementY = useTransform(
     scrollYProgress,
-    [0.88, 0.97],
+    [0.88 * PHASE_A_END, 0.97 * PHASE_A_END],
     ["40px", "0px"],
   );
 
@@ -257,6 +390,44 @@ function VisiumApproach() {
   );
 
   const partsScale = useTransform(frameProgress, [18, 20], [0.96, 1]);
+
+  /* ---------------------------------------------------------------
+     ROOM REVEAL (phase B)
+  ---------------------------------------------------------------- */
+
+  // The room is what does the "camera" move: it starts zoomed in tight
+  // enough that the TV rect alone would fill the viewport, then pulls
+  // back to its natural scale. That ratio is just the inverse of how
+  // much the canvas itself shrinks, so the two stay in lockstep — the
+  // picture reads as sitting still on the wall while you zoom out from
+  // it, rather than as sliding into place.
+  const roomImageScale = useTransform(
+    phaseB,
+    [0, 1],
+    [1 / Math.max(roomFrame.scale, 0.001), 1],
+  );
+
+  const canvasScale = useTransform(phaseB, [0, 1], [1, roomFrame.scale]);
+  const canvasX = useTransform(phaseB, [0, 1], [0, roomFrame.x]);
+  const canvasY = useTransform(phaseB, [0, 1], [0, roomFrame.y]);
+
+  const canvasTransform = useMotionTemplate`translate(${canvasX}px, ${canvasY}px) scale(${canvasScale})`;
+
+  // Trims the "cover" overshoot back to the screen rect so the video
+  // never spills past the TV bezel.
+  const clipLeft = useTransform(phaseB, [0, 1], [0, roomFrame.clipLeft]);
+  const clipTop = useTransform(phaseB, [0, 1], [0, roomFrame.clipTop]);
+  const clipRight = useTransform(phaseB, [0, 1], [0, roomFrame.clipRight]);
+  const clipBottom = useTransform(phaseB, [0, 1], [0, roomFrame.clipBottom]);
+
+  const canvasClipPath = useMotionTemplate`inset(${clipTop}px ${clipRight}px ${clipBottom}px ${clipLeft}px)`;
+
+  // A shadow that grows in as the picture settles into the frame, so it
+  // reads as sitting proud of the wall rather than pasted flat onto it.
+  const canvasShadowOpacity = useTransform(phaseB, [0.15, 1], [0, 0.55], {
+    clamp: true,
+  });
+  const canvasBoxShadow = useMotionTemplate`0px 30px 80px rgba(0, 0, 0, ${canvasShadowOpacity})`;
 
   return (
     <section
@@ -293,14 +464,15 @@ function VisiumApproach() {
           IMPORTANT:
           No overflow property here.
 
-          This container is what gives sticky its 300vh/400vh
-          scrolling range.
+          This container is what gives sticky its scrolling range —
+          now split between the frame-sequence scrub (phase A) and the
+          shrink-into-the-wall reveal (phase B).
       ========================================================== */}
 
       <div
         className={`
           relative w-full
-          ${isMobile ? "h-[300vh]" : "h-[400vh]"}
+          ${isMobile ? "h-[420vh]" : "h-[560vh]"}
         `}
       >
         {/* ========================================================
@@ -311,6 +483,7 @@ function VisiumApproach() {
         ========================================================= */}
 
         <div
+          ref={viewportRef}
           className="
             sticky
             top-0
@@ -321,9 +494,35 @@ function VisiumApproach() {
             bg-black
           "
         >
-          <canvas
+          {/* ======================================================
+              ROOM (phase B backdrop)
+
+              Sits underneath the canvas at full opacity the whole
+              time. During phase A the full-bleed, fully opaque
+              canvas hides it completely; during phase B it's
+              revealed purely by the canvas shrinking away — no
+              cross-fade, so there's no seam between "video" and
+              "photo".
+          ====================================================== */}
+
+          <motion.img
+            src={room_Image}
+            alt=""
+            aria-hidden="true"
+            className="absolute inset-0 h-full w-full object-cover"
+            style={{ scale: roomImageScale }}
+          />
+
+          <motion.canvas
             ref={canvasRef}
             className="absolute inset-0 block h-full w-full"
+            style={{
+              transform: canvasTransform,
+              transformOrigin: "0 0",
+              clipPath: canvasClipPath,
+              boxShadow: canvasBoxShadow,
+              willChange: "transform",
+            }}
           />
 
           {/* ======================================================

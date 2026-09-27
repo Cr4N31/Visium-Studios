@@ -28,7 +28,7 @@ function FinalCTA() {
     <section
       ref={sectionRef}
       id="start-a-project"
-      className="relative min-h-[85svh] overflow-hidden border-t border-white/10 bg-black px-4 py-24 text-white sm:px-6 md:min-h-screen md:px-10 md:py-32"
+      className="relative min-h-[85svh] overflow-hidden border-t border-white/10 px-4 py-24 text-white sm:px-6 md:min-h-screen md:px-10 md:py-32"
       aria-labelledby="final-cta-heading"
     >
       <div className="relative z-10 flex min-h-[65svh] flex-col justify-between md:min-h-[75svh]">
