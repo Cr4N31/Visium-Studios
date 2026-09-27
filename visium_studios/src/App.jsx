@@ -16,6 +16,9 @@ import Rebranding from "./components/footer_components/branding/Rebranding";
 import ArtDirection from "./components/footer_components/branding/ArtDirection";
 import Positioning from "./components/footer_components/branding/Positioning";
 import ContactSection from "./components/home/ContactSection";
+import StartAProject from "./pages/StartAProject";
+import CallPage from "./components/project/CallPage";
+import ProjectBriefForm from "./components/project/ProjectBriefForm";
 import { useEffect, useState } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -58,7 +61,12 @@ function App() {
           <Route path="/work" element={<Work />} />
           <Route path="/studio" element={<Studio />} />
           <Route path="/contact" element={<ContactSection />} />
+          <Route path="/startaproject" element={<StartAProject />} />
           <Route path="/work/:slug" element={<CaseStudy />} />
+
+          {/*Project Component*/}
+          <Route path="/call-page" element={<CallPage />} />
+          <Route path="/projectbriefform" element={<ProjectBriefForm />} />
           {/*footer components*/}
           <Route path="/branding" element={<Branding />} />
           <Route path="/branding/logo-creation" element={<LogoCreation />} />

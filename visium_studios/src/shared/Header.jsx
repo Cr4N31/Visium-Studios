@@ -15,12 +15,15 @@ const navLinks = [
   { name: "Contact", href: "/contact" },
 ];
 
+// Desktop nav intentionally drops "Home" — the logo already anchors home.
 const desktopNavLinks = [
-  { name: "Home", href: "/" },
   { name: "Work", href: "/work" },
   { name: "Studio", href: "/studio" },
   { name: "Contact", href: "/contact" },
 ];
+
+// The one emphasized action in the desktop bar.
+const ctaLink = { name: "Start a Project", href: "/startaproject" };
 
 const HASH_LINKS = navLinks.filter((l) => l.href.startsWith("#"));
 
@@ -45,6 +48,9 @@ const LOGO_SPAWN_GAP = 130;
 const GRAVITY = 2400;
 const COLLIDER = 0.36;
 const RESTITUTION = 0.28;
+
+// Scroll distance (px) before the desktop bar compacts.
+const SCROLL_COMPACT_THRESHOLD = 40;
 
 function todayLabel() {
   const d = new Date();
@@ -488,7 +494,13 @@ const BlobCursor = memo(function BlobCursor({ originRef }) {
   );
 });
 
-function MenuOverlay({ open, onClose, activeHref, originRef }) {
+function MenuOverlay({
+  open,
+  onClose,
+  activeHref,
+  originRef,
+  inverted = false,
+}) {
   const navigateWithCurtain = useCurtainNavigate();
   const location = useLocation();
   const [hoveredHref, setHoveredHref] = useState(null);
@@ -591,27 +603,45 @@ function MenuOverlay({ open, onClose, activeHref, originRef }) {
             </motion.div>
 
             <nav className="flex-1 flex flex-col items-center justify-center gap-1 px-6 py-12 sm:py-16">
-              {navLinks.map((link) => {
-                const isUnderlined = link.href === underlinedHref;
-                return (
-                  <motion.a
-                    key={link.href}
-                    href={link.href}
-                    data-blob
-                    variants={linkVariants}
-                    onClick={(e) => handleNavClick(e, link.href)}
-                    onPointerEnter={() => setHoveredHref(link.href)}
-                    onPointerLeave={() => setHoveredHref(null)}
-                    className={`text-[clamp(2.25rem,7vw,5.5rem)] font-medium text-white leading-[1.15] text-center ${
-                      isUnderlined
-                        ? "underline decoration-2 underline-offset-[10px]"
-                        : ""
-                    }`}
+              <div className="flex flex-col gap-2">
+                {navLinks.map((link) => {
+                  const isUnderlined = link.href === underlinedHref;
+                  return (
+                    <motion.a
+                      key={link.href}
+                      href={link.href}
+                      data-blob
+                      variants={linkVariants}
+                      onClick={(e) => handleNavClick(e, link.href)}
+                      onPointerEnter={() => setHoveredHref(link.href)}
+                      onPointerLeave={() => setHoveredHref(null)}
+                      className={`text-[clamp(2.25rem,7vw,5.5rem)] font-medium text-white leading-[1.15] text-center ${
+                        isUnderlined
+                          ? "underline decoration-2 underline-offset-[10px]"
+                          : ""
+                      }`}
+                    >
+                      {link.name}
+                    </motion.a>
+                  );
+                })}
+              </div>
+
+              <div>
+                <a
+                  href={ctaLink.href}
+                  onClick={(e) => handleDesktopNavClick(e, ctaLink.href)}
+                  className={`group inline-flex items-center gap-1.5 rounded-full px-4 py-3 ${inverted ? "bg-black text-white" : "bg-white text-black"} text-xs  uppercase tracking-[0.12em] opacity-100 transition-colors duration-300 hover:border-current`}
+                >
+                  <span className="font-semibold">{ctaLink.name}</span>
+                  <span
+                    aria-hidden="true"
+                    className="transition-transform font-semibold duration-300 group-hover:translate-x-0.5"
                   >
-                    {link.name}
-                  </motion.a>
-                );
-              })}
+                    →
+                  </span>
+                </a>
+              </div>
             </nav>
           </div>
         </motion.div>
@@ -623,11 +653,23 @@ function MenuOverlay({ open, onClose, activeHref, originRef }) {
 
 function Header({ inverted = false }) {
   const [isOpen, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const navigateWithCurtain = useCurtainNavigate();
   const location = useLocation();
   const [activeSection, setActiveSection] = useState("/");
   const observerRef = useRef(null);
   const menuOriginRef = useRef(null);
+
+  // Tracks scroll position so the desktop bar can compact slightly —
+  // height/opacity only, never an abrupt jump.
+  useEffect(() => {
+    const onScroll = () => {
+      setScrolled(window.scrollY > SCROLL_COMPACT_THRESHOLD);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     if (location.pathname !== "/") return;
@@ -701,20 +743,37 @@ function Header({ inverted = false }) {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-700 ${
-        inverted ? "bg-transparent text-black" : "bg-transparent text-white"
+      className={`fixed top-0 left-0 right-0 z-50 bg-transparent transition-colors duration-500 ease-out ${
+        inverted ? "text-black" : "text-white"
       }`}
     >
-      <div className="hidden h-[68px] items-center justify-between px-6 md:flex lg:px-8">
-        <a href="/" aria-label="Visium Studios home" onClick={handleLogoClick}>
+      <div
+        className={`hidden md:flex items-center justify-between px-6 lg:px-8 transition-[height,opacity] duration-500 ease-out ${
+          scrolled ? "h-[52px] opacity-95" : "h-[68px] opacity-100"
+        }`}
+      >
+        <a
+          href="/"
+          aria-label="Visium Studios home"
+          onClick={handleLogoClick}
+          className="relative block h-auto w-36"
+        >
+          {/* Both logos are always mounted and crossfaded, so light/dark
+             switches never pop the way a swapped src would. */}
           <img
-            src={
-              inverted
-                ? "/assets/logo/Full Logo, Black - VISIŪM™.png"
-                : "/assets/logo/fullWhite.png"
-            }
-            className="h-auto w-36"
+            src={header_logo}
             alt="Visium Studios"
+            className={`block w-36 transition-opacity duration-500 ease-out ${
+              inverted ? "opacity-0" : "opacity-100"
+            }`}
+          />
+          <img
+            src={header_logo_black}
+            alt=""
+            aria-hidden="true"
+            className={`absolute inset-0 w-36 transition-opacity duration-500 ease-out ${
+              inverted ? "opacity-100" : "opacity-0"
+            }`}
           />
         </a>
 
@@ -728,8 +787,8 @@ function Header({ inverted = false }) {
                 href={link.href}
                 onClick={(e) => handleDesktopNavClick(e, link.href)}
                 aria-current={activeHref === link.href ? "page" : undefined}
-                className={`desktop-nav-link text-xs uppercase tracking-[0.12em] transition-opacity hover:opacity-50 ${
-                  activeHref === link.href ? "opacity-100" : "opacity-65"
+                className={`desktop-nav-link text-xs uppercase tracking-[0.12em] transition-opacity duration-300 hover:opacity-100 ${
+                  activeHref === link.href ? "opacity-100" : "opacity-60"
                 }`}
               >
                 {link.name}
@@ -739,11 +798,26 @@ function Header({ inverted = false }) {
                 className={`absolute -bottom-2 left-1/2 h-1 w-1 -translate-x-1/2 rounded-full bg-current transition-all duration-300 ${
                   activeHref === link.href
                     ? "scale-100 opacity-100"
-                    : "scale-0 opacity-0"
+                    : "scale-0 opacity-50"
                 }`}
               />
             </div>
           ))}
+
+          {/* The single emphasized action — everything else stays understated. */}
+          <a
+            href={ctaLink.href}
+            onClick={(e) => handleDesktopNavClick(e, ctaLink.href)}
+            className={`group inline-flex items-center gap-1.5 rounded-full px-4 py-3 ${inverted ? "bg-black text-white" : "bg-white text-black"} text-xs  uppercase tracking-[0.12em] opacity-100 transition-colors duration-300 hover:border-current`}
+          >
+            <span className="font-semibold">{ctaLink.name}</span>
+            <span
+              aria-hidden="true"
+              className="transition-transform font-semibold duration-300 group-hover:translate-x-0.5"
+            >
+              →
+            </span>
+          </a>
         </nav>
       </div>
 
