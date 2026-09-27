@@ -46,7 +46,7 @@ function StudioDirect() {
                 {team.map((member, index) => (
                   <li
                     key={member.name}
-                    className="grid grid-cols-[2.5rem_1fr] gap-4 border-b border-white/10 py-5 md:grid-cols-[2.5rem_minmax(10rem,0.7fr)_1fr] md:items-baseline md:gap-8"
+                    className="grid grid-cols-1 gap-4 border-b border-white/10 py-5 md:grid-cols-[2.5rem_minmax(10rem,0.7fr)_1fr] md:items-baseline md:gap-8"
                   >
                     <span className="text-xs text-white/30">0{index + 1}</span>
                     <p className="text-2xl text-white md:text-3xl">
