@@ -205,7 +205,7 @@ function Studio() {
                 />
                 <div className="mt-2">
                   <p className="text-xs font-medium">{item.name}</p>
-                  <p className="text-[10px] text-black/50">{item.role}</p>
+                  <p className="text-[10px] text-black/50">{item.roleShort}</p>
                 </div>
               </div>
             ))}
