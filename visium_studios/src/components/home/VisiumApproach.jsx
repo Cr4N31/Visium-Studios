@@ -386,18 +386,17 @@ function VisiumApproach() {
         <p>
           <span className="text-xl">The Visium Approach</span>
         </p>
-        <div className="flex flex-col justify-end text-right mt-12">
+        <div className="flex flex-col justify-start mt-6">
           <h1 className="mb-8">
             <span className="block text-4xl font-semibold leading-[0.95] tracking-tight md:text-7xl">
               We don't design assets. <br />
               We build systems.
             </span>
           </h1>
-          <span className="flex justify-end text-right text-base leading-relaxed text-white/70 md:text-lg">
-            A brand doesn't live in a logo, a website or a campaign alone.
-            <br /> We connect identity, digital and motion into a visual system
-            <br />
-            that stays recognisable wherever the brand shows up.
+          <span className="flex justify-end text-left text-base leading-relaxed text-white/70 md:text-lg">
+            A brand doesn't live in a logo, a website or a campaign alone. We
+            connect identity, digital and motion into a visual system that stays
+            recognisable wherever the brand shows up.
           </span>
         </div>
       </div>
