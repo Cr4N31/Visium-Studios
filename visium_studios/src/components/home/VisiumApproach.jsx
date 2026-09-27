@@ -17,45 +17,14 @@ import {
 
 import room_Image from "/assets/img/room.webp";
 
-/* =====================================================================
-   SECTION 1 — SCROLL-SCRUBBED CANVAS FRAME SEQUENCE
-   -> SHRINKS INTO A FRAMED PICTURE ON THE ROOM WALL
-===================================================================== */
+/*SECTION 1 — SCROLL-SCRUBBED CANVAS FRAME SEQUENCE
+   -> SHRINKS INTO A FRAMED PICTURE ON THE ROOM WALL*/
 
 const FRAME_COUNT = 90;
 
 const FRAME_PATH = (i) => `/sequence/frame_${String(i).padStart(3, "0")}.jpg`;
-
-/*
-  The full scroll range for this section is split into two phases:
-
-  Phase A (0 -> PHASE_A_END of raw scrollYProgress):
-    the existing frame-sequence scrub + "FROM PARTS" / "TO SYSTEM"
-    statement reveal. Untouched pacing-wise — just remapped into the
-    first slice of a longer scroll track.
-
-  Phase B (PHASE_A_END -> 1):
-    the new bit. room_Image is what "moves" here: it starts zoomed in
-    (as if the camera were pressed right up against the TV) and pulls
-    back to its natural scale, while the canvas shrinks by the exact
-    inverse amount and settles into the black TV rect burned into
-    room_Image — so it reads as the camera zooming out of the screen,
-    not as the picture sliding into a frame. room_Image sits underneath
-    the canvas the entire time at full opacity — it's revealed by the
-    canvas shrinking away, never by a cross-fade, so there's no seam.
-    The canvas is deliberately over-scaled to *cover* the TV rect
-    (rather than letterbox inside it) and then clipped back to the
-    rect's exact bounds, so it fills the screen edge-to-edge with no
-    black bars and no bleed onto the bezel.
-
-  560vh / 420vh keep the *original* 400vh / 300vh frame-sequence
-  scroll distance intact (400/560 === 300/420 === 5/7) and add a
-  matching new slice on top for the room reveal.
-*/
 const PHASE_A_END = 5 / 7;
 
-// Measured directly from room.webp (3840x2143): the black TV rect the
-// sequence shrinks into. Re-measure these if the room photo changes.
 const ROOM_IMAGE_NATIVE = { width: 3840, height: 2143 };
 const ROOM_SCREEN_RECT = { x: 1307, y: 733, width: 1221, height: 682 };
 
@@ -83,10 +52,6 @@ function getRoomFrameTransform(containerWidth, containerHeight) {
   const screenWidth = ROOM_SCREEN_RECT.width * coverScale;
   const screenHeight = ROOM_SCREEN_RECT.height * coverScale;
 
-  // The canvas is currently full-bleed (containerWidth x containerHeight).
-  // Shrink it uniformly and let it overshoot slightly ("cover" into the
-  // screen rect) so it fills the TV edge-to-edge — a touch of crop at
-  // the edges beats visible black bars top/bottom.
   const scale = Math.max(
     screenWidth / containerWidth,
     screenHeight / containerHeight,
@@ -98,12 +63,6 @@ function getRoomFrameTransform(containerWidth, containerHeight) {
   const x = screenLeft + (screenWidth - finalWidth) / 2;
   const y = screenTop + (screenHeight - finalHeight) / 2;
 
-  // "Cover" fit means the shrunk canvas can overshoot the screen rect
-  // slightly on one axis (that's what fills it edge-to-edge). Work out
-  // how much of that overshoot to trim, expressed in the canvas's own
-  // untransformed coordinate space — clip-path is evaluated on the
-  // element's own box before its transform is applied, so this needs
-  // to be the inverse of the transform above, not screen-space pixels.
   const localLeft = (screenLeft - x) / scale;
   const localTop = (screenTop - y) / scale;
   const localRight = (screenLeft + screenWidth - x) / scale;
@@ -160,10 +119,7 @@ function useFrameSequence(frameCount, pathFn) {
 function VisiumApproach() {
   const sectionRef = useRef(null);
   const canvasRef = useRef(null);
-  // Measures the pinned viewport itself (not the canvas) — the canvas
-  // gets CSS-transformed during phase B, and getBoundingClientRect()
-  // reflects applied transforms, so measuring the canvas mid-shrink
-  // would feed bad numbers back into the resize math.
+
   const viewportRef = useRef(null);
   const [isMobile, setIsMobile] = useState(false);
   const [roomFrame, setRoomFrame] = useState({
@@ -291,9 +247,6 @@ function VisiumApproach() {
     [drawFrame, frameProgress],
   );
 
-  // Raw scrollYProgress -> local 0..1 progress *within phase A only*,
-  // so the frame sequence keeps exactly its original pacing regardless
-  // of how much extra scroll distance phase B adds.
   const toFrameSeqProgress = useCallback(
     (raw) => Math.min(raw / PHASE_A_END, 1),
     [],
@@ -353,13 +306,8 @@ function VisiumApproach() {
     renderAtProgress(toFrameSeqProgress(latest));
   });
 
-  /* ---------------------------------------------------------------
-     OVERLAY ANIMATIONS
-  ---------------------------------------------------------------- */
+  /*OVERLAY ANIMATIONS*/
 
-  // Statement appears near the end of phase A (same pacing the original
-  // 0.88/0.97 thresholds had), then clears itself out early in phase B
-  // so it doesn't sit on top of the shrinking picture.
   const statementOpacity = useTransform(
     scrollYProgress,
     [
@@ -391,9 +339,7 @@ function VisiumApproach() {
 
   const partsScale = useTransform(frameProgress, [18, 20], [0.96, 1]);
 
-  /* ---------------------------------------------------------------
-     ROOM REVEAL (phase B)
-  ---------------------------------------------------------------- */
+  /*ROOM REVEAL (phase B)*/
 
   // The room is what does the "camera" move: it starts zoomed in tight
   // enough that the TV rect alone would fill the viewport, then pulls
@@ -412,9 +358,6 @@ function VisiumApproach() {
   const canvasY = useTransform(phaseB, [0, 1], [0, roomFrame.y]);
 
   const canvasTransform = useMotionTemplate`translate(${canvasX}px, ${canvasY}px) scale(${canvasScale})`;
-
-  // Trims the "cover" overshoot back to the screen rect so the video
-  // never spills past the TV bezel.
   const clipLeft = useTransform(phaseB, [0, 1], [0, roomFrame.clipLeft]);
   const clipTop = useTransform(phaseB, [0, 1], [0, roomFrame.clipTop]);
   const clipRight = useTransform(phaseB, [0, 1], [0, roomFrame.clipRight]);
@@ -443,19 +386,20 @@ function VisiumApproach() {
         <p>
           <span className="text-xl">The Visium Approach</span>
         </p>
-
-        <h1 className="mb-4">
-          <span className="block max-w-5xl text-4xl font-semibold leading-[0.95] tracking-[-0.08em] md:text-7xl">
-            WE DON'T DESIGN ASSETS. <br />
-            WE BUILD SYSTEMS.
+        <div className="flex flex-col justify-end text-right mt-12">
+          <h1 className="mb-8">
+            <span className="block text-4xl font-semibold leading-[0.95] tracking-tight md:text-7xl">
+              We don't design assets. <br />
+              We build systems.
+            </span>
+          </h1>
+          <span className="flex justify-end text-right text-base leading-relaxed text-white/70 md:text-lg">
+            A brand doesn't live in a logo, a website or a campaign alone.
+            <br /> We connect identity, digital and motion into a visual system
+            <br />
+            that stays recognisable wherever the brand shows up.
           </span>
-        </h1>
-
-        <span className="block max-w-3xl text-base leading-relaxed text-white/70 md:text-lg">
-          A brand doesn't live in a logo, a website or a campaign alone. We
-          connect identity, digital and motion into a visual system that stays
-          recognisable wherever the brand shows up.
-        </span>
+        </div>
       </div>
 
       {/* ==========================================================

@@ -76,7 +76,7 @@ function ScatterImage({ item, layout, index }) {
 
       <div className="mt-3 text-center">
         <p className="text-sm font-medium">{item.name}</p>
-        <p className="text-xs text-black/50">{item.role}</p>
+        <p className="text-xs text-black/50">{item.roleShort}</p>
       </div>
     </motion.div>
   );
@@ -195,7 +195,7 @@ function Studio() {
             and strategy under one visual direction.
           </motion.p>
 
-          <div className="mt-10 flex gap-4 overflow-x-auto pb-4">
+          <div className="mt-10 flex gap-4 overflow-x-auto scrollbar-hidden pb-4">
             {scattered.map((item) => (
               <div key={item.name} className="w-40 shrink-0">
                 <img
