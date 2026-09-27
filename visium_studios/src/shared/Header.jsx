@@ -234,10 +234,10 @@ const FallingLogos = memo(function FallingLogos() {
     if (!layer || reduceMotion) return;
 
     let { width: W, height: H } = layer.getBoundingClientRect();
-    const baseSize = Math.min(150, Math.max(60, Math.min(W * 0.26, H * 0.2)));
+    const baseSize = Math.min(70, Math.max(60, Math.min(W * 0.08, H * 0.07)));
 
     const bodies = Array.from({ length: LOGO_COUNT }, (_, i) => {
-      const size = baseSize * (0.6 + Math.random() * 0.55);
+      const size = baseSize * (0.85 + Math.random() * 0.3);
       const r = size * COLLIDER;
       const el = itemRefs.current[i];
       if (el) {
@@ -573,9 +573,6 @@ function MenuOverlay({
               variants={linkVariants}
               className="sticky top-0 z-10 flex items-center justify-between bg-transparent px-4 sm:px-6 pt-6 pb-4 shrink-0"
             >
-              <span className="text-xs tracking-[0.2em] text-white font-mono">
-                {todayLabel()}
-              </span>
               <span className="flex items-center gap-1.5 text-sm font-semibold text-white">
                 <img src={header_logo} className="w-20" />
               </span>
@@ -602,8 +599,8 @@ function MenuOverlay({
               </button>
             </motion.div>
 
-            <nav className="flex-1 flex flex-col items-center justify-center gap-1 px-6 py-12 sm:py-16">
-              <div className="flex flex-col gap-2">
+            <nav className="flex-1 flex flex-col items-center -mt-36 justify-center gap-1 px-6 py-12 sm:py-16">
+              <div className="flex flex-col gap-2 mb-8">
                 {navLinks.map((link) => {
                   const isUnderlined = link.href === underlinedHref;
                   return (
@@ -615,7 +612,7 @@ function MenuOverlay({
                       onClick={(e) => handleNavClick(e, link.href)}
                       onPointerEnter={() => setHoveredHref(link.href)}
                       onPointerLeave={() => setHoveredHref(null)}
-                      className={`text-[clamp(2.25rem,7vw,5.5rem)] font-medium text-white leading-[1.15] text-center ${
+                      className={`text-[clamp(3.25rem,7vw,5.5rem)] font-medium text-white leading-[1.15] text-center ${
                         isUnderlined
                           ? "underline decoration-2 underline-offset-[10px]"
                           : ""
@@ -631,7 +628,7 @@ function MenuOverlay({
                 <a
                   href={ctaLink.href}
                   onClick={(e) => handleDesktopNavClick(e, ctaLink.href)}
-                  className={`group inline-flex items-center gap-1.5 rounded-full px-4 py-3 ${inverted ? "bg-black text-white" : "bg-white text-black"} text-xs  uppercase tracking-[0.12em] opacity-100 transition-colors duration-300 hover:border-current`}
+                  className={`group inline-flex items-center gap-1.5 rounded-full px-8 py-6 ${inverted ? "bg-black text-white" : "bg-white text-black"} text-sm  uppercase tracking-[0.12em] opacity-100 transition-colors duration-300 hover:border-current`}
                 >
                   <span className="font-semibold">{ctaLink.name}</span>
                   <span
