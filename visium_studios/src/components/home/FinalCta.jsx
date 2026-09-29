@@ -71,7 +71,7 @@ function FinalCTA() {
           </p>
 
           <Link
-            to="/contact"
+            to="/startaproject"
             className="group w-fit text-2xl  flex items-center justify-center gap-5 bg-white rounded-full text-black px-4 py-3 text-sm font-semibold uppercase tracking-[0.16em] transition-colors"
           >
             <span className="font-semibold">Start a project</span>
