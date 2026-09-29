@@ -70,24 +70,7 @@ function Loader({ visible = true, onCoverComplete, onRevealComplete }) {
         <div
           className="visium-loader-scene"
           aria-label="Loading Visium Studios"
-        >
-          <div className="visium-loader-curtain visium-loader-curtain--left" />
-          <div className="visium-loader-curtain visium-loader-curtain--right" />
-
-          <div className="visium-loader-content">
-            <div className="visium-loader-shell">
-              <img
-                src="/assets/logo/Logo Icon - White.png"
-                alt="Visium Studios"
-                className="visium-loader-logo"
-              />
-            </div>
-
-            <div className="visium-loader-bar" aria-hidden="true">
-              <span className="visium-loader-bar-fill" />
-            </div>
-          </div>
-        </div>
+        ></div>
       </motion.div>
     </div>
   );

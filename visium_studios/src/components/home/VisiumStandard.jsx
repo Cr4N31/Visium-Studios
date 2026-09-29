@@ -96,10 +96,12 @@ function VisiumStandard() {
       viewport={{ once: false, amount: 0.5 }}
       variants={fadeUp}
     >
-      <span className="text-sm md:text-lg">The Visium Standard</span>
-      <p className="mb-4 text-4xl uppercase tracking-[-0.07em] md:text-7xl">
-        We set the standard
-        <br /> before we set the style
+      <span className="text-xl">The Visium Standard</span>
+      <p className="mb-4">
+        <span className="text-[clamp(2.9rem,9vw,5rem)] font-[400] leading-[0.95] md:text-[clamp(3rem,5vw,5rem)] tracking-[-0.05em]">
+          We set the standard
+          <br /> before we set the style
+        </span>
       </p>
       <p className="text-lg md:text-xl">
         Our principles are simple and precise

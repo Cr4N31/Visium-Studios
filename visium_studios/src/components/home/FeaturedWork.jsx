@@ -18,8 +18,12 @@ function FeaturedWork() {
       data-aos="fade-up"
     >
       <div className="p-4 md:p-12">
-        <p className="md:text-8xl text-5xl">Selected Work</p>
-        <p className="mt-5">
+        <p>
+          <span className="text-[clamp(2.9rem,9vw,5rem)] font-[400] leading-[0.95] md:text-[clamp(3rem,5vw,5rem)] tracking-tight">
+            Selected Work
+          </span>
+        </p>
+        <p className="mt-5 text-xl">
           A collection of visual experiences and works created and tailored for
           ambitious and forward thinking teams
         </p>

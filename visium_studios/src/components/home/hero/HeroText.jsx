@@ -112,11 +112,11 @@ function HeroText() {
             </motion.span>
           </span>
         </p>
-        <p className="text-white/90 text-xl  text-center">
+        <p className="text-white/90 text-xl text-center">
           We build the visual systems that set ambitions brands apart
         </p>
         <motion.a
-          href="/work"
+          href="/startaproject"
           className="hero-cta relative isolate overflow-hidden hover:border text-black rounded-full hover:border-white mt-4 px-8 py-4 bg-white border-2"
           style={{ x: ctaMagnetic.x, y: ctaMagnetic.y }}
           onPointerEnter={ctaMorph.onPointerEnter}
@@ -138,7 +138,9 @@ function HeroText() {
               scale: ctaMorph.scale,
             }}
           />
-          <span className="relative font-semibold z-[1]">View Our Work ↗</span>
+          <span className="relative font-semibold z-[1]">
+            Start a project →
+          </span>
         </motion.a>
       </motion.div>
 

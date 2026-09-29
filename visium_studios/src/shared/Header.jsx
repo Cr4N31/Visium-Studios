@@ -11,19 +11,20 @@ const falling_logo = "/assets/logo/Logo Icon - White.png";
 const navLinks = [
   { name: "Home", href: "/" },
   { name: "Work", href: "/work" },
+  { name: "Capabilities", href: "/#" },
   { name: "Studio", href: "/studio" },
+  { name: "Insights", href: "/#" },
   { name: "Contact", href: "/contact" },
 ];
 
 // Desktop nav intentionally drops "Home" — the logo already anchors home.
 const desktopNavLinks = [
   { name: "Work", href: "/work" },
+  { name: "Capabilities", href: "/#" },
   { name: "Studio", href: "/studio" },
+  { name: "Insights", href: "/#" },
   { name: "Contact", href: "/contact" },
 ];
-
-// The one emphasized action in the desktop bar.
-const ctaLink = { name: "Start a Project", href: "/startaproject" };
 
 const HASH_LINKS = navLinks.filter((l) => l.href.startsWith("#"));
 
@@ -51,12 +52,6 @@ const RESTITUTION = 0.28;
 
 // Scroll distance (px) before the desktop bar compacts.
 const SCROLL_COMPACT_THRESHOLD = 40;
-
-function todayLabel() {
-  const d = new Date();
-  const pad = (n) => String(n).padStart(2, "0");
-  return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${String(d.getFullYear()).slice(2)}`;
-}
 
 function waitForElementAndScroll(href, { retries = 30, interval = 50 } = {}) {
   let attempts = 0;
@@ -623,22 +618,6 @@ function MenuOverlay({
                   );
                 })}
               </div>
-
-              <div>
-                <a
-                  href={ctaLink.href}
-                  onClick={(e) => handleDesktopNavClick(e, ctaLink.href)}
-                  className={`group inline-flex items-center gap-1.5 rounded-full px-8 py-6 ${inverted ? "bg-black text-white" : "bg-white text-black"} text-sm  uppercase tracking-[0.12em] opacity-100 transition-colors duration-300 hover:border-current`}
-                >
-                  <span className="font-semibold">{ctaLink.name}</span>
-                  <span
-                    aria-hidden="true"
-                    className="transition-transform font-semibold duration-300 group-hover:translate-x-0.5"
-                  >
-                    →
-                  </span>
-                </a>
-              </div>
             </nav>
           </div>
         </motion.div>
@@ -740,7 +719,7 @@ function Header({ inverted = false }) {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 bg-transparent transition-colors duration-500 ease-out ${
+      className={`fixed top-0 left-0 right-0 z-50 p-4 bg-transparent transition-colors duration-500 ease-out ${
         inverted ? "text-black" : "text-white"
       }`}
     >
@@ -800,21 +779,6 @@ function Header({ inverted = false }) {
               />
             </div>
           ))}
-
-          {/* The single emphasized action — everything else stays understated. */}
-          <a
-            href={ctaLink.href}
-            onClick={(e) => handleDesktopNavClick(e, ctaLink.href)}
-            className={`group inline-flex items-center gap-1.5 rounded-full px-4 py-3 ${inverted ? "bg-black text-white" : "bg-white text-black"} text-xs  uppercase tracking-[0.12em] opacity-100 transition-colors duration-300 hover:border-current`}
-          >
-            <span className="font-semibold">{ctaLink.name}</span>
-            <span
-              aria-hidden="true"
-              className="transition-transform font-semibold duration-300 group-hover:translate-x-0.5"
-            >
-              →
-            </span>
-          </a>
         </nav>
       </div>
 

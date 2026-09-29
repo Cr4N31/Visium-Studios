@@ -84,11 +84,11 @@ function InsightCard({ article, featured = false }) {
         {/* Content */}
         <div className="pt-5">
           <div className="mb-3 flex items-center justify-between gap-4">
-            <span className="text-[10px] uppercase tracking-[0.2em] text-black/50">
+            <span className="text-[10px] uppercase tracking-[0.2em] text-black/80">
               {article.category}
             </span>
 
-            <span className="text-[10px] uppercase tracking-[0.15em] text-black/40">
+            <span className="text-[10px] uppercase tracking-[0.15em] text-black/80">
               {article.date}
             </span>
           </div>
@@ -96,11 +96,13 @@ function InsightCard({ article, featured = false }) {
           <h3
             className={`max-w-3xl font-serif leading-[1.05] tracking-tight transition-transform duration-500 group-hover:translate-x-1 ${
               featured
-                ? "text-3xl md:text-5xl lg:text-6xl"
-                : "text-2xl md:text-3xl"
+                ? "text-[clamp(1.9rem,9vw,0.9rem)] md:text-[clamp(1.7rem,5vw,2rem)]"
+                : "text-[clamp(1.9rem,9vw,0.9rem)] md:text-[clamp(1.7rem,5vw,2rem)]"
             }`}
           >
-            {article.title}
+            <span className=" font-[400] leading-[0.95] tracking-[-0.05em]">
+              {article.title}
+            </span>
           </h3>
 
           <p
@@ -121,7 +123,7 @@ function StudioNotes() {
   const secondary = insights.filter((article) => !article.featured);
 
   return (
-    <section className="relative bg-white px-4 pt-24 pb-8 text-black md:px-12 md:pt-32">
+    <section className="relative bg-black px-4 pt-24 pb-8 text-white md:px-12 md:pt-32">
       <div className="mx-auto max-w-7xl">
         {/* Header */}
         <div className="mb-16 grid gap-8 md:grid-cols-[1fr_2fr] md:items-end">
@@ -131,7 +133,7 @@ function StudioNotes() {
             viewport={{ once: true, amount: 0.6 }}
             transition={{ duration: 0.6 }}
           >
-            <span className="inline-block border border-black/20 px-4 py-1.5 text-xs uppercase tracking-[0.25em] text-black/60">
+            <span className="inline-block border border-black/50 px-4 py-1.5 text-xs uppercase tracking-[0.25em] text-black/80">
               Studio Notes
             </span>
           </motion.div>
@@ -146,8 +148,10 @@ function StudioNotes() {
               ease: [0.22, 1, 0.36, 1],
             }}
           >
-            <h2 className="max-w-4xl font-serif text-4xl leading-[1.02] tracking-tight md:text-6xl lg:text-7xl">
-              Thoughts on building brands, products and visual systems.
+            <h2>
+              <span className="text-[clamp(2.9rem,9vw,5rem)] font-[400] leading-[0.95] md:text-[clamp(3rem,5vw,5rem)] tracking-[-0.05em]">
+                Thoughts on building brands, products and visual systems.
+              </span>
             </h2>
           </motion.div>
         </div>

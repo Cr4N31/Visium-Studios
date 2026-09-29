@@ -13,27 +13,42 @@ import {
   useMotionValueEvent,
   useMotionValue,
   useMotionTemplate,
+  useReducedMotion,
 } from "framer-motion";
 
 import room_Image from "/assets/img/room.webp";
 
-/*SECTION 1 — SCROLL-SCRUBBED CANVAS FRAME SEQUENCE
-   -> SHRINKS INTO A FRAMED PICTURE ON THE ROOM WALL*/
+/* SECTION 1: SCROLL-SCRUBBED CANVAS FRAME SEQUENCE
+   -> SHRINKS INTO A FRAMED PICTURE ON THE ROOM WALL */
 
 const FRAME_COUNT = 90;
 
-const FRAME_PATH = (i) => `/sequence/frame_${String(i).padStart(3, "0")}.jpg`;
+// Change to 1 if your exported files start at frame_001.jpg
+const FRAME_START = 0;
+
+const FRAME_PATH = (i) =>
+  `/sequence/frame_${String(i + FRAME_START).padStart(3, "0")}.jpg`;
 const PHASE_A_END = 5 / 7;
 
 const ROOM_IMAGE_NATIVE = { width: 3840, height: 2143 };
 const ROOM_SCREEN_RECT = { x: 1307, y: 733, width: 1221, height: 682 };
 
+const lerp = (a, b, v) => a + (b - a) * v;
+
 function getRoomFrameTransform(containerWidth, containerHeight) {
   if (!containerWidth || !containerHeight) {
-    return { scale: 1, x: 0, y: 0 };
+    return {
+      scale: 1,
+      x: 0,
+      y: 0,
+      clipLeft: 0,
+      clipTop: 0,
+      clipRight: 0,
+      clipBottom: 0,
+    };
   }
 
-  // room_Image is rendered with object-fit: cover — replicate that math
+  // room_Image is rendered with object-fit: cover. Replicate that math
   // to find where the screen rect actually lands on screen at this
   // viewport size.
   const coverScale = Math.max(
@@ -86,19 +101,23 @@ function useFrameSequence(frameCount, pathFn) {
     const images = new Array(frameCount);
     imagesRef.current = images;
 
-    let loaded = 0;
+    let settled = 0;
+
+    // Count failures as settled too, so one missing frame
+    // can never leave the loader stuck forever.
+    const done = () => {
+      if (cancelled) return;
+
+      settled += 1;
+      setLoadedCount(settled);
+    };
 
     for (let i = 0; i < frameCount; i += 1) {
       const img = new Image();
 
       img.decoding = "async";
-
-      img.onload = () => {
-        if (cancelled) return;
-
-        loaded += 1;
-        setLoadedCount(loaded);
-      };
+      img.onload = done;
+      img.onerror = done;
 
       img.src = pathFn(i);
       images[i] = img;
@@ -117,10 +136,13 @@ function useFrameSequence(frameCount, pathFn) {
 }
 
 function VisiumApproach() {
-  const sectionRef = useRef(null);
   const canvasRef = useRef(null);
 
+  // The tall track that gives the sticky viewport its scroll range.
+  // Scroll progress is measured against this, not the whole section.
+  const trackRef = useRef(null);
   const viewportRef = useRef(null);
+
   const [isMobile, setIsMobile] = useState(false);
   const [roomFrame, setRoomFrame] = useState({
     scale: 1,
@@ -162,7 +184,7 @@ function VisiumApproach() {
   ---------------------------------------------------------------- */
 
   const { scrollYProgress } = useScroll({
-    target: sectionRef,
+    target: trackRef,
     offset: ["start start", "end end"],
   });
 
@@ -195,11 +217,8 @@ function VisiumApproach() {
       const ih = img.naturalHeight;
 
       /*
-        Mobile:
-        Show the complete frame.
-
-        Desktop:
-        Keep the original cover behavior.
+        Mobile: show the complete frame.
+        Desktop: keep the original cover behavior.
       */
 
       const scale = isMobile
@@ -306,7 +325,7 @@ function VisiumApproach() {
     renderAtProgress(toFrameSeqProgress(latest));
   });
 
-  /*OVERLAY ANIMATIONS*/
+  /* OVERLAY ANIMATIONS */
 
   const statementOpacity = useTransform(
     scrollYProgress,
@@ -339,45 +358,50 @@ function VisiumApproach() {
 
   const partsScale = useTransform(frameProgress, [18, 20], [0.96, 1]);
 
-  /*ROOM REVEAL (phase B)*/
+  /* ROOM REVEAL (phase B)
 
-  // The room is what does the "camera" move: it starts zoomed in tight
-  // enough that the TV rect alone would fill the viewport, then pulls
-  // back to its natural scale. That ratio is just the inverse of how
-  // much the canvas itself shrinks, so the two stay in lockstep — the
-  // picture reads as sitting still on the wall while you zoom out from
-  // it, rather than as sliding into place.
-  const roomImageScale = useTransform(
-    phaseB,
-    [0, 1],
-    [1 / Math.max(roomFrame.scale, 0.001), 1],
+     These use the function form of useTransform so they always read the
+     latest measured roomFrame. The array form can hold on to the first
+     (scale 1) values captured before measurement finished.
+
+     The room does the "camera" move: it starts zoomed in tight enough
+     that the TV rect alone would fill the viewport, then pulls back to
+     its natural scale. That ratio is the inverse of how much the canvas
+     shrinks, so the two stay in lockstep and the picture reads as
+     sitting still on the wall while you zoom out from it. */
+
+  const roomImageScale = useTransform(phaseB, (v) =>
+    lerp(1 / Math.max(roomFrame.scale, 0.001), 1, v),
   );
 
-  const canvasScale = useTransform(phaseB, [0, 1], [1, roomFrame.scale]);
-  const canvasX = useTransform(phaseB, [0, 1], [0, roomFrame.x]);
-  const canvasY = useTransform(phaseB, [0, 1], [0, roomFrame.y]);
+  const canvasScale = useTransform(phaseB, (v) => lerp(1, roomFrame.scale, v));
+  const canvasX = useTransform(phaseB, (v) => lerp(0, roomFrame.x, v));
+  const canvasY = useTransform(phaseB, (v) => lerp(0, roomFrame.y, v));
 
   const canvasTransform = useMotionTemplate`translate(${canvasX}px, ${canvasY}px) scale(${canvasScale})`;
-  const clipLeft = useTransform(phaseB, [0, 1], [0, roomFrame.clipLeft]);
-  const clipTop = useTransform(phaseB, [0, 1], [0, roomFrame.clipTop]);
-  const clipRight = useTransform(phaseB, [0, 1], [0, roomFrame.clipRight]);
-  const clipBottom = useTransform(phaseB, [0, 1], [0, roomFrame.clipBottom]);
+
+  const clipLeft = useTransform(phaseB, (v) => lerp(0, roomFrame.clipLeft, v));
+  const clipTop = useTransform(phaseB, (v) => lerp(0, roomFrame.clipTop, v));
+  const clipRight = useTransform(phaseB, (v) =>
+    lerp(0, roomFrame.clipRight, v),
+  );
+  const clipBottom = useTransform(phaseB, (v) =>
+    lerp(0, roomFrame.clipBottom, v),
+  );
 
   const canvasClipPath = useMotionTemplate`inset(${clipTop}px ${clipRight}px ${clipBottom}px ${clipLeft}px)`;
 
-  // A shadow that grows in as the picture settles into the frame, so it
-  // reads as sitting proud of the wall rather than pasted flat onto it.
+  // Shadow grows in as the picture settles into the frame, so it reads as
+  // sitting proud of the wall. It lives on a wrapper as a drop-shadow
+  // filter: clip-path on the canvas would cut off a box-shadow, but a
+  // filter on the parent is applied after the child is clipped.
   const canvasShadowOpacity = useTransform(phaseB, [0.15, 1], [0, 0.55], {
     clamp: true,
   });
-  const canvasBoxShadow = useMotionTemplate`0px 30px 80px rgba(0, 0, 0, ${canvasShadowOpacity})`;
+  const canvasShadowFilter = useMotionTemplate`drop-shadow(0px 30px 40px rgba(0, 0, 0, ${canvasShadowOpacity}))`;
 
   return (
-    <section
-      ref={sectionRef}
-      id="visium-approach"
-      className="bg-black text-white"
-    >
+    <section id="visium-approach" className="bg-black text-white">
       {/* ==========================================================
           INTRO
       ========================================================== */}
@@ -386,14 +410,14 @@ function VisiumApproach() {
         <p>
           <span className="text-xl">The Visium Approach</span>
         </p>
-        <div className="flex flex-col justify-start mt-6">
-          <h1 className="mb-8">
-            <span className="block text-4xl font-semibold leading-[0.95] tracking-tight md:text-7xl">
+        <div className="mt-2 flex flex-col justify-start">
+          <h1 className="mb-4">
+            <span className="block text-[clamp(2.9rem,9vw,5rem)] font-[400] leading-[0.95] tracking-[-0.05em] md:text-[clamp(3rem,5vw,5rem)]">
               We don't design assets. <br />
               We build systems.
             </span>
           </h1>
-          <span className="flex justify-end text-left text-base leading-relaxed text-white/70 md:text-lg">
+          <span className="flex justify-end text-left text-base leading-relaxed text-white/70 md:text-xl">
             A brand doesn't live in a logo, a website or a campaign alone. We
             connect identity, digital and motion into a visual system that stays
             recognisable wherever the brand shows up.
@@ -404,27 +428,20 @@ function VisiumApproach() {
       {/* ==========================================================
           SCROLL SEQUENCE
 
-          IMPORTANT:
-          No overflow property here.
+          IMPORTANT: no overflow property on this container.
 
-          This container is what gives sticky its scrolling range —
-          now split between the frame-sequence scrub (phase A) and the
-          shrink-into-the-wall reveal (phase B).
+          It is what gives sticky its scrolling range, split between
+          the frame-sequence scrub (phase A) and the shrink-into-the-
+          wall reveal (phase B). useScroll targets this element.
       ========================================================== */}
 
       <div
+        ref={trackRef}
         className={`
           relative w-full
           ${isMobile ? "h-[420vh]" : "h-[560vh]"}
         `}
       >
-        {/* ========================================================
-            STICKY VIEWPORT
-
-            This stays locked to the viewport while the parent
-            container is being scrolled.
-        ========================================================= */}
-
         <div
           ref={viewportRef}
           className="
@@ -437,16 +454,8 @@ function VisiumApproach() {
             bg-black
           "
         >
-          {/* ======================================================
-              ROOM (phase B backdrop)
-
-              Sits underneath the canvas at full opacity the whole
-              time. During phase A the full-bleed, fully opaque
-              canvas hides it completely; during phase B it's
-              revealed purely by the canvas shrinking away — no
-              cross-fade, so there's no seam between "video" and
-              "photo".
-          ====================================================== */}
+          {/* ROOM (phase B backdrop). Sits under the canvas the whole
+              time; revealed purely by the canvas shrinking away. */}
 
           <motion.img
             src={room_Image}
@@ -456,31 +465,32 @@ function VisiumApproach() {
             style={{ scale: roomImageScale }}
           />
 
-          <motion.canvas
-            ref={canvasRef}
-            className="absolute inset-0 block h-full w-full"
-            style={{
-              transform: canvasTransform,
-              transformOrigin: "0 0",
-              clipPath: canvasClipPath,
-              boxShadow: canvasBoxShadow,
-              willChange: "transform",
-            }}
-          />
+          {/* Wrapper carries the drop-shadow so clip-path can't cut it */}
+          <motion.div
+            className="absolute inset-0"
+            style={{ filter: canvasShadowFilter }}
+          >
+            <motion.canvas
+              ref={canvasRef}
+              className="absolute inset-0 block h-full w-full"
+              style={{
+                transform: canvasTransform,
+                transformOrigin: "0 0",
+                clipPath: canvasClipPath,
+                willChange: "transform",
+              }}
+            />
+          </motion.div>
 
-          {/* ======================================================
-              LOADING
-          ====================================================== */}
+          {/* LOADING */}
 
           {!isReady && (
             <div className="absolute inset-0 z-30 flex items-center justify-center bg-black px-6 text-center text-sm text-white/40">
-              Loading… {Math.round((loadedCount / FRAME_COUNT) * 100)}%
+              Loading... {Math.round((loadedCount / FRAME_COUNT) * 100)}%
             </div>
           )}
 
-          {/* ======================================================
-              FROM PARTS
-          ====================================================== */}
+          {/* FROM PARTS */}
 
           <motion.div
             className="
@@ -515,9 +525,7 @@ function VisiumApproach() {
             </h2>
           </motion.div>
 
-          {/* ======================================================
-              TO SYSTEM
-          ====================================================== */}
+          {/* TO SYSTEM */}
 
           <motion.div
             className="
@@ -536,18 +544,18 @@ function VisiumApproach() {
             }}
           >
             <div className="text-center">
-              <p className="mb-1 text-xs inline-block p-1 bg-white uppercase tracking-[0.35em] text-white/50 md:text-xl">
+              <p className="mb-1 inline-block bg-white p-1 text-xs uppercase tracking-[0.35em] text-black/60 md:text-xl">
                 To
               </p>
 
               <h2
                 className="
+                  bg-white
                   text-[clamp(3rem,15vw,8rem)]
                   font-semibold
                   leading-none
-                  bg-white
                   tracking-[-0.07em]
-                  text-white
+                  text-black
                 "
               >
                 SYSTEM.
@@ -556,32 +564,30 @@ function VisiumApproach() {
           </motion.div>
         </div>
       </div>
-      <div
-        className="flex items-center
-        justify-center"
-      >
+
+      <div className="flex items-center justify-center">
         <a
           href="/work/horizona"
           className="
-        mt-6
-        inline-flex
-        items-center
-        justify-center
-        rounded-full
-        border
-        border-black
-        bg-transparent
-        px-6
-        py-3
-        text-sm
-        font-medium
-        text-black
-        transition-all
-        duration-300
-        z-100
-        hover:bg-black
-        hover:text-white
-      "
+            z-100
+            mt-6
+            inline-flex
+            items-center
+            justify-center
+            rounded-full
+            border
+            border-white
+            bg-transparent
+            px-6
+            py-3
+            text-sm
+            font-medium
+            text-white
+            transition-all
+            duration-300
+            hover:bg-white
+            hover:text-black
+          "
         >
           View Case Study
         </a>
@@ -591,25 +597,25 @@ function VisiumApproach() {
 }
 
 /* =====================================================================
-   SECTION 2 — PRINCIPLES
+   SECTION 2: PRINCIPLES
 ===================================================================== */
 
 const principles = [
   {
     gif: "/assets/portfolio_images/Horizona/Video 01.gif",
-    title: "THINK IN SYSTEMS",
+    title: "Thinks in systems",
     description:
       "Every touchpoint should feel like part of the same brand, not a collection of disconnected decisions.",
   },
   {
     gif: "/assets/portfolio_images/Horizona/Video 02.gif",
-    title: "DESIGN WITH INTENTION",
+    title: "Design with intention",
     description:
       "Every element has a role. We remove what doesn't contribute and refine what does.",
   },
   {
     gif: "/assets/portfolio_images/Horizona/Video 03.gif",
-    title: "BUILD TO MOVE",
+    title: "Build to move",
     description:
       "Brands evolve. Their visual systems should be built to adapt across platforms, products and new stages of growth.",
   },
@@ -662,6 +668,23 @@ function buildSmoothPath(points) {
   return d;
 }
 
+/* Position of a node relative to a container, using offset* values.
+   Unlike getBoundingClientRect, these ignore CSS transforms, so the
+   fadeUp translateY on an ancestor can't throw the measurement off. */
+function getOffsetWithin(node, container) {
+  let x = 0;
+  let y = 0;
+  let el = node;
+
+  while (el && el !== container) {
+    x += el.offsetLeft;
+    y += el.offsetTop;
+    el = el.offsetParent;
+  }
+
+  return { x, y, width: node.offsetWidth, height: node.offsetHeight };
+}
+
 function ConstellationNode({ point, progress, arriveAt }) {
   const glow = useTransform(
     progress,
@@ -692,19 +715,16 @@ function ConstellationLines({ containerRef, nodeRefs, progress }) {
 
     if (!container) return;
 
-    const containerRect = container.getBoundingClientRect();
-
     const next = nodeRefs.current
       .filter(Boolean)
       .map((node) => {
-        const rect = node.getBoundingClientRect();
+        const box = getOffsetWithin(node, container);
 
         const anchor = node.dataset.anchor === "left" ? 0.18 : 0.82;
 
         return {
-          x: rect.left - containerRect.left + rect.width * anchor,
-
-          y: rect.top - containerRect.top + rect.height * 0.5,
+          x: box.x + box.width * anchor,
+          y: box.y + box.height * 0.5,
         };
       })
       .filter(
@@ -715,8 +735,8 @@ function ConstellationLines({ containerRef, nodeRefs, progress }) {
     setPoints(next);
 
     setSize({
-      width: containerRect.width,
-      height: containerRect.height,
+      width: container.offsetWidth,
+      height: container.offsetHeight,
     });
   }, [containerRef, nodeRefs]);
 
@@ -763,13 +783,12 @@ function ConstellationLines({ containerRef, nodeRefs, progress }) {
         <motion.path
           d={path}
           fill="none"
-          stroke="#0f0f0f"
+          stroke="rgba(255, 255, 255, 0.35)"
           strokeWidth="1.5"
           strokeLinecap="round"
           strokeLinejoin="round"
           style={{
             pathLength: pathProgress,
-            opacity: 0.35,
           }}
         />
       ) : null}
@@ -790,90 +809,102 @@ function ConstellationLines({ containerRef, nodeRefs, progress }) {
 }
 
 function PrincipleRow({ principle, index, titleRef }) {
-  const isReversed = index % 2 === 1;
+  const reduceMotion = useReducedMotion();
 
-  const tiltDirection = isReversed ? -1 : 1;
-
-  const anchor = isReversed ? "left" : "right";
-
+  const isRight = index % 2 === 1;
+  const anchor = isRight ? "right" : "left";
   const number = String(index + 1).padStart(2, "0");
 
+  // Inward = toward the center of the page.
+  // Left-anchored cards drift right (+1), right-anchored cards drift left (-1).
+  const inward = isRight ? -1 : 1;
+
   return (
-    <div
-      className={`
-        relative z-10 flex min-w-0 flex-col
-        items-center gap-10 py-16
-        md:flex-row md:gap-16 md:py-24
-        ${isReversed ? "md:flex-row-reverse" : ""}
-      `}
-    >
-      <motion.div
-        className="w-full min-w-0 md:w-1/2"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{
-          once: true,
-          amount: 0.4,
-        }}
-        variants={fadeUp}
-        custom={0}
+    <div className="relative z-10 flex min-w-0 py-16 md:py-24">
+      <div
+        className={`
+          w-full min-w-0 md:w-[52%]
+          ${isRight ? "md:ml-auto" : ""}
+        `}
       >
-        <p className="mb-4 text-sm tracking-[0.3em] text-white/40">{number}</p>
-
-        <h3
-          ref={titleRef}
-          data-anchor={anchor}
-          className="mb-5 text-3xl font-semibold tracking-[-0.03em] md:text-4xl"
-        >
-          {principle.title}
-        </h3>
-
-        <p className="max-w-md text-base leading-relaxed text-white/60 md:text-lg">
-          {principle.description}
-        </p>
-      </motion.div>
-
-      <motion.div
-        className="w-full min-w-0 md:w-1/2"
-        style={{
-          perspective: "1400px",
-        }}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{
-          once: true,
-          amount: 0.4,
-        }}
-        variants={fadeUp}
-        custom={0.15}
-      >
+        {/* Text sits above the asset */}
         <motion.div
-          className="relative w-full min-w-0 overflow-hidden bg-white/5"
-          style={{
-            transform: `perspective(1400px) rotateY(${
-              tiltDirection * 8
-            }deg) rotateX(2deg)`,
-
-            transformStyle: "preserve-3d",
-          }}
-          whileHover={{
-            rotateY: 0,
-            rotateX: 0,
-            scale: 1.03,
-          }}
-          transition={{
-            type: "spring",
-            stiffness: 120,
-            damping: 16,
-          }}
+          className="mb-6 md:mb-8"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.4 }}
+          variants={fadeUp}
+          custom={0}
         >
-          <img
-            src={principle.gif}
-            alt={principle.title}
-            className="block h-auto w-full max-w-full object-cover"
-          />
+          <p className="mb-3 text-xs tracking-[0.3em] text-white/40">
+            {number}
+          </p>
+
+          <h3 ref={titleRef} data-anchor={anchor} className="mb-4">
+            <span className="text-[clamp(2rem,9vw,2rem)] font-[400] leading-[0.95] tracking-tight md:text-[clamp(2.9rem,5vw,3rem)]">
+              {principle.title}
+            </span>
+          </h3>
+
+          <p className="max-w-md text-base leading-relaxed text-white/60 md:text-lg">
+            {principle.description}
+          </p>
         </motion.div>
-      </motion.div>
+
+        {/* Asset */}
+        <motion.div
+          className="min-w-0"
+          style={{ perspective: "1400px" }}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
+          variants={fadeUp}
+          custom={0.15}
+        >
+          {/* Layer 1: idle float. Drifts inward, then settles back straight. */}
+          <motion.div
+            animate={
+              reduceMotion
+                ? undefined
+                : {
+                    x: [0, inward * 28, 0],
+                    rotateY: [inward * -7, inward * -2, inward * -7],
+                    rotateX: [2, 0.5, 2],
+                  }
+            }
+            initial={{ rotateY: inward * -7, rotateX: 2 }}
+            transition={{
+              duration: 8,
+              ease: "easeInOut",
+              repeat: Infinity,
+              repeatType: "loop",
+              delay: index * 0.6,
+            }}
+            style={{ transformStyle: "preserve-3d" }}
+          >
+            {/* Layer 2: hover pushes the offset deeper */}
+            <motion.div
+              className="relative w-full min-w-0 overflow-hidden bg-white/5"
+              whileHover={{
+                x: inward * 24,
+                rotateY: inward * -6,
+                scale: 1.02,
+              }}
+              transition={{
+                type: "tween",
+                duration: 0.9,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+            >
+              <img
+                src={principle.gif}
+                alt={principle.title}
+                className="block h-auto w-full max-w-full object-cover"
+              />
+            </motion.div>
+          </motion.div>
+        </motion.div>
+      </div>
     </div>
   );
 }
@@ -907,8 +938,10 @@ function VisiumPrinciples() {
           <span className="text-xl">Our Principles</span>
         </p>
 
-        <h2 className="max-w-2xl text-3xl font-semibold tracking-[-0.06em] md:text-5xl">
-          WHAT GUIDES EVERY SYSTEM WE BUILD.
+        <h2>
+          <span className="text-[clamp(2.9rem,9vw,5rem)] font-[400] leading-[0.95] tracking-[-0.05em] md:text-[clamp(3rem,5vw,5rem)]">
+            What guides every system we build.
+          </span>
         </h2>
       </motion.div>
 

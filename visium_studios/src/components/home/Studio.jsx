@@ -129,9 +129,10 @@ function Studio() {
                 delay: 0.1,
                 ease: [0.22, 1, 0.36, 1],
               }}
-              className="font-serif text-4xl leading-[1.05] tracking-tight md:text-6xl"
             >
-              A multidisciplinary studio for brands with somewhere to go.
+              <span className="text-[clamp(2.9rem,9vw,5rem)] font-[400] leading-[0.95] md:text-[clamp(3rem,5vw,5rem)] tracking-[-0.05em]">
+                A multidisciplinary studio for brands with somewhere to go.
+              </span>
             </motion.h2>
 
             <motion.p
@@ -179,9 +180,10 @@ function Studio() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.4 }}
             transition={{ duration: 0.7 }}
-            className="font-serif text-3xl leading-[1.05] tracking-tight"
           >
-            A multidisciplinary studio for brands with somewhere to go.
+            <span className="text-[clamp(2.9rem,9vw,5rem)] font-[400] leading-[0.95] md:text-[clamp(3rem,5vw,5rem)] tracking-tight">
+              A multidisciplinary studio for brands with somewhere to go.
+            </span>
           </motion.h2>
 
           <motion.p
@@ -189,7 +191,7 @@ function Studio() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.6 }}
             transition={{ duration: 0.6, delay: 0.15 }}
-            className="mx-auto mt-5 max-w-sm text-sm leading-relaxed text-black/60"
+            className="mx-auto mt-5 max-w-sm text-lg leading-relaxed text-black/60"
           >
             Visium brings together brand, digital, product, motion, development
             and strategy under one visual direction.
