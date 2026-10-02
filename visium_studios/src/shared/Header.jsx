@@ -13,7 +13,7 @@ const navLinks = [
   { name: "Work", href: "/work" },
   { name: "Capabilities", href: "/capabilities" },
   { name: "Studio", href: "/studio" },
-  { name: "Insights", href: "/#" },
+  { name: "Insights", href: "/insights" },
   { name: "Contact", href: "/contact" },
 ];
 
@@ -22,7 +22,7 @@ const desktopNavLinks = [
   { name: "Work", href: "/work" },
   { name: "Capabilities", href: "/capabilities" },
   { name: "Studio", href: "/studio" },
-  { name: "Insights", href: "/#" },
+  { name: "Insights", href: "/insights" },
   { name: "Contact", href: "/contact" },
 ];
 

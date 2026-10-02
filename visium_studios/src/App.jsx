@@ -8,6 +8,8 @@ import Home from "./pages/Home";
 import Work from "./pages/Work";
 import Capabilities from "./pages/Capabilities";
 import Studio from "./pages/Studio";
+import Insights from "./pages/Insights";
+import InsightArticle from "./pages/InsightArticle";
 import CaseStudy from "./components/work/CaseStudy";
 import CustomCursor from "./context/CustomCursor";
 import Branding from "./components/footer_components/branding/Branding";
@@ -62,6 +64,8 @@ function App() {
           <Route path="/work" element={<Work />} />
           <Route path="/studio" element={<Studio />} />
           <Route path="/capabilities" element={<Capabilities />} />
+          <Route path="/insights" element={<Insights />} />
+          <Route path="/insights/:slug" element={<InsightArticle />} />
           <Route path="/contact" element={<ContactSection />} />
           <Route path="/startaproject" element={<StartAProject />} />
           <Route path="/work/:slug" element={<CaseStudy />} />

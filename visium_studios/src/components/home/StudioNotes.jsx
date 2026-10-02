@@ -1,39 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-
-const insights = [
-  {
-    id: 1,
-    category: "Brand Systems",
-    title: "Why Your Brand Doesn’t Need More Content. It Needs a System.",
-    excerpt:
-      "A strong brand isn't built by constantly producing more. It's built by creating a system that makes every piece of communication feel connected.",
-    date: "September 18, 2026",
-    slug: "why-your-brand-doesnt-need-more-content",
-    image: "/assets/portfolio_images/Rallow/I - P39.png",
-    featured: true,
-  },
-  {
-    id: 2,
-    category: "Visual Identity",
-    title: "What Makes a Visual Identity Actually Scalable?",
-    excerpt:
-      "A visual identity has to work beyond the presentation deck. That's what makes a system flexible enough to grow with a brand.",
-    date: "September 11, 2026",
-    slug: "what-makes-a-visual-identity-scalable",
-    image: "/assets/portfolio_images/Rallow/J - P10.png",
-  },
-  {
-    id: 3,
-    category: "Digital",
-    title: "Your Website Is Part of Your Brand. Treat It Like One.",
-    excerpt:
-      "Your website isn't simply where your brand lives online. It is one of the most important expressions of the brand itself.",
-    date: "September 04, 2026",
-    slug: "your-website-is-part-of-your-brand",
-    image: "/assets/portfolio_images/Rallow/J - P30.png",
-  },
-];
+import { sortedInsights, formatDate } from "../../data/insights";
 
 function InsightCard({ article, featured = false }) {
   return (
@@ -89,7 +56,7 @@ function InsightCard({ article, featured = false }) {
             </span>
 
             <span className="text-[10px] uppercase tracking-[0.15em] text-black/80">
-              {article.date}
+              {formatDate(article.date)}
             </span>
           </div>
 
@@ -112,6 +79,18 @@ function InsightCard({ article, featured = false }) {
           >
             {article.excerpt}
           </p>
+          <span className="mt-6 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-black">
+            <span className="relative">
+              Read now
+              <span className="absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-black transition-transform duration-500 ease-out group-hover:scale-x-100" />
+            </span>
+            <span
+              aria-hidden="true"
+              className="transition-transform duration-500 ease-out group-hover:translate-x-1.5"
+            >
+              →
+            </span>
+          </span>
         </div>
       </motion.article>
     </Link>
@@ -119,8 +98,8 @@ function InsightCard({ article, featured = false }) {
 }
 
 function StudioNotes() {
-  const featured = insights.find((article) => article.featured);
-  const secondary = insights.filter((article) => !article.featured);
+  const featured = sortedInsights.find((article) => article.featured);
+  const secondary = sortedInsights.filter((article) => !article.featured);
 
   return (
     <section className="relative bg-black px-4 pt-6 pb-8 text-white md:px-12 md:pt-12">
