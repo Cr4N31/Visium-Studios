@@ -26,8 +26,8 @@ export const capabilities = [
     what: "Digital design is the work of translating a brand into screens, from first impression to the last interaction.",
     does: ["Websites", "Digital experiences", "UX/UI", "Digital systems"],
     slctdWrk: [
-      "/assets/portfolio_images/Horizona/F -PAGE 16.png",
-      "/assets/portfolio_images/Rallow/G - 27.png",
+      "/assets/portfolio_images/Rallow/E - P35.png",
+      "/assets/portfolio_images/Horizona/B - P12.png",
       "/assets/portfolio_images/Rallow/I - P19.png",
       "/assets/portfolio_images/Horizona/E - 25.png",
     ],
@@ -40,9 +40,10 @@ export const capabilities = [
     what: "Product design shapes how people use something repeatedly, where clarity and consistency matter more than novelty.",
     does: ["Product experiences", "UX/UI", "Design systems", "Interfaces"],
     slctdWrk: [
-      "/assets/portfolio_images/Horizona/A - P1.png",
-      "/assets/portfolio_images/Horizona/C - P3.png",
-      "/assets/portfolio_images/Horizona/C - P3.png",
+      "/assets/portfolio_images/Horizona/J - P10.png",
+      "/assets/portfolio_images/Rallow/F - P16.png",
+      "/assets/portfolio_images/Rallow/J - P10.png",
+      "/assets/portfolio_images/Horizona/C - P13.png",
     ],
   },
   {
