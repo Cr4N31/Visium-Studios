@@ -5,6 +5,7 @@ import Header from "./shared/Header";
 import Footer from "./shared/Footer";
 import Home from "./pages/Home";
 import Work from "./pages/Work";
+import Capabilities from "./pages/Capabilities";
 import Studio from "./pages/Studio";
 import CaseStudy from "./components/work/CaseStudy";
 import CustomCursor from "./context/CustomCursor";
@@ -60,6 +61,7 @@ function App() {
           <Route path="/" element={<Home onThemeChange={setHomeInverted} />} />
           <Route path="/work" element={<Work />} />
           <Route path="/studio" element={<Studio />} />
+          <Route path="/capabilities" element={<Capabilities />} />
           <Route path="/contact" element={<ContactSection />} />
           <Route path="/startaproject" element={<StartAProject />} />
           <Route path="/work/:slug" element={<CaseStudy />} />
