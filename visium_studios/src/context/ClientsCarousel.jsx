@@ -42,7 +42,7 @@ function Bubble({ item, i, hidden, onEnter, onLeave }) {
         aria-label={`${item.name}, ${item.caseStudy}`}
         onPointerEnter={(e) => onEnter(e, item)}
         onPointerLeave={onLeave}
-        className={`group flex aspect-[3/2] items-center justify-center rounded-[50%] border border-white/50 px-8 text-center transition-colors duration-500 hover:border-white/70 ${sizes[i % sizes.length]}`}
+        className={`group flex aspect-[3/2] items-center justify-center rounded-[50%] border-3 border-white px-8 text-center transition-colors duration-500 ${sizes[i % sizes.length]}`}
       >
         <span className="text-2xl tracking-[-0.03em] text-white/70 transition-colors duration-500 group-hover:text-white md:text-4xl">
           {item.name}

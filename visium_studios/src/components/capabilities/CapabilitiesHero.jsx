@@ -2,7 +2,13 @@ import { useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 
 const ease = [0.22, 1, 0.36, 1];
-const capabilities = ["Brand", "Digital", "Product", "Motion", "Development"];
+const capabilities = [
+  { label: "Brand", href: "#brand" },
+  { label: "Digital", href: "#digital" },
+  { label: "Product", href: "#product" },
+  { label: "Motion", href: "#motion" },
+  { label: "Development", href: "#development" },
+];
 
 function Line({ children, delay = 0, className = "" }) {
   return (
@@ -58,18 +64,20 @@ function CapabilitiesHero() {
         </p>
 
         <ul className="flex flex-col gap-1 md:items-end">
-          {capabilities.map((label, i) => (
+          {capabilities.map((capability, i) => (
             <motion.li
-              key={label}
+              key={capability.href}
               className="flex items-baseline gap-4 text-2xl tracking-[-0.03em] text-white/35 transition-colors duration-500 hover:text-white md:text-3xl"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.9, ease, delay: 0.8 + i * 0.07 }}
             >
-              <span className="text-[11px] tracking-[0.2em] text-white/30">
-                0{i + 1}
-              </span>
-              {label}
+              <a href={capability.href}>
+                <span className="text-[11px] tracking-[0.2em] text-white/30">
+                  0{i + 1}
+                </span>
+                {capability.label}
+              </a>
             </motion.li>
           ))}
         </ul>
