@@ -14,7 +14,7 @@ function FeaturedWork() {
   return (
     <section
       id="work-preview"
-      className="bg-black text-white py-24 md:py-32"
+      className="bg-black text-white py-6 md:py-12"
       data-aos="fade-up"
     >
       <div className="p-4 md:p-12">

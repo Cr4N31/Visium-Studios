@@ -75,7 +75,7 @@ function Home({ onThemeChange }) {
           <div id="studio-preview">
             <Studio />
           </div>
-
+          <ClientsCarousel />
           <div id="studio-notes">
             <StudioNotes />
           </div>
@@ -83,8 +83,6 @@ function Home({ onThemeChange }) {
           <div id="final-cta">
             <FinalCta />
           </div>
-
-          <ClientsCarousel />
         </div>
       </div>
     </main>

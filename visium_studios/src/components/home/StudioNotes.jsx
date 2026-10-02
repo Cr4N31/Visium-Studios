@@ -123,7 +123,7 @@ function StudioNotes() {
   const secondary = insights.filter((article) => !article.featured);
 
   return (
-    <section className="relative bg-black px-4 pt-24 pb-8 text-white md:px-12 md:pt-32">
+    <section className="relative bg-black px-4 pt-6 pb-8 text-white md:px-12 md:pt-12">
       <div className="mx-auto max-w-7xl">
         {/* Header */}
         <div className="mb-16 grid gap-8 md:grid-cols-[1fr_2fr] md:items-end">

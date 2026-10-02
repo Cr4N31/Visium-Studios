@@ -922,7 +922,7 @@ function VisiumPrinciples() {
   return (
     <section
       ref={sectionRef}
-      className="overflow-x-hidden bg-black px-4 py-24 text-white md:px-12 md:py-32"
+      className="overflow-x-hidden bg-black px-4 py-6 text-white md:px-12 md:py-12"
     >
       <motion.div
         className="mb-4 flex flex-col"

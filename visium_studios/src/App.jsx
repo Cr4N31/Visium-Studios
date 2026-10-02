@@ -1,4 +1,5 @@
 // src/App.jsx
+import { useEffect, useState } from "react";
 import { Routes, Route, useLocation } from "react-router-dom";
 import { CurtainNavigationProvider } from "./context/CurtainNavigationContext";
 import Header from "./shared/Header";
@@ -20,7 +21,6 @@ import ContactSection from "./components/home/ContactSection";
 import StartAProject from "./pages/StartAProject";
 import CallPage from "./components/project/CallPage";
 import ProjectBriefForm from "./components/project/ProjectBriefForm";
-import { useEffect, useState } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 

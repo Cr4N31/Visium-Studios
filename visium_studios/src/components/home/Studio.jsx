@@ -96,7 +96,7 @@ function Studio() {
   const scattered = team.slice(0, 4);
 
   return (
-    <section className="relative overflow-hidden bg-white px-4 py-24 text-black md:px-12">
+    <section className="relative overflow-hidden bg-white px-4 py-6 text-black md:px-12">
       {/* Desktop: scattered composition around the centered text */}
       {!isMobile && (
         <div className="relative mx-auto min-h-[850px] max-w-5xl">

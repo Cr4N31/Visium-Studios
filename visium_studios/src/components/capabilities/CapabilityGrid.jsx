@@ -152,7 +152,7 @@ function CapabilityGrid() {
   return (
     <>
       {capabilities.map((item, i) => (
-        <CapabilitySection key={item.id} item={item} index={i} />
+        <CapabilitySection id={item.id} key={item.id} item={item} index={i} />
       ))}
     </>
   );
