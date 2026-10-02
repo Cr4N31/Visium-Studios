@@ -1,3 +1,5 @@
+export const SITE_URL = "https://www.visiumstudios.co";
+
 export const DEFAULT_SEO = {
   title: "Visium Studios | Brand Strategy, Identity & Digital Design",
   description:

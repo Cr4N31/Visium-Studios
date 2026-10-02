@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { getInsight } from "../data/insights";
-import { DEFAULT_SEO, ROUTE_SEO } from "../data/seo";
+import { DEFAULT_SEO, ROUTE_SEO, SITE_URL } from "../data/seo";
 
 function upsertMeta(attribute, key, content) {
   let element = document.head.querySelector(`meta[${attribute}="${key}"]`);
@@ -48,10 +48,10 @@ function SeoMetadata() {
           image: article.image,
         }
       : (ROUTE_SEO[pathname.replace(/\/$/, "") || "/"] ?? DEFAULT_SEO);
-    const canonicalUrl = new URL(pathname, window.location.origin).href;
+    const canonicalUrl = new URL(pathname, SITE_URL).href;
     const imageUrl = new URL(
       page.image ?? "/assets/logo/visiumSingleLogoBlack.png",
-      window.location.origin,
+      SITE_URL,
     ).href;
 
     document.title = page.title;
@@ -72,18 +72,15 @@ function SeoMetadata() {
     const organization = {
       "@type": "Organization",
       name: "Visium Studios",
-      url: window.location.origin,
-      logo: new URL(
-        "/assets/logo/visiumSingleLogoBlack.png",
-        window.location.origin,
-      ).href,
+      url: SITE_URL,
+      logo: new URL("/assets/logo/visiumSingleLogoBlack.png", SITE_URL).href,
       description: DEFAULT_SEO.description,
     };
     const schemas = [
       {
         "@type": "WebSite",
         name: "Visium Studios",
-        url: window.location.origin,
+        url: SITE_URL,
       },
       organization,
     ];
