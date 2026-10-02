@@ -23,6 +23,7 @@ import ContactSection from "./components/home/ContactSection";
 import StartAProject from "./pages/StartAProject";
 import CallPage from "./components/project/CallPage";
 import ProjectBriefForm from "./components/project/ProjectBriefForm";
+import SeoMetadata from "./shared/SeoMetadata";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
@@ -57,6 +58,7 @@ function App() {
     <CurtainNavigationProvider>
       <div className="bg-black text-white">
         <ScrollToTop />
+        <SeoMetadata />
         <CustomCursor inverted={cursorInverted} />
         <Header inverted={headerInverted} />
         <Routes>
