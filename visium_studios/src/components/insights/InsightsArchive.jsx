@@ -17,8 +17,16 @@ function InsightRow({ article }) {
     >
       <Link
         to={`/insights/${article.slug}`}
-        className="group flex items-start justify-between gap-5 py-6 md:gap-12 md:py-10"
+        className="group flex flex-col md:flex-row items-start justify-between gap-5 py-6 md:gap-12 md:py-10"
       >
+        <div className="aspect-[4/3] md:w-24 w-full shrink-0 overflow-hidden bg-white/5 sm:w-40 md:w-72">
+          <img
+            src={article.image}
+            alt={article.title}
+            loading="lazy"
+            className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+          />
+        </div>
         <div className="flex min-w-0 flex-1 flex-col gap-3 md:gap-5">
           <p className="flex flex-wrap gap-x-3 text-[10px] uppercase tracking-[0.2em] text-white/50">
             <span>{article.category}</span>
@@ -47,15 +55,6 @@ function InsightRow({ article }) {
             </span>
           </span>
         </div>
-
-        <div className="aspect-[4/3] w-24 shrink-0 overflow-hidden bg-white/5 sm:w-40 md:w-72">
-          <img
-            src={article.image}
-            alt={article.title}
-            loading="lazy"
-            className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-          />
-        </div>
       </Link>
     </motion.li>
   );
@@ -70,7 +69,7 @@ function InsightsArchive() {
       : sortedInsights.filter((a) => a.category === active);
 
   return (
-    <section className="px-4 pb-24 -mt-36 md:px-10 md:pb-40">
+    <section className="px-4 pb-24 md:px-10 md:pb-40">
       <div className="mb-10 flex flex-col gap-6 md:mb-16 md:flex-row md:items-end md:justify-between">
         <p className="text-[11px] uppercase tracking-[0.2em] text-white/40">
           Archive (0{list.length})

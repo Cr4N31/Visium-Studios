@@ -58,11 +58,6 @@ function ProjectCard({ project }) {
           </span>
         </motion.div>
 
-        {/* Project index, always visible, top-left — quiet architectural marker */}
-        <span className="absolute top-4 left-4 z-10 text-white/50 text-xs tracking-widest">
-          {id}
-        </span>
-
         {/* Hover overlay: dark scrim + metadata */}
         <motion.div
           variants={overlay}

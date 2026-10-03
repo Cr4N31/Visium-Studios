@@ -64,36 +64,6 @@ function Footer({ inverted = false }) {
     <footer
       className={`mt-24 overflow-hidden border-t px-4 pt-8 pb-8 sm:px-6 md:px-8 ${themeClasses.shell}`}
     >
-      {/* ================= CTA ================= */}
-      <div
-        className="mb-16 flex flex-col gap-8 md:flex-row md:items-center md:justify-between"
-        data-aos="fade-up"
-      >
-        <p
-          className={`text-4xl font-medium tracking-tight md:text-5xl lg:text-6xl ${themeClasses.primary}`}
-        >
-          Have something worth building?
-        </p>
-
-        <a
-          href="/contact"
-          className={`
-            flex w-fit items-center gap-4
-            rounded-full
-            px-7 py-4
-            text-sm 
-            uppercase tracking-wide
-            transition-all duration-300
-            hover:gap-6
-            ${themeClasses.button}
-          `}
-        >
-          <span className="font-semibold">Let's talk</span>
-
-          <span className="font-semibold">→</span>
-        </a>
-      </div>
-
       {/* ================= MAIN NAVIGATION ================= */}
       <div
         className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-4"

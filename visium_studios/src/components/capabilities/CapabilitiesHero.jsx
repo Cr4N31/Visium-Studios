@@ -37,19 +37,18 @@ function CapabilitiesHero() {
   return (
     <section
       ref={ref}
-      className="relative flex min-h-screen flex-col justify-between px-4 pb-10 pt-28 md:px-10 md:pb-14 md:pt-32"
+      className="relative flex min-h-[50vh] flex-col justify-between px-4 pb-10 pt-28 md:px-10 md:pb-14 md:pt-32"
     >
       <div className="flex items-start justify-between text-[11px] mb-2 uppercase tracking-[0.2em] text-white/40">
         <p>Capabilities</p>
         <p>(0{capabilities.length})</p>
       </div>
 
-      <motion.h1
-        style={{ y: headY, opacity: headOpacity }}
-        className="my-16 text-[clamp(2.9rem,9vw,5rem)] font-normal leading-[1.08] md:mt-24 md:leading-[1.06] lg:mt-20 md:text-[clamp(3rem,5vw,5rem)"
-      >
-        <Line delay={0.1}>One Visual Language,</Line>
-        <Line delay={0.25}>Across Every Touchpoint</Line>
+      <motion.h1 style={{ y: headY, opacity: headOpacity }}>
+        <span className="text-[clamp(2.9rem,9vw,5rem)] tracking-[-0.07em] font-normal leading-[1.08] md:leading-[1.06] md:text-[clamp(3rem,5vw,5rem)]">
+          <Line delay={0.1}>One Visual Language,</Line>
+          <Line delay={0.25}>Across Every Touchpoint</Line>
+        </span>
       </motion.h1>
 
       <div className="flex flex-col gap-12 md:flex-row md:items-end md:justify-between">
@@ -57,25 +56,6 @@ function CapabilitiesHero() {
           Visium brings brand, digital, product, motion and development together
           under one visual direction.
         </p>
-
-        <ul className="flex flex-col gap-1 md:items-end">
-          {capabilities.map((capability, i) => (
-            <motion.li
-              key={capability.href}
-              className="flex items-baseline gap-4 text-2xl tracking-[-0.03em] text-white/35 transition-colors duration-500 hover:text-white md:text-3xl"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.9, ease, delay: 0.8 + i * 0.07 }}
-            >
-              <a href={capability.href}>
-                <span className="text-[11px] tracking-[0.2em] text-white/30">
-                  0{i + 1}
-                </span>
-                {capability.label}
-              </a>
-            </motion.li>
-          ))}
-        </ul>
       </div>
     </section>
   );

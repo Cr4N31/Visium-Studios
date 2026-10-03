@@ -67,12 +67,12 @@ function ContactSection({ onSubmit }) {
       <div className="grid gap-16 md:grid-cols-[minmax(0,1.2fr)_minmax(20rem,0.8fr)] md:gap-20 lg:gap-28">
         <div>
           <p className="mb-8 text-xs uppercase tracking-[0.2em] text-white/40">
-            09 / Contact
+            Contact
           </p>
 
           <h2
             id="contact-heading"
-            className="max-w-4xl text-[clamp(3rem,8vw,8rem)] font-semibold leading-[0.9] tracking-[-0.04em] text-white"
+            className="max-w-4xl text-[clamp(2.9rem,9vw,5rem)] tracking-[-0.07em] font-normal leading-[1.08] md:leading-[1.06] md:text-[clamp(3rem,5vw,5rem)]"
           >
             Let&apos;s build something worth looking at.
           </h2>

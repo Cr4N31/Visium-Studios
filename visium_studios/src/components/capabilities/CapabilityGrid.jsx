@@ -1,5 +1,6 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { Link } from "react-router-dom";
 import { capabilities } from "../../data/capabilitiesPage";
 
 const ease = [0.22, 1, 0.36, 1];
@@ -55,14 +56,65 @@ function FloatingImage({ src, alt, slot, index }) {
   );
 }
 
-function scrollToSection(e, id) {
-  e.preventDefault();
-  document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+function MobileCarousel({ images, title }) {
+  const trackRef = useRef(null);
+  const [active, setActive] = useState(0);
+
+  // Progress based, so the last card registers even when it can't snap
+  // fully to the start edge.
+  const handleScroll = () => {
+    const el = trackRef.current;
+    if (!el || images.length < 2) return;
+    const max = el.scrollWidth - el.clientWidth;
+    const progress = max > 0 ? el.scrollLeft / max : 0;
+    setActive(Math.round(progress * (images.length - 1)));
+  };
+
+  return (
+    <motion.div
+      className="relative z-10 -mx-4 mt-14 md:hidden"
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-10%" }}
+      transition={{ duration: 0.9, ease }}
+    >
+      <div
+        ref={trackRef}
+        onScroll={handleScroll}
+        className="flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain scroll-pl-4 px-4 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
+        {images.map((src, i) => (
+          <div
+            key={`${src}-${i}`}
+            className="aspect-[4/5] w-[76%] shrink-0 snap-start overflow-hidden"
+          >
+            <Media src={src} alt={`${title} selected work ${i + 1}`} />
+          </div>
+        ))}
+      </div>
+
+      {/* Counter + progress */}
+      <div className="mt-5 flex items-center gap-4 px-4">
+        <span className="text-[10px] uppercase tracking-[0.2em] text-white/60 tabular-nums">
+          0{active + 1} / 0{images.length}
+        </span>
+        <div className="flex flex-1 gap-1">
+          {images.map((_, i) => (
+            <span
+              key={i}
+              className={`h-px flex-1 transition-colors duration-500 ${
+                i === active ? "bg-white" : "bg-white/20"
+              }`}
+            />
+          ))}
+        </div>
+      </div>
+    </motion.div>
+  );
 }
 
 function CapabilitySection({ item, index }) {
   const layout = slotsFor(item.slctdWrk.length);
-  const others = capabilities.filter((c) => c.id !== item.id);
 
   return (
     <section
@@ -91,7 +143,7 @@ function CapabilitySection({ item, index }) {
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          0{index + 1} / {item.title}
+          {item.title}
         </motion.p>
 
         <motion.h2
@@ -108,42 +160,15 @@ function CapabilitySection({ item, index }) {
           {item.what}
         </p>
 
-        <ul className="mt-8 flex flex-wrap justify-center gap-x-5 gap-y-2 text-[11px] uppercase tracking-[0.18em] text-white/80">
-          {item.does.map((d) => (
-            <li key={d}>{d}</li>
-          ))}
-        </ul>
-
-        <div className="mt-12 flex flex-wrap items-baseline justify-center gap-x-5 gap-y-1">
-          <span className="text-[10px] uppercase tracking-[0.2em] text-white/35">
-            Related
-          </span>
-          {others.map((o) => (
-            <a
-              key={o.id}
-              href={`#${o.id}`}
-              onClick={(e) => scrollToSection(e, o.id)}
-              className="text-base italic tracking-[-0.02em] text-white/45 transition-colors duration-500 hover:text-white"
-            >
-              {o.label}
-            </a>
-          ))}
-        </div>
+        <Link
+          to={`/capabilities/${item.id}`}
+          className="hero-cta relative isolate mt-10 inline-flex items-center gap-4 overflow-hidden rounded-full border-2 border-white bg-white px-5 py-2 text-black transition-colors hover:border-white"
+        >
+          <span className="relative z-[1] font-semibold">Read more →</span>
+        </Link>
       </div>
 
-      {/* Mobile: staggered work below the text */}
-      <div className="relative z-10 mt-16 flex w-full flex-col gap-5 md:hidden">
-        {item.slctdWrk.map((src, i) => (
-          <div
-            key={`${src}-${i}`}
-            className={`aspect-[4/3] w-[58%] overflow-hidden ${
-              i % 2 === 0 ? "self-start" : "self-end"
-            }`}
-          >
-            <Media src={src} alt={`${item.title} selected work ${i + 1}`} />
-          </div>
-        ))}
-      </div>
+      <MobileCarousel images={item.slctdWrk} title={item.title} />
     </section>
   );
 }

@@ -30,17 +30,18 @@ function InsightHero() {
   return (
     <section
       ref={ref}
-      className="relative flex min-h-screen flex-col justify-center px-4 text-white"
+      className="relative flex min-h-[70vh] flex-col justify-center px-4 text-white"
     >
       {/* Headline */}
-      <motion.h1
-        style={{ y: headY, opacity: headOpacity }}
-        className="max-w-[18ch] text-[clamp(2.5rem,7.5vw,7.5rem)] font-semibold leading-[0.9] tracking-[-0.045em] md:my-0 md:max-w-6xl"
-      >
-        <Line delay={0.1}>Our thoughts on building</Line>
-        <Line delay={0.25} className="font-light italic text-white/55">
-          brands, products and visual systems.
-        </Line>
+      <motion.h1 style={{ y: headY, opacity: headOpacity }}>
+        <span className="text-[clamp(2.9rem,9vw,5rem)] tracking-[-0.07em] font-normal leading-[1.08] md:leading-[1.06] md:text-[clamp(3rem,5vw,5rem)]">
+          <Line delay={0.1}>Our thoughts on building</Line>
+          <Line delay={0.25}>
+            <span className=" underline">brands</span>,{" "}
+            <span className=" underline">products</span> and{" "}
+            <span className=" underline">visual systems</span>.
+          </Line>
+        </span>
       </motion.h1>
     </section>
   );

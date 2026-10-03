@@ -53,7 +53,7 @@ function StudioHeader() {
         className="mx-auto max-w-7xl"
       >
         <div className="mb-20 flex items-start justify-between border-b border-white/15 pb-4 text-[10px] uppercase tracking-[0.2em] text-white/40 md:mb-28 md:text-xs">
-          <motion.span variants={fadeUp}>Studio / 01</motion.span>
+          <motion.span variants={fadeUp}>Studio</motion.span>
           <motion.span variants={fadeUp}>
             Setting the visual standard
           </motion.span>
@@ -64,17 +64,15 @@ function StudioHeader() {
             <p className="mb-7 text-xs uppercase tracking-[0.2em] text-white/40">
               The world behind the work
             </p>
-            <h1 className="max-w-5xl overflow-hidden text-[clamp(3.5rem,9vw,9rem)] font-semibold leading-[0.88] tracking-[-0.045em]">
-              <motion.span variants={revealUp} className="block">
-                Make the
-              </motion.span>
-              <motion.span variants={revealUp} className="block text-white/60">
-                invisible
-              </motion.span>
-              <motion.span variants={revealUp} className="block">
+            <div className="overflow-hidden flex flex-col">
+              <motion.span
+                variants={revealUp}
+                className="block text-[clamp(2.9rem,9vw,5rem)] tracking-[-0.07em] font-normal leading-[1.08] md:leading-[1.06] md:text-[clamp(3rem,5vw,5rem)]"
+              >
+                Make the <span className="text-white/40">invisible</span>{" "}
                 visible.
               </motion.span>
-            </h1>
+            </div>
           </div>
 
           <div className="flex flex-col gap-6 border-l border-white/20 pl-5 text-base leading-relaxed text-white/60 md:pb-2 md:pl-8 md:text-lg">

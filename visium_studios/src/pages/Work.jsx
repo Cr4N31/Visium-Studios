@@ -20,14 +20,12 @@ function Work() {
         viewport={{ once: true, amount: 0.4 }}
         variants={fadeUp}
       >
-        <h1 className="font-serif font-medium tracking-[-0.07em] text-3xl md:text-8xl mt-3 leading-tight">
-          From the thinkers and builders behind Visium.
+        <h1>
+          <span className="text-[clamp(2.9rem,9vw,5rem)] tracking-[-0.07em] font-normal leading-[1.08] md:leading-[1.06] md:text-[clamp(3rem,5vw,5rem)]">
+            A selection of identities, digital experiences and visual systems
+            built for ambitious brands.
+          </span>
         </h1>
-        <p className="text-white/60 mt-4 max-w-xl">
-          These are a collections of projects and trusted clients that have been
-          handled by visium, since it started. Ranging from brand designs,
-          websites, digital products, brand idenity etc.
-        </p>
       </motion.div>
 
       <WorkGrid projects={projects} />
