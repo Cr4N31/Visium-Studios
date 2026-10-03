@@ -15,10 +15,10 @@ function ClientRow({ items, reverse = false }) {
       >
         {loopItems.map((client, index) => (
           <span
-            key={`${client}-${index}`}
+            key={`${client.name}-${index}`}
             className="whitespace-nowrap text-lg tracking-tight text-white/30 transition-colors duration-300 hover:text-white/70 sm:text-xl md:text-2xl"
           >
-            {client}
+            {client.name}
           </span>
         ))}
       </motion.div>

@@ -46,15 +46,10 @@ function CapabilitiesHero() {
 
       <motion.h1
         style={{ y: headY, opacity: headOpacity }}
-        className="my-16 max-w-[16ch] text-[clamp(2.75rem,9vw,9rem)] font-semibold leading-[0.9] tracking-[-0.045em] text-white md:my-0 md:max-w-6xl"
+        className="my-16 text-[clamp(2.9rem,9vw,5rem)] font-normal leading-[1.08] md:mt-24 md:leading-[1.06] lg:mt-20 md:text-[clamp(3rem,5vw,5rem)"
       >
         <Line delay={0.1}>One Visual Language,</Line>
-        <Line
-          delay={0.25}
-          className="font-light italic text-white/55 md:pl-[12vw]"
-        >
-          Across Every Touchpoint
-        </Line>
+        <Line delay={0.25}>Across Every Touchpoint</Line>
       </motion.h1>
 
       <div className="flex flex-col gap-12 md:flex-row md:items-end md:justify-between">
