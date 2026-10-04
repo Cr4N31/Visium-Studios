@@ -1,9 +1,10 @@
 import { FaLinkedinIn, FaInstagram, FaTwitter } from "react-icons/fa";
+import { Link, useLocation } from "react-router-dom";
 
 import footer_img from "/assets/logo/fullWhite.png";
 
-function Footer({ inverted = false }) {
-  const isLight = false;
+function Footer() {
+  const { pathname } = useLocation();
   const themeClasses = {
     shell: "border-white/10 bg-black text-white",
     muted: "text-white/40",
@@ -14,10 +15,12 @@ function Footer({ inverted = false }) {
     button: "bg-white text-black",
   };
   const siteMap = [
-    { name: "Home", href: "#home" },
+    { name: "Home", href: "/" },
     { name: "Work", href: "/work" },
+    { name: "Capabilities", href: "/capabilities" },
     { name: "Studio", href: "/studio" },
-    { name: "Contact", href: "#contact" },
+    { name: "Insights", href: "/insights" },
+    { name: "Contact", href: "/contact" },
   ];
 
   const branding = [
@@ -60,6 +63,20 @@ function Footer({ inverted = false }) {
     },
   ];
 
+  const handleSiteMapClick = (event, name, href) => {
+    if (pathname !== href) return;
+
+    const targetId =
+      name === "Home" ? "home" : name === "Contact" ? "contact" : null;
+    if (!targetId) return;
+
+    const target = document.getElementById(targetId);
+    if (!target) return;
+
+    event.preventDefault();
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   return (
     <footer
       className={`mt-24 overflow-hidden border-t px-4 pt-8 pb-8 sm:px-6 md:px-8 ${themeClasses.shell}`}
@@ -79,9 +96,12 @@ function Footer({ inverted = false }) {
 
           <div className="space-y-0">
             {siteMap.map((link) => (
-              <a
+              <Link
                 key={link.name}
-                href={link.href}
+                to={link.href}
+                onClick={(event) =>
+                  handleSiteMapClick(event, link.name, link.href)
+                }
                 className={`
                   block
                   text-2xl
@@ -93,7 +113,7 @@ function Footer({ inverted = false }) {
                 `}
               >
                 {link.name}
-              </a>
+              </Link>
             ))}
           </div>
         </div>
