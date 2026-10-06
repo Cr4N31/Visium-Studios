@@ -90,7 +90,7 @@ function VisiumStandard() {
 
   const intro = (
     <motion.div
-      className="flex flex-col px-4 py-24 md:px-10 md:py-32"
+      className="flex flex-col px-8 py-24 md:py-32"
       initial="hidden"
       whileInView="show"
       viewport={{ once: false, amount: 0.5 }}
@@ -115,7 +115,7 @@ function VisiumStandard() {
     return (
       <section className="bg-black text-white">
         {intro}
-        <div className="px-4 md:px-10">
+        <div className="px-8">
           {principles.map((p) => (
             <div
               key={p.top}
@@ -127,7 +127,7 @@ function VisiumStandard() {
             </div>
           ))}
         </div>
-        <div className="flex items-center justify-center px-4 py-24 text-center md:py-32">
+        <div className="flex items-center justify-center px-8 py-24 text-center md:py-32">
           <p className="text-sm uppercase tracking-[0.3em] text-white/60">
             Setting the visual standard.
           </p>
@@ -140,7 +140,7 @@ function VisiumStandard() {
     <section className="bg-black text-white">
       {intro}
 
-      <div className="px-4 md:px-10">
+      <div className="px-8">
         {principles.map((p, index) => (
           <PrincipleRow
             key={p.top}
@@ -153,7 +153,7 @@ function VisiumStandard() {
 
       {/* Outro — centered, fades up once as it scrolls into view */}
       <motion.div
-        className="flex items-center justify-center px-4 py-24 text-center md:py-32"
+        className="flex items-center justify-center px-8 py-24 text-center md:py-32"
         initial="hidden"
         whileInView="show"
         viewport={{ once: true, amount: 0.6 }}

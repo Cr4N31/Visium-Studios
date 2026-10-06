@@ -406,7 +406,7 @@ function VisiumApproach() {
           INTRO
       ========================================================== */}
 
-      <div className="flex flex-col px-4 py-24 md:px-12 md:py-32">
+      <div className="flex flex-col px-8 py-24 md:py-32">
         <p>
           <span className="text-xl">The Visium Approach</span>
         </p>
@@ -922,7 +922,7 @@ function VisiumPrinciples() {
   return (
     <section
       ref={sectionRef}
-      className="overflow-x-hidden bg-black px-4 py-6 text-white md:px-12 md:py-12"
+      className="overflow-x-hidden bg-black px-8 py-6 text-white md:py-12"
     >
       <motion.div
         className="mb-4 flex flex-col"

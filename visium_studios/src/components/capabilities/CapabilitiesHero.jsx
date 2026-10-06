@@ -37,7 +37,7 @@ function CapabilitiesHero() {
   return (
     <section
       ref={ref}
-      className="relative flex min-h-[50vh] flex-col justify-between px-4 pb-10 pt-28 md:px-10 md:pb-14 md:pt-32"
+      className="relative flex min-h-[50vh] flex-col justify-between px-8 pb-10 pt-28 md:pb-14 md:pt-32"
     >
       <div className="flex items-start justify-between text-[11px] mb-2 uppercase tracking-[0.2em] text-white/40">
         <p>Capabilities</p>

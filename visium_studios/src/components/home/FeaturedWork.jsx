@@ -17,7 +17,7 @@ function FeaturedWork() {
       className="bg-black text-white py-6 md:py-12"
       data-aos="fade-up"
     >
-      <div className="p-4 md:p-12">
+      <div className="px-8 py-4 md:py-12">
         <p>
           <span className="text-[clamp(2.9rem,9vw,5rem)] font-[400] leading-[0.95] md:text-[clamp(3rem,5vw,5rem)] tracking-tight">
             Selected Work
@@ -30,7 +30,7 @@ function FeaturedWork() {
       </div>
 
       {gridProjects.length > 0 && (
-        <div className="grid md:grid-cols-2 grid-cols-1 gap-4 md:gap-6 px-4 md:px-10 mt-4 md:mt-6 max-w-[1600px] mx-auto">
+        <div className="mt-4 grid max-w-[1600px] grid-cols-1 gap-4 px-8 md:mx-auto md:mt-6 md:grid-cols-2 md:gap-6">
           {gridProjects.map((project) => (
             <EditorialProjectCard key={project.id} project={project} />
           ))}

@@ -301,7 +301,7 @@ function ProjectBriefForm({ onSubmit }) {
   return (
     <section
       ref={containerRef}
-      className="relative mx-auto flex min-h-screen w-full max-w-3xl flex-col justify-center overflow-hidden px-6 py-16"
+      className="relative mx-auto flex min-h-screen w-full max-w-3xl flex-col justify-center overflow-hidden px-8 py-16"
     >
       <FormBlobCursor containerRef={containerRef} />
 

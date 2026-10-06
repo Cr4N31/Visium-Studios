@@ -129,7 +129,7 @@ function Branding() {
   return (
     <div className="bg-black text-white">
       {/* Header */}
-      <section className="px-6 pb-16 pt-28 sm:px-10 md:pt-40">
+      <section className="px-8 pb-16 pt-28 md:pt-40">
         <h1 className="text-[clamp(2.5rem,8vw,5rem)] font-normal leading-[1.05] text-white">
           Branding
         </h1>
@@ -142,7 +142,7 @@ function Branding() {
       </section>
 
       {/* 01 — What it means */}
-      <section className="grid grid-cols-1 gap-8 border-t border-white/10 px-6 py-16 sm:px-10 md:grid-cols-[minmax(0,280px)_1fr] md:gap-16">
+      <section className="grid grid-cols-1 gap-8 border-t border-white/10 px-8 py-16 md:grid-cols-[minmax(0,280px)_1fr] md:gap-16">
         <div>
           <span className="block text-xs text-white/40">01</span>
           <h2 className="mt-2 text-xl font-normal uppercase tracking-tight text-white sm:text-2xl">
@@ -187,7 +187,7 @@ function Branding() {
       </section>
 
       {/* 02 — Services */}
-      <section className="grid grid-cols-1 gap-8 border-t border-white/10 px-6 py-16 sm:px-10 md:grid-cols-[minmax(0,280px)_1fr] md:gap-16">
+      <section className="grid grid-cols-1 gap-8 border-t border-white/10 px-8 py-16 md:grid-cols-[minmax(0,280px)_1fr] md:gap-16">
         <div>
           <span className="block text-xs text-white/40">02</span>
           <h2 className="mt-2 text-xl font-normal uppercase tracking-tight text-white sm:text-2xl">
@@ -205,7 +205,7 @@ function Branding() {
       </section>
 
       {/* 03 — Projects */}
-      <section className="border-t border-white/10 px-6 py-16 sm:px-10">
+      <section className="border-t border-white/10 px-8 py-16">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-[minmax(0,280px)_1fr] md:gap-16">
           <div>
             <span className="block text-xs text-white/40">03</span>
@@ -238,7 +238,7 @@ function Branding() {
       </section>
 
       {/* FAQ */}
-      <section className="border-t border-white/10 px-6 py-16 sm:px-10">
+      <section className="border-t border-white/10 px-8 py-16">
         <h2 className="text-[clamp(2rem,6vw,3.5rem)] font-normal leading-[1.05] text-white">
           Frequently asked questions
         </h2>
@@ -256,7 +256,7 @@ function Branding() {
       </section>
 
       {/* CTA */}
-      <section className="flex justify-center border-t border-white/10 px-6 py-16 sm:px-10">
+      <section className="flex justify-center border-t border-white/10 px-8 py-16">
         <a
           type="button"
           href="/contact"

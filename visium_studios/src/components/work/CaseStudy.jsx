@@ -123,7 +123,7 @@ function CaseStudy() {
 
   return (
     <main className="bg-[#050505] text-white" data-aos="fade-up">
-      <div className="mx-auto max-w-[1200px] px-4 pb-24 pt-4 md:px-8">
+      <div className="mx-auto max-w-[1200px] px-8 pb-24 pt-4">
         <div className="mb-8 mt-24 flex items-center justify-between">
           <Link
             to="/work"

@@ -72,7 +72,7 @@ function MobileCarousel({ images, title }) {
 
   return (
     <motion.div
-      className="relative z-10 -mx-4 mt-14 md:hidden"
+      className="relative z-10 -mx-8 mt-14 md:hidden"
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-10%" }}
@@ -81,7 +81,7 @@ function MobileCarousel({ images, title }) {
       <div
         ref={trackRef}
         onScroll={handleScroll}
-        className="flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain scroll-pl-4 px-4 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain scroll-pl-8 px-8 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         {images.map((src, i) => (
           <div
@@ -94,7 +94,7 @@ function MobileCarousel({ images, title }) {
       </div>
 
       {/* Counter + progress */}
-      <div className="mt-5 flex items-center gap-4 px-4">
+      <div className="mt-5 flex items-center gap-4 px-8">
         <span className="text-[10px] uppercase tracking-[0.2em] text-white/60 tabular-nums">
           0{active + 1} / 0{images.length}
         </span>
@@ -119,7 +119,7 @@ function CapabilitySection({ item, index }) {
   return (
     <section
       id={item.id}
-      className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-4 py-28 md:px-10"
+      className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-8 py-28"
     >
       {/* Desktop: scattered work around the edges */}
       <div className="pointer-events-none absolute inset-0 hidden md:block">

@@ -4,7 +4,7 @@ function RelatedProjects({ projects }) {
   if (!projects?.length) return null;
 
   return (
-    <div className="border-t border-white/10 pt-14 pb-24 px-4 md:px-10">
+    <div className="border-t border-white/10 px-8 pb-24 pt-14">
       <span className="text-white/40 text-xs uppercase tracking-widest">
         Next up
       </span>

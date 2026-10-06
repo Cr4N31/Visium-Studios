@@ -1,73 +1,51 @@
+import { useLayoutEffect, useState } from "react";
 import {
-  useMotionValue,
-  useSpring,
-  useTransform,
   motion,
 } from "framer-motion";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { useMagnetic, useMorphPointer } from "./useCtaPointer";
 
 const MotionLink = motion(Link);
 
-function useMorphPointer() {
-  const x = useMotionValue(50);
-  const y = useMotionValue(50);
-  const scale = useMotionValue(0);
-  const smoothX = useSpring(x, { stiffness: 120, damping: 22, mass: 0.45 });
-  const smoothY = useSpring(y, { stiffness: 120, damping: 22, mass: 0.45 });
-  const smoothScale = useSpring(scale, {
-    stiffness: 150,
-    damping: 20,
-    mass: 0.4,
-  });
-
-  return {
-    left: useTransform(smoothX, (value) => `${value}%`),
-    top: useTransform(smoothY, (value) => `${value}%`),
-    scale: smoothScale,
-    onPointerMove: (event) => {
-      const bounds = event.currentTarget.getBoundingClientRect();
-      x.set(((event.clientX - bounds.left) / bounds.width) * 100);
-      y.set(((event.clientY - bounds.top) / bounds.height) * 100);
-    },
-    onPointerEnter: () => scale.set(1),
-    onPointerLeave: () => scale.set(0),
-  };
-}
-
-function useMagnetic(strength = 0.35) {
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const springX = useSpring(x, { stiffness: 150, damping: 15, mass: 0.3 });
-  const springY = useSpring(y, { stiffness: 150, damping: 15, mass: 0.3 });
-
-  return {
-    x: springX,
-    y: springY,
-    onPointerMove: (event) => {
-      const bounds = event.currentTarget.getBoundingClientRect();
-      const relX = event.clientX - (bounds.left + bounds.width / 2);
-      const relY = event.clientY - (bounds.top + bounds.height / 2);
-      x.set(relX * strength);
-      y.set(relY * strength);
-    },
-    onPointerLeave: () => {
-      x.set(0);
-      y.set(0);
-    },
-  };
-}
-
 function FloatingProjectCta() {
+  const { pathname } = useLocation();
+  const isHomePage = pathname === "/";
+  const [homeHeroVisible, setHomeHeroVisible] = useState(isHomePage);
   const morph = useMorphPointer();
   const magnetic = useMagnetic();
+
+  useLayoutEffect(() => {
+    if (!isHomePage) return undefined;
+
+    const hero = document.getElementById("home");
+    if (!hero) return undefined;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setHomeHeroVisible(entry.isIntersecting),
+      { threshold: 0 },
+    );
+
+    observer.observe(hero);
+    return () => observer.disconnect();
+  }, [isHomePage]);
 
   return (
     <MotionLink
       to="/startaproject"
       aria-label="Start a project"
+      aria-hidden={isHomePage && homeHeroVisible}
+      tabIndex={isHomePage && homeHeroVisible ? -1 : undefined}
       data-blob
-      className="hero-cta group fixed bottom-4 right-4 z-[60] inline-flex h-14 w-14 isolate items-center overflow-hidden rounded-full border-2 border-white bg-white px-3 text-black transition-[width] duration-300 ease-out hover:w-52 focus-visible:w-52 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white sm:bottom-6 sm:right-6 motion-reduce:transition-none"
-      style={{ x: magnetic.x, y: magnetic.y }}
+      className={`hero-cta group fixed bottom-4 right-4 z-[60] inline-flex h-14 w-14 isolate items-center overflow-hidden rounded-full border-2 border-white bg-white px-3 text-black transition-[width,opacity,visibility] duration-300 ease-out hover:w-52 focus-visible:w-52 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white sm:bottom-6 sm:right-6 motion-reduce:transition-none ${
+        isHomePage && homeHeroVisible
+          ? "pointer-events-none invisible opacity-0"
+          : "visible opacity-100"
+      }`}
+      style={{
+        x: magnetic.x,
+        y: magnetic.y,
+        pointerEvents: isHomePage && homeHeroVisible ? "none" : undefined,
+      }}
       onPointerEnter={morph.onPointerEnter}
       onPointerLeave={(event) => {
         morph.onPointerLeave(event);

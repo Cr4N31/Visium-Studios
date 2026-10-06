@@ -66,7 +66,7 @@ function BrandingPageLayout({
 
   return (
     <div className="bg-black text-white">
-      <section className="px-6 pb-16 pt-28 sm:px-10 md:pt-40">
+      <section className="px-8 pb-16 pt-28 md:pt-40">
         <h1 className="text-[clamp(2.5rem,8vw,5rem)] font-normal leading-[1.05] text-white">
           {title}
         </h1>
@@ -78,7 +78,7 @@ function BrandingPageLayout({
       {sections.map((section, index) => (
         <section
           key={section.heading || index}
-          className="grid grid-cols-1 gap-8 border-t border-white/10 px-6 py-16 sm:px-10 md:grid-cols-[minmax(0,280px)_1fr] md:gap-16"
+          className="grid grid-cols-1 gap-8 border-t border-white/10 px-8 py-16 md:grid-cols-[minmax(0,280px)_1fr] md:gap-16"
         >
           <div>
             <span className="block text-xs text-white/40">
@@ -103,7 +103,7 @@ function BrandingPageLayout({
       ))}
 
       {services.length > 0 ? (
-        <section className="grid grid-cols-1 gap-8 border-t border-white/10 px-6 py-16 sm:px-10 md:grid-cols-[minmax(0,280px)_1fr] md:gap-16">
+        <section className="grid grid-cols-1 gap-8 border-t border-white/10 px-8 py-16 md:grid-cols-[minmax(0,280px)_1fr] md:gap-16">
           <div>
             <span className="block text-xs text-white/40">
               {String(sections.length + 1).padStart(2, "0")}
@@ -124,7 +124,7 @@ function BrandingPageLayout({
       ) : null}
 
       {projects.length > 0 ? (
-        <section className="border-t border-white/10 px-6 py-16 sm:px-10">
+        <section className="border-t border-white/10 px-8 py-16">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-[minmax(0,280px)_1fr] md:gap-16">
             <div>
               <span className="block text-xs text-white/40">
@@ -161,7 +161,7 @@ function BrandingPageLayout({
       ) : null}
 
       {faqs.length > 0 ? (
-        <section className="border-t border-white/10 px-6 py-16 sm:px-10">
+        <section className="border-t border-white/10 px-8 py-16">
           <h2 className="text-[clamp(2rem,6vw,3.5rem)] font-normal leading-[1.05] text-white">
             Frequently asked questions
           </h2>
@@ -179,7 +179,7 @@ function BrandingPageLayout({
         </section>
       ) : null}
 
-      <section className="flex justify-center border-t border-white/10 px-6 py-16 sm:px-10">
+      <section className="flex justify-center border-t border-white/10 px-8 py-16">
         <a
           href={ctaHref}
           className="rounded-full border border-white/30 px-6 py-3 text-sm text-white hover:border-white/60"

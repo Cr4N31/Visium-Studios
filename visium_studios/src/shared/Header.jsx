@@ -566,7 +566,7 @@ function MenuOverlay({
           <div className="relative z-10 min-h-full flex flex-col">
             <motion.div
               variants={linkVariants}
-              className="sticky top-0 z-10 flex items-center justify-between bg-transparent px-4 sm:px-6 pt-6 pb-4 shrink-0"
+              className="sticky top-0 z-10 flex items-center justify-between bg-transparent px-8 pt-6 pb-4 shrink-0"
             >
               <span className="flex items-center gap-1.5 text-sm font-semibold text-white">
                 <img src={header_logo} className="w-20" />
@@ -719,12 +719,12 @@ function Header({ inverted = false }) {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 p-4 bg-transparent transition-colors duration-500 ease-out ${
+      className={`fixed top-0 left-0 right-0 z-50 py-4 px-2 bg-transparent transition-colors duration-500 ease-out ${
         inverted ? "text-black" : "text-white"
       }`}
     >
       <div
-        className={`hidden md:flex items-center justify-between px-6 lg:px-8 transition-[height,opacity] duration-500 ease-out ${
+        className={`hidden md:flex items-center justify-between px-6 transition-[height,opacity] duration-500 ease-out ${
           scrolled ? "h-[52px] opacity-95" : "h-[68px] opacity-100"
         }`}
       >

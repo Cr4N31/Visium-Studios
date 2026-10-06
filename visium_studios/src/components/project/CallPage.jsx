@@ -83,7 +83,7 @@ function CallPage() {
   const reduceMotion = useReducedMotion();
 
   return (
-    <section className="flex min-h-screen flex-col p-6" id="call-page">
+    <section className="flex min-h-screen flex-col px-8 py-6" id="call-page">
       <div className="mt-18 mb-4 relative left-0">
         <a
           href="/startaproject"

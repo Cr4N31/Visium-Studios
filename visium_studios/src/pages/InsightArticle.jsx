@@ -71,7 +71,7 @@ function InsightArticle() {
   return (
     <article className="bg-black text-white">
       {/* Opening */}
-      <header className="px-4 pb-10 pt-32 md:px-10 md:pb-16 md:pt-44">
+      <header className="px-8 pb-10 pt-32 md:pb-16 md:pt-44">
         <motion.p
           className="mb-6 text-[11px] uppercase tracking-[0.2em] text-white/40"
           initial={{ opacity: 0 }}
@@ -97,7 +97,7 @@ function InsightArticle() {
       </header>
 
       <motion.div
-        className="px-4 md:px-10"
+        className="px-8"
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1.1, ease, delay: 0.2 }}
@@ -110,7 +110,7 @@ function InsightArticle() {
       </motion.div>
 
       {/* Content */}
-      <div className="mx-auto max-w-2xl px-4 pb-24 pt-14 md:px-0 md:pb-36 md:pt-24">
+      <div className="mx-auto max-w-2xl px-8 pb-24 pt-14 md:px-0 md:pb-36 md:pt-24">
         {article.body.map((block, i) => (
           <Block key={i} block={block} />
         ))}
@@ -118,7 +118,7 @@ function InsightArticle() {
 
       {/* Related notes */}
       {related.length > 0 && (
-        <section className="px-4 pb-24 md:px-10 md:pb-36">
+        <section className="px-8 pb-24 md:pb-36">
           <p className="mb-8 text-[11px] uppercase tracking-[0.2em] text-white/40">
             Related notes
           </p>
@@ -152,7 +152,7 @@ function InsightArticle() {
       {/* Previous / Next */}
       <nav
         aria-label="More articles"
-        className="flex flex-col gap-10 px-4 pb-24 md:flex-row md:justify-between md:gap-8 md:px-10"
+        className="flex flex-col gap-10 px-8 pb-24 md:flex-row md:justify-between md:gap-8"
       >
         {[
           { label: "Previous", item: prev, align: "" },
@@ -174,7 +174,7 @@ function InsightArticle() {
       </nav>
 
       {/* End */}
-      <section className="px-4 pb-24 md:px-10 md:pb-40">
+      <section className="px-8 pb-24 md:pb-40">
         <Link
           to="/contact"
           className="group inline-flex items-baseline gap-4 text-[clamp(2.5rem,8vw,8rem)] font-semibold leading-[0.9] tracking-[-0.045em] text-white/80 transition-colors duration-500 hover:text-white"

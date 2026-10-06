@@ -28,7 +28,7 @@ function ClientRow({ items, reverse = false }) {
 
 function ClientsStrip() {
   return (
-    <section className="overflow-hidden border-t border-white/10 px-4 py-16 sm:px-6 md:px-10 md:py-24">
+    <section className="overflow-hidden border-t border-white/10 px-8 py-16 md:py-24">
       <div className="mb-8 flex items-end justify-between gap-6 md:mb-12">
         <p className="text-xs uppercase tracking-[0.2em] text-white/40">
           Selected clients

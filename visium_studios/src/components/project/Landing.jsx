@@ -87,7 +87,7 @@ function Landing() {
   const reduceMotion = useReducedMotion();
 
   return (
-    <section className="flex min-h-screen flex-col items-center justify-center p-6">
+    <section className="flex min-h-screen flex-col items-center justify-center px-8 py-6">
       <div className="p-12">
         <motion.h1
           initial={reduceMotion ? false : "hidden"}

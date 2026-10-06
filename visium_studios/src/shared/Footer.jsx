@@ -79,7 +79,7 @@ function Footer() {
 
   return (
     <footer
-      className={`mt-24 overflow-hidden border-t px-4 pt-8 pb-8 sm:px-6 md:px-8 ${themeClasses.shell}`}
+      className={`mt-24 overflow-hidden border-t px-8 py-8 ${themeClasses.shell}`}
     >
       {/* ================= MAIN NAVIGATION ================= */}
       <div

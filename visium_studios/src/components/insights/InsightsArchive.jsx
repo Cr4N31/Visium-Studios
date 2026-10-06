@@ -69,7 +69,7 @@ function InsightsArchive() {
       : sortedInsights.filter((a) => a.category === active);
 
   return (
-    <section className="px-4 pb-24 md:px-10 md:pb-40">
+    <section className="px-8 pb-24 md:pb-40">
       <div className="mb-10 flex flex-col gap-6 md:mb-16 md:flex-row md:items-end md:justify-between">
         <p className="text-[11px] uppercase tracking-[0.2em] text-white/40">
           Archive (0{list.length})
@@ -86,7 +86,7 @@ function InsightsArchive() {
               type="button"
               aria-pressed={active === f}
               onClick={() => setActive(f)}
-              className={`border px-3 py-1.5 text-[10px] uppercase tracking-[0.2em] transition-colors duration-300 ${
+              className={`border px-3 py-1.5 text-[10px] rounded-lg uppercase tracking-[0.2em] transition-colors duration-300 ${
                 active === f
                   ? "border-white bg-white text-black"
                   : "border-white/30 text-white/60 hover:border-white hover:text-white"

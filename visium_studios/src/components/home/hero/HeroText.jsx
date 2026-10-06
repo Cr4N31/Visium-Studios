@@ -1,9 +1,8 @@
 import {
   motion as Motion,
-  useMotionValue,
-  useSpring,
-  useTransform,
 } from "framer-motion";
+import { Link } from "react-router-dom";
+import { useMagnetic, useMorphPointer } from "../../../shared/useCtaPointer";
 
 const container = {
   hidden: {},
@@ -17,40 +16,12 @@ const revealUp = {
 
 import VideoMotion from "../../../shared/VideoMotion";
 
-function useMorphPointer() {
-  const x = useMotionValue(50);
-  const y = useMotionValue(50);
-  const scale = useMotionValue(0);
-  const smoothX = useSpring(x, { stiffness: 120, damping: 22, mass: 0.45 });
-  const smoothY = useSpring(y, { stiffness: 120, damping: 22, mass: 0.45 });
-  const smoothScale = useSpring(scale, {
-    stiffness: 150,
-    damping: 20,
-    mass: 0.4,
-  });
-  const left = useTransform(smoothX, (value) => `${value}%`);
-  const top = useTransform(smoothY, (value) => `${value}%`);
-
-  const onPointerMove = (event) => {
-    const bounds = event.currentTarget.getBoundingClientRect();
-    x.set(((event.clientX - bounds.left) / bounds.width) * 100);
-    y.set(((event.clientY - bounds.top) / bounds.height) * 100);
-  };
-  const onPointerEnter = () => scale.set(1);
-  const onPointerLeave = () => scale.set(0);
-
-  return {
-    left,
-    top,
-    scale: smoothScale,
-    onPointerMove,
-    onPointerEnter,
-    onPointerLeave,
-  };
-}
+const MotionLink = Motion(Link);
 
 function HeroText() {
   const headlineMorph = useMorphPointer();
+  const ctaMorph = useMorphPointer();
+  const ctaMagnetic = useMagnetic();
 
   return (
     <Motion.div
@@ -59,7 +30,7 @@ function HeroText() {
       initial="hidden"
       animate="show"
     >
-      <Motion.div className="hero-copy relative z-20 flex flex-col gap-6 w-full items-center justify-center px-4 sm:px-6 md:px-4">
+      <Motion.div className="hero-copy relative z-20 flex w-full flex-col items-center justify-center gap-6">
         <p
           className="hero-copy__headline relative w-full text-center text-[clamp(2.9rem,9vw,5rem)] font-normal leading-[1.08] md:mt-24 md:leading-[1.06] lg:mt-20 md:text-[clamp(3rem,5vw,5rem)]"
           onPointerEnter={headlineMorph.onPointerEnter}
@@ -97,9 +68,41 @@ function HeroText() {
         <p className="text-white/90 text-xl text-center">
           We build the visual systems that set ambitions brands apart
         </p>
+        <MotionLink
+          to="/startaproject"
+          data-blob
+          className="hero-cta group relative isolate inline-flex items-center gap-5 overflow-hidden rounded-full border-2 border-white bg-white px-5 py-3 text-xs font-bold uppercase tracking-[0.16em] text-black transition-colors hover:bg-transparent hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white motion-reduce:transition-none"
+          style={{ x: ctaMagnetic.x, y: ctaMagnetic.y }}
+          onPointerEnter={ctaMorph.onPointerEnter}
+          onPointerLeave={(event) => {
+            ctaMorph.onPointerLeave(event);
+            ctaMagnetic.onPointerLeave(event);
+          }}
+          onPointerMove={(event) => {
+            ctaMorph.onPointerMove(event);
+            ctaMagnetic.onPointerMove(event);
+          }}
+        >
+          <Motion.span
+            aria-hidden="true"
+            className="cta-morph"
+            style={{
+              left: ctaMorph.left,
+              top: ctaMorph.top,
+              scale: ctaMorph.scale,
+            }}
+          />
+          <span className="relative z-[1]">Start a project</span>
+          <span
+            aria-hidden="true"
+            className="relative z-[1] text-lg leading-none transition-transform duration-300 group-hover:translate-x-1"
+          >
+            →
+          </span>
+        </MotionLink>
       </Motion.div>
 
-      <div className="w-full px-4 aspect-[4/5] sm:px-6 sm:aspect-[3/4] md:h-[100vh] md:aspect-video md:px-0 md:mt-10">
+      <div className="w-full aspect-[4/5] sm:aspect-[3/4] md:mt-10 md:aspect-video md:h-[100vh]">
         <VideoMotion />
       </div>
     </Motion.div>

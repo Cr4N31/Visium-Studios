@@ -80,7 +80,7 @@ function CapabilityDetail() {
 
   return (
     <main className="bg-black text-white">
-      <header className="px-4 pb-16 pt-32 md:px-10 md:pb-24 md:pt-44">
+      <header className="px-8 pb-16 pt-32 md:pb-24 md:pt-44">
         <Link
           to="/capabilities"
           className="mb-12 inline-flex text-[10px] uppercase tracking-[0.2em] text-white/50 transition-colors hover:text-white"
@@ -101,7 +101,7 @@ function CapabilityDetail() {
         </p>
       </header>
 
-      <section className="border-t border-white/10 px-4 py-16 md:px-10 md:py-24">
+      <section className="border-t border-white/10 px-8 py-16 md:py-24">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-[minmax(0,280px)_1fr] md:gap-16">
           <div>
             <span className="text-[11px] uppercase tracking-[0.2em] text-white/40">
@@ -136,7 +136,7 @@ function CapabilityDetail() {
         </div>
       </section>
 
-      <section className="border-t border-white/10 px-4 py-16 md:px-10 md:py-24">
+      <section className="border-t border-white/10 px-8 py-16 md:py-24">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-[minmax(0,280px)_1fr] md:gap-16">
           <div>
             <span className="text-[11px] uppercase tracking-[0.2em] text-white/40">
@@ -161,7 +161,7 @@ function CapabilityDetail() {
         </div>
       </section>
 
-      <section className="border-t border-white/10 px-4 py-16 md:px-10 md:py-24">
+      <section className="border-t border-white/10 px-8 py-16 md:py-24">
         <p className="mb-8 text-[11px] uppercase tracking-[0.2em] text-white/40">
           Selected work / {item.label}
         </p>
@@ -179,7 +179,7 @@ function CapabilityDetail() {
         </div>
       </section>
 
-      <section className="flex flex-col items-start gap-8 border-t border-white/10 px-4 py-16 md:flex-row md:items-center md:justify-between md:px-10 md:py-24">
+      <section className="flex flex-col items-start gap-8 border-t border-white/10 px-8 py-16 md:flex-row md:items-center md:justify-between md:py-24">
         <p className="max-w-2xl text-2xl leading-tight tracking-[-0.04em] md:text-4xl">
           Have a project that needs {item.label.toLowerCase()}?
         </p>

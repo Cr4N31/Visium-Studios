@@ -11,7 +11,7 @@ function Work() {
   return (
     <section
       id="work"
-      className="bg-black text-white px-4 md:px-10 py-24 md:py-32"
+      className="bg-black px-8 py-24 text-white md:py-32"
     >
       <motion.div
         className="max-w-3xl mb-14 md:mb-20"

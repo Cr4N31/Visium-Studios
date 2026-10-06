@@ -30,7 +30,7 @@ function InsightHero() {
   return (
     <section
       ref={ref}
-      className="relative flex min-h-[70vh] flex-col justify-center px-4 text-white"
+      className="relative flex min-h-[70vh] flex-col justify-center md:px-6 px-7 text-white"
     >
       {/* Headline */}
       <motion.h1 style={{ y: headY, opacity: headOpacity }}>

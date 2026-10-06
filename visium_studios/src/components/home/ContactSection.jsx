@@ -61,7 +61,7 @@ function ContactSection({ onSubmit }) {
   return (
     <section
       id="contact"
-      className="border-t border-white/10 px-4 py-20 sm:px-6 md:px-10 md:py-32"
+      className="border-t border-white/10 px-8 py-20 md:py-32"
       aria-labelledby="contact-heading"
     >
       <div className="grid gap-16 md:grid-cols-[minmax(0,1.2fr)_minmax(20rem,0.8fr)] md:gap-20 lg:gap-28">

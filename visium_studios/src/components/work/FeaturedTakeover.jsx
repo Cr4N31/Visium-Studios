@@ -12,7 +12,7 @@ function FeaturedTakeover({ project }) {
 
   return (
     <motion.div
-      className="group px-4 md:px-10"
+      className="group px-8"
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, amount: 0.3 }}

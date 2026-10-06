@@ -94,7 +94,7 @@ function Marquee({ onActive }) {
       <motion.div
         ref={trackRef}
         style={{ x: reduce ? 0 : x }}
-        className="flex w-max items-start px-4 md:px-10"
+        className="flex w-max items-start px-8"
       >
         {copies.map((copy) =>
           items.map((item, i) => (
@@ -184,7 +184,7 @@ function ClientsCarousel() {
       }}
       className="overflow-hidden py-16 md:py-24"
     >
-      <p className="mb-10 px-4 text-xs uppercase tracking-[0.2em] text-white/40 sm:px-6 md:mb-16 md:px-10">
+      <p className="mb-10 px-8 text-xs uppercase tracking-[0.2em] text-white/40 md:mb-16">
         Selected clients
       </p>
 

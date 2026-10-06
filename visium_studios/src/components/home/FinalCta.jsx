@@ -1,8 +1,8 @@
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion as Motion, useScroll, useTransform } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useRef } from "react";
 
-function FinalCTA() {
+function FinalCTA({ eyebrow = "08 / Start a Project" }) {
   const sectionRef = useRef(null);
 
   const { scrollYProgress } = useScroll({
@@ -28,17 +28,17 @@ function FinalCTA() {
     <section
       ref={sectionRef}
       id="start-a-project"
-      className="relative min-h-[85svh] overflow-hidden border-t border-white/10 px-4 py-24 text-white sm:px-6 md:min-h-screen md:px-10 md:py-32"
+      className="relative min-h-[85svh] overflow-hidden border-t border-white/10 px-8 py-24 text-white md:min-h-screen md:py-32"
       aria-labelledby="final-cta-heading"
     >
       <div className="relative z-10 flex min-h-[65svh] flex-col justify-between md:min-h-[75svh]">
         {/* Section label */}
         <div className="flex items-center gap-4">
           <span className="text-xs uppercase tracking-[0.2em] text-white/40">
-            08 / Start a Project
+            {eyebrow}
           </span>
 
-          <motion.span
+          <Motion.span
             style={{ scaleX: lineScale }}
             className="h-px w-16 origin-left bg-white/30 md:w-24"
           />
@@ -46,7 +46,7 @@ function FinalCTA() {
 
         {/* Main CTA */}
         <div className="mt-24 md:mt-0">
-          <motion.div
+          <Motion.div
             style={{
               y: headlineY,
               opacity: headlineOpacity,
@@ -60,7 +60,7 @@ function FinalCTA() {
               <br />
               worth looking at.
             </span>
-          </motion.div>
+          </Motion.div>
         </div>
 
         {/* Bottom action */}
@@ -84,12 +84,12 @@ function FinalCTA() {
       </div>
 
       {/* Subtle visual echo */}
-      <motion.div
+      <Motion.div
         style={{
           scaleX: lineScale,
           opacity: headlineOpacity,
         }}
-        className="absolute bottom-10 left-4 right-4 h-px origin-left bg-white/10 sm:left-6 sm:right-6 md:left-10 md:right-10"
+        className="absolute bottom-10 left-8 right-8 h-px origin-left bg-white/10"
       />
     </section>
   );

@@ -1,67 +1,99 @@
-import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion as Motion } from "framer-motion";
+import team from "../../data/team";
 
-const team = [
-  { name: "Strategy", role: "Positioning, research & direction" },
-  { name: "Design", role: "Identity, systems & visual worlds" },
-  { name: "Digital", role: "Experiences, interfaces & technology" },
+const disciplines = [
+  {
+    number: "01",
+    title: "Strategy & direction",
+    description:
+      "We find the sharpest expression of a business: its position, its point of view and the story people should remember.",
+    people: ["Jace Kayode", "Gold Wuraola"],
+  },
+  {
+    number: "02",
+    title: "Identity & systems",
+    description:
+      "We turn that direction into a distinctive visual language, with the rules and range to stay coherent as a brand grows.",
+    people: ["Wisdom Chukwu", "Emmanuel Babalola"],
+  },
+  {
+    number: "03",
+    title: "Digital & motion",
+    description:
+      "We carry the identity into the places people meet it: digital products, websites, animation and moving image.",
+    people: ["Bitrus Duniya", "Chike Emmanuel", "Nathan Araujo"],
+  },
 ];
 
 function StudioDirect() {
-  const ref = useRef(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  });
-  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [0.5, 1, 0.8]);
-
   return (
     <section
-      ref={ref}
-      id="studio-direct"
-      className="px-4 py-20 sm:px-6 md:px-8 md:py-32"
+      id="studio-disciplines"
+      className="border-t border-white/10 px-8 py-20 md:py-32"
     >
-      <motion.div style={{ opacity }} data-aos="fade-up" className="max-w-5xl">
-        <div className="flex flex-col gap-8">
-          <p className="text-xs uppercase tracking-[0.2em] text-white/40">
-            The studio
-          </p>
-          <p className="max-w-4xl text-4xl leading-[1.1] text-white md:text-6xl lg:text-7xl">
-            Visium is a multidisciplinary visual systems studio building brands,
-            digital experiences, and visual worlds for ambitious companies.
+      <div className="mx-auto max-w-[1600px]">
+        <div className="mb-14 grid gap-6 md:mb-20 md:grid-cols-[1fr_0.7fr] md:items-end">
+          <div>
+            <p className="mb-6 text-xs uppercase tracking-[0.2em] text-white/40">
+              What we bring together
+            </p>
+            <h2 className="max-w-4xl text-[clamp(2.5rem,7vw,6rem)] font-normal leading-[0.95] tracking-[-0.06em]">
+              Different disciplines.{" "}
+              <span className="text-white/40">One direction.</span>
+            </h2>
+          </div>
+          <p className="max-w-lg text-sm leading-relaxed text-white/50 md:justify-self-end md:text-base">
+            Specialists work side by side, not in separate lanes. That means
+            strategy informs the design, and the design carries through every
+            experience.
           </p>
         </div>
 
-        <div className="mt-24 border-t border-white/20">
-          <div className="grid grid-cols-1 gap-10 py-8 md:grid-cols-[minmax(10rem,0.7fr)_1.3fr] md:gap-16">
-            <p className="text-xs uppercase tracking-[0.2em] text-white/40">
-              The people behind it
-            </p>
-            <div>
-              <p className="max-w-xl text-xl leading-snug text-white/50 md:text-2xl">
-                A small, connected team bringing different kinds of attention to
-                the same problem. No layers between the thinking and the making.
+        <div className="grid border-t border-white/15 md:grid-cols-3 md:divide-x md:divide-white/10">
+          {disciplines.map((discipline) => (
+            <Motion.article
+              key={discipline.number}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.25 }}
+              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+              className="flex flex-col border-b border-white/10 py-7 md:border-b-0 md:px-7 md:py-8 first:md:pl-0 last:md:pr-0"
+            >
+              <span className="text-[10px] uppercase tracking-[0.2em] text-white/35">
+                {discipline.number} / Discipline
+              </span>
+              <h3 className="mt-7 text-2xl font-normal leading-tight tracking-[-0.04em] md:text-3xl">
+                {discipline.title}
+              </h3>
+              <p className="mt-4 min-h-20 max-w-md text-sm leading-relaxed text-white/50">
+                {discipline.description}
               </p>
-              <ul className="mt-10 flex flex-col border-t border-white/10">
-                {team.map((member, index) => (
-                  <li
-                    key={member.name}
-                    className="grid grid-cols-1 gap-4 border-b border-white/10 py-5 md:grid-cols-[2.5rem_minmax(10rem,0.7fr)_1fr] md:items-baseline md:gap-8"
-                  >
-                    <span className="text-xs text-white/30">0{index + 1}</span>
-                    <p className="text-2xl text-white md:text-3xl">
-                      {member.name}
-                    </p>
-                    <p className="text-sm leading-relaxed text-white/45 md:text-base">
-                      {member.role}
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
+              <div className="mt-8 flex flex-col gap-3 border-t border-white/10 pt-5">
+                {discipline.people.map((name) => {
+                  const person = team.find((member) => member.name === name);
+                  if (!person) return null;
+                  return (
+                    <div key={person.name} className="flex items-center gap-3">
+                      <img
+                        src={person.image}
+                        alt=""
+                        loading="lazy"
+                        className="h-10 w-10 rounded-full object-cover grayscale"
+                      />
+                      <div>
+                        <p className="text-sm text-white/85">{person.name}</p>
+                        <p className="mt-0.5 text-[10px] uppercase tracking-[0.12em] text-white/40">
+                          {person.role}
+                        </p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </Motion.article>
+          ))}
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 }
