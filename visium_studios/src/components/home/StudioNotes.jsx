@@ -26,7 +26,7 @@ function InsightCard({ article, featured = false }) {
           <motion.img
             src={article.image}
             alt={article.title}
-            className="h-full w-full object-cover"
+            className="h-full w-full rounded-3xl object-cover"
             animate={{
               scale: [1, 1.025, 1],
               x: [0, 3, 0],

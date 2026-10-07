@@ -2,7 +2,7 @@ import { motion as Motion, useScroll, useTransform } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useRef } from "react";
 
-function FinalCTA({ eyebrow = "08 / Start a Project" }) {
+function FinalCTA({ eyebrow = "Start a Project" }) {
   const sectionRef = useRef(null);
 
   const { scrollYProgress } = useScroll({
@@ -45,7 +45,7 @@ function FinalCTA({ eyebrow = "08 / Start a Project" }) {
         </div>
 
         {/* Main CTA */}
-        <div className="mt-24 md:mt-0">
+        <div className="mt-8 md:mt-0">
           <Motion.div
             style={{
               y: headlineY,
@@ -54,7 +54,7 @@ function FinalCTA({ eyebrow = "08 / Start a Project" }) {
           >
             <span
               id="final-cta-heading"
-              className="max-w-[1100px] text-[clamp(3.5rem,9.5vw,9.5rem)] font-normal uppercase leading-[0.82] tracking-[-0.055em]"
+              className="max-w-[1100px] text-[clamp(2.9rem,9vw,5rem)] tracking-[-0.07em] font-normal leading-[1.08] md:leading-[1.06] md:text-[clamp(3rem,5vw,5rem)]"
             >
               Let&apos;s build something
               <br />
@@ -64,7 +64,7 @@ function FinalCTA({ eyebrow = "08 / Start a Project" }) {
         </div>
 
         {/* Bottom action */}
-        <div className="mt-20 flex flex-col gap-10 md:mt-0 md:flex-row md:items-end md:justify-between">
+        <div className="flex flex-col gap-10 md:mt-0 md:flex-row md:items-end md:justify-between">
           <p className="max-w-sm text-sm leading-relaxed text-white/45 md:text-base">
             Have a business with somewhere to go? Let&apos;s build the visual
             system to take it there.

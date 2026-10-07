@@ -899,7 +899,7 @@ function PrincipleRow({ principle, index, titleRef }) {
               <img
                 src={principle.gif}
                 alt={principle.title}
-                className="block h-auto w-full max-w-full object-cover"
+                className="block h-auto w-full max-w-full rounded-2xl object-cover"
               />
             </motion.div>
           </motion.div>

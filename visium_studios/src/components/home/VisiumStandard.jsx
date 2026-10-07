@@ -90,7 +90,7 @@ function VisiumStandard() {
 
   const intro = (
     <motion.div
-      className="flex flex-col px-8 py-24 md:py-32"
+      className="flex flex-col px-8 py-12 md:py-20"
       initial="hidden"
       whileInView="show"
       viewport={{ once: false, amount: 0.5 }}
