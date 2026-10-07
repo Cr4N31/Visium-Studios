@@ -417,7 +417,7 @@ function VisiumApproach() {
               We build systems.
             </span>
           </h1>
-          <span className="flex justify-end text-left text-base leading-relaxed text-white/70 md:text-xl">
+          <span className="text-left text-base leading-relaxed text-white/70 md:text-xl">
             A brand doesn't live in a logo, a website or a campaign alone. We
             connect identity, digital and motion into a visual system that stays
             recognisable wherever the brand shows up.
