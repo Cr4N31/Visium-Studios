@@ -28,10 +28,10 @@ function FinalCTA({ eyebrow = "Start a Project" }) {
     <section
       ref={sectionRef}
       id="start-a-project"
-      className="relative min-h-[85svh] overflow-hidden border-t border-white/10 px-8 py-24 text-white md:min-h-screen md:py-32"
+      className="relative overflow-hidden border-t border-white/10 px-8 py-24 text-white md:min-h-screen md:py-32"
       aria-labelledby="final-cta-heading"
     >
-      <div className="relative z-10 flex min-h-[65svh] flex-col justify-between md:min-h-[75svh]">
+      <div className="relative z-10 flex min-h-[52svh] flex-col justify-between md:min-h-[58svh]">
         {/* Section label */}
         <div className="flex items-center gap-4">
           <span className="text-xs uppercase tracking-[0.2em] text-white/40">
@@ -45,7 +45,7 @@ function FinalCTA({ eyebrow = "Start a Project" }) {
         </div>
 
         {/* Main CTA */}
-        <div className="mt-8 md:mt-0">
+        <div>
           <Motion.div
             style={{
               y: headlineY,
@@ -54,7 +54,7 @@ function FinalCTA({ eyebrow = "Start a Project" }) {
           >
             <span
               id="final-cta-heading"
-              className="max-w-[1100px] text-[clamp(2.9rem,9vw,5rem)] tracking-[-0.07em] font-normal leading-[1.08] md:leading-[1.06] md:text-[clamp(3rem,5vw,5rem)]"
+              className="text-[clamp(2.9rem,9vw,5rem)] tracking-[-0.07em] font-normal leading-[1.08] md:leading-[1.06] md:text-[clamp(3rem,5vw,5rem)]"
             >
               Let&apos;s build something
               <br />
@@ -64,7 +64,7 @@ function FinalCTA({ eyebrow = "Start a Project" }) {
         </div>
 
         {/* Bottom action */}
-        <div className="flex flex-col gap-10 md:mt-0 md:flex-row md:items-end md:justify-between">
+        <div className="flex flex-col gap-10 md:flex-row md:items-end md:justify-between">
           <p className="max-w-sm text-sm leading-relaxed text-white/45 md:text-base">
             Have a business with somewhere to go? Let&apos;s build the visual
             system to take it there.

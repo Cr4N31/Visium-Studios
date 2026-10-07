@@ -55,7 +55,7 @@ function ActionCard({ item }) {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       onMouseMove={handleMove}
-      className={`group relative flex flex-1 flex-col gap-4 overflow-hidden border p-8 text-left transition-colors duration-500 ease-out ${
+      className={`group relative rounded-2xl flex flex-1 flex-col gap-4 overflow-hidden border p-8 text-left transition-colors duration-500 ease-out ${
         hovered
           ? "border-white bg-white text-black"
           : "border-white/30 bg-transparent text-white"
