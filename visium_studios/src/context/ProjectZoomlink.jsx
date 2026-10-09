@@ -1,20 +1,28 @@
 import { useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion as Motion, AnimatePresence } from "framer-motion";
 
 const FLIGHT_MS = 620;
 
-function ProjectZoomLink({ to, image, alt, children, className = "" }) {
+function ProjectZoomLink({
+  to,
+  image,
+  alt,
+  children,
+  className = "",
+  zoomTargetRef,
+}) {
   const navigate = useNavigate();
   const mediaRef = useRef(null);
   const [flight, setFlight] = useState(null);
 
   const handleActivate = (e) => {
     e.preventDefault();
-    if (!mediaRef.current || flight) return;
+    const zoomTarget = zoomTargetRef?.current || mediaRef.current;
+    if (!zoomTarget || flight) return;
 
-    const rect = mediaRef.current.getBoundingClientRect();
+    const rect = zoomTarget.getBoundingClientRect();
     setFlight({
       top: rect.top,
       left: rect.left,
@@ -42,7 +50,7 @@ function ProjectZoomLink({ to, image, alt, children, className = "" }) {
         createPortal(
           <AnimatePresence>
             {flight && (
-              <motion.div
+              <Motion.div
                 className="fixed z-[999] overflow-hidden pointer-events-none bg-black"
                 initial={{
                   top: flight.top,
@@ -57,7 +65,7 @@ function ProjectZoomLink({ to, image, alt, children, className = "" }) {
                 }}
                 style={{ position: "fixed" }}
               >
-                <motion.img
+                <Motion.img
                   src={image}
                   alt={alt}
                   className="w-full h-full object-cover"
@@ -68,7 +76,7 @@ function ProjectZoomLink({ to, image, alt, children, className = "" }) {
                     ease: [0.76, 0, 0.24, 1],
                   }}
                 />
-              </motion.div>
+              </Motion.div>
             )}
           </AnimatePresence>,
           document.body,

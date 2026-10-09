@@ -1,5 +1,9 @@
 import { Link, Navigate, useParams } from "react-router-dom";
+import { motion as Motion } from "framer-motion";
 import projects from "../../data/projects";
+import { useMagnetic, useMorphPointer } from "../../shared/useCtaPointer";
+
+const MotionLink = Motion(Link);
 
 const normalizeHeroMedia = (heroMedia, fallbackThumb) => {
   const src = heroMedia || fallbackThumb || "";
@@ -108,6 +112,8 @@ const normalizeProject = (project) => {
 };
 
 function CaseStudy() {
+  const ctaMorph = useMorphPointer();
+  const ctaMagnetic = useMagnetic();
   const { slug } = useParams();
   const project = normalizeProject(
     projects.find((item) => item.slug === slug) || projects[0],
@@ -301,12 +307,32 @@ function CaseStudy() {
         </section>
 
         <div className="mt-20 text-center">
-          <Link
+          <MotionLink
             to="/work"
-            className="inline-flex items-center justify-center rounded-full border border-white/15 bg-white/5 px-6 py-3 text-[11px] uppercase tracking-[0.26em] text-white/80 transition hover:bg-white/10"
+            data-blob
+            style={{ x: ctaMagnetic.x, y: ctaMagnetic.y }}
+            onPointerEnter={ctaMorph.onPointerEnter}
+            onPointerLeave={(event) => {
+              ctaMorph.onPointerLeave(event);
+              ctaMagnetic.onPointerLeave(event);
+            }}
+            onPointerMove={(event) => {
+              ctaMorph.onPointerMove(event);
+              ctaMagnetic.onPointerMove(event);
+            }}
+            className="hero-cta relative isolate inline-flex items-center justify-center overflow-hidden rounded-full border border-white/15 bg-white/5 px-6 py-3 text-[11px] uppercase tracking-[0.26em] text-white/80 transition hover:bg-white/10"
           >
-            {project.cta}
-          </Link>
+            <Motion.span
+              aria-hidden="true"
+              className="cta-morph"
+              style={{
+                left: ctaMorph.left,
+                top: ctaMorph.top,
+                scale: ctaMorph.scale,
+              }}
+            />
+            <span className="relative z-[1]">{project.cta}</span>
+          </MotionLink>
         </div>
       </div>
     </main>

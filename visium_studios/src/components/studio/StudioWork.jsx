@@ -29,7 +29,7 @@ function StudioWork() {
           {selectedProjects.map((project) => (
             <div
               key={project.id}
-              className="aspect-[4/3] overflow-hidden bg-white/5 md:aspect-[16/10]"
+              className="aspect-[3/2] overflow-hidden bg-white/5"
             >
               <ProjectCard project={project} />
             </div>

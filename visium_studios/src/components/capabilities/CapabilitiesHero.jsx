@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion as Motion, useScroll, useTransform } from "framer-motion";
 
 const ease = [0.22, 1, 0.36, 1];
 const capabilities = [
@@ -13,14 +13,14 @@ const capabilities = [
 function Line({ children, delay = 0, className = "" }) {
   return (
     <span className="block overflow-hidden pb-[0.08em]">
-      <motion.span
+      <Motion.span
         className={`block ${className}`}
         initial={{ y: "110%" }}
         animate={{ y: 0 }}
         transition={{ duration: 1.1, ease, delay }}
       >
         {children}
-      </motion.span>
+      </Motion.span>
     </span>
   );
 }
@@ -37,19 +37,14 @@ function CapabilitiesHero() {
   return (
     <section
       ref={ref}
-      className="relative flex min-h-[50vh] flex-col justify-between px-8 pb-10 pt-28 md:pb-14 md:pt-32"
+      className="relative flex min-h-[30vh] flex-col justify-center gap-6 px-5 pb-10 pt-28 sm:px-8 md:justify-between md:gap-0 md:pb-14 md:pt-32"
     >
-      <div className="flex items-start justify-between text-[11px] mb-2 uppercase tracking-[0.2em] text-white/40">
-        <p>Capabilities</p>
-        <p>(0{capabilities.length})</p>
-      </div>
-
-      <motion.h1 style={{ y: headY, opacity: headOpacity }}>
-        <span className="text-[clamp(2.9rem,9vw,5rem)] tracking-[-0.07em] font-normal leading-[1.08] md:leading-[1.06] md:text-[clamp(3rem,5vw,5rem)]">
+      <Motion.h1 style={{ y: headY, opacity: headOpacity }}>
+        <span className="text-[clamp(2rem,8vw,5rem)] font-normal leading-[1] sm:text-[clamp(2.5rem,7vw,5rem)] sm:leading-[1.02] md:text-[clamp(3rem,5vw,5rem)] md:leading-[1.06]">
           <Line delay={0.1}>One Visual Language,</Line>
           <Line delay={0.25}>Across Every Touchpoint</Line>
         </span>
-      </motion.h1>
+      </Motion.h1>
 
       <div className="flex flex-col gap-12 md:flex-row md:items-end md:justify-between">
         <p className="max-w-xs text-sm leading-relaxed text-white/60 md:max-w-sm md:text-base">

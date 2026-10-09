@@ -1,9 +1,14 @@
 import { motion as Motion, useScroll, useTransform } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useRef } from "react";
+import { useMagnetic, useMorphPointer } from "../../shared/useCtaPointer";
+
+const MotionLink = Motion(Link);
 
 function FinalCTA({ eyebrow = "Start a Project" }) {
   const sectionRef = useRef(null);
+  const ctaMorph = useMorphPointer();
+  const ctaMagnetic = useMagnetic();
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -70,16 +75,38 @@ function FinalCTA({ eyebrow = "Start a Project" }) {
             system to take it there.
           </p>
 
-          <Link
+          <MotionLink
             to="/startaproject"
-            className="group w-fit text-2xl  flex items-center justify-center gap-5 bg-white rounded-full text-black px-4 py-3 text-sm font-semibold uppercase tracking-[0.16em] transition-colors"
+            data-blob
+            style={{ x: ctaMagnetic.x, y: ctaMagnetic.y }}
+            onPointerEnter={ctaMorph.onPointerEnter}
+            onPointerLeave={(event) => {
+              ctaMorph.onPointerLeave(event);
+              ctaMagnetic.onPointerLeave(event);
+            }}
+            onPointerMove={(event) => {
+              ctaMorph.onPointerMove(event);
+              ctaMagnetic.onPointerMove(event);
+            }}
+            className="hero-cta group relative isolate w-fit overflow-hidden rounded-full bg-white px-4 py-3 text-2xl text-sm font-semibold uppercase tracking-[0.16em] text-black transition-colors flex items-center justify-center gap-5"
           >
-            <span className="font-semibold">Start a project</span>
+            <Motion.span
+              aria-hidden="true"
+              className="cta-morph"
+              style={{
+                left: ctaMorph.left,
+                top: ctaMorph.top,
+                scale: ctaMorph.scale,
+              }}
+            />
+            <span className="relative z-[1] font-semibold">
+              Start a project
+            </span>
 
-            <span className="leading-none font-semibold transition-transform duration-300 group-hover:translate-x-2">
+            <span className="relative z-[1] leading-none font-semibold transition-transform duration-300 group-hover:translate-x-2">
               →
             </span>
-          </Link>
+          </MotionLink>
         </div>
       </div>
 

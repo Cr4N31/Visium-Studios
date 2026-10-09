@@ -1,5 +1,7 @@
 import { useState } from "react";
 import emailjs from "@emailjs/browser";
+import { motion as Motion } from "framer-motion";
+import { useMagnetic, useMorphPointer } from "../../shared/useCtaPointer";
 
 const initialForm = {
   name: "",
@@ -13,6 +15,8 @@ function ContactSection({ onSubmit }) {
   const [submitted, setSubmitted] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState(false);
+  const ctaMorph = useMorphPointer();
+  const ctaMagnetic = useMagnetic();
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -66,13 +70,9 @@ function ContactSection({ onSubmit }) {
     >
       <div className="grid gap-16 md:grid-cols-[minmax(0,1.2fr)_minmax(20rem,0.8fr)] md:gap-20 lg:gap-28">
         <div>
-          <p className="mb-8 text-xs uppercase tracking-[0.2em] text-white/40">
-            Contact
-          </p>
-
           <h2
             id="contact-heading"
-            className="max-w-4xl text-[clamp(2.9rem,9vw,5rem)] tracking-[-0.07em] font-normal leading-[1.08] md:leading-[1.06] md:text-[clamp(3rem,5vw,5rem)]"
+            className="max-w-4xl text-[clamp(2.9rem,9vw,5rem)] font-normal leading-[1.08] md:leading-[1.06] md:text-[clamp(3rem,5vw,5rem)]"
           >
             Let&apos;s build something worth looking at.
           </h2>
@@ -136,19 +136,41 @@ function ContactSection({ onSubmit }) {
           </label>
 
           <div className="flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <button
+            <Motion.button
               type="submit"
               disabled={sending}
-              className="group flex items-center gap-6 bg-white px-5 py-3 text-xs uppercase tracking-[0.16em] text-black font-semibold rounded-full transition-colors hero-cta disabled:cursor-not-allowed disabled:opacity-50"
+              data-blob
+              style={{ x: ctaMagnetic.x, y: ctaMagnetic.y }}
+              onPointerEnter={ctaMorph.onPointerEnter}
+              onPointerLeave={(event) => {
+                ctaMorph.onPointerLeave(event);
+                ctaMagnetic.onPointerLeave(event);
+              }}
+              onPointerMove={(event) => {
+                ctaMorph.onPointerMove(event);
+                ctaMagnetic.onPointerMove(event);
+              }}
+              className="group relative isolate flex items-center gap-6 overflow-hidden rounded-full bg-white px-5 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-black transition-colors hero-cta disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {sending ? "Sending..." : "Start a project"}
+              <Motion.span
+                aria-hidden="true"
+                className="cta-morph"
+                style={{
+                  left: ctaMorph.left,
+                  top: ctaMorph.top,
+                  scale: ctaMorph.scale,
+                }}
+              />
+              <span className="relative z-[1]">
+                {sending ? "Sending..." : "Start a project"}
+              </span>
 
               {!sending && (
-                <span className="text-xl leading-none transition-transform group-hover:translate-x-1">
+                <span className="relative z-[1] text-xl leading-none transition-transform group-hover:translate-x-1">
                   →
                 </span>
               )}
-            </button>
+            </Motion.button>
 
             {submitted && (
               <p className="text-sm text-white/60" role="status">

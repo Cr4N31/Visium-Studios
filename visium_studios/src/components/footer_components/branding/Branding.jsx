@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion as Motion, AnimatePresence } from "framer-motion";
+import { useMagnetic, useMorphPointer } from "../../../shared/useCtaPointer";
 
 const coreServices = [
   {
@@ -82,18 +83,18 @@ function AccordionItem({ q, a, isOpen, onToggle }) {
         className="flex w-full items-center justify-between gap-6 text-left"
       >
         <span className="text-base font-normal sm:text-lg">{q}</span>
-        <motion.span
+        <Motion.span
           aria-hidden="true"
           animate={{ rotate: isOpen ? 45 : 0 }}
           transition={{ duration: 0.3, ease: [0.65, 0, 0.35, 1] }}
           className="shrink-0 text-2xl font-light"
         >
           +
-        </motion.span>
+        </Motion.span>
       </button>
       <AnimatePresence initial={false}>
         {isOpen && (
-          <motion.div
+          <Motion.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
@@ -103,7 +104,7 @@ function AccordionItem({ q, a, isOpen, onToggle }) {
             <p className="max-w-2xl pt-4 text-sm leading-relaxed text-white/60 sm:text-base">
               {a}
             </p>
-          </motion.div>
+          </Motion.div>
         )}
       </AnimatePresence>
     </div>
@@ -124,6 +125,8 @@ function PointsList({ items }) {
 }
 
 function Branding() {
+  const ctaMorph = useMorphPointer();
+  const ctaMagnetic = useMagnetic();
   const [openFaq, setOpenFaq] = useState(null);
 
   return (
@@ -257,13 +260,32 @@ function Branding() {
 
       {/* CTA */}
       <section className="flex justify-center border-t border-white/10 px-8 py-16">
-        <a
-          type="button"
+        <Motion.a
           href="/contact"
-          className="rounded-full border border-white/30 px-6 py-3 text-sm text-white hover:border-white/60"
+          data-blob
+          style={{ x: ctaMagnetic.x, y: ctaMagnetic.y }}
+          onPointerEnter={ctaMorph.onPointerEnter}
+          onPointerLeave={(event) => {
+            ctaMorph.onPointerLeave(event);
+            ctaMagnetic.onPointerLeave(event);
+          }}
+          onPointerMove={(event) => {
+            ctaMorph.onPointerMove(event);
+            ctaMagnetic.onPointerMove(event);
+          }}
+          className="hero-cta relative isolate inline-flex overflow-hidden rounded-full border border-white/30 px-6 py-3 text-sm text-white hover:border-white/60"
         >
-          Start a project →
-        </a>
+          <Motion.span
+            aria-hidden="true"
+            className="cta-morph"
+            style={{
+              left: ctaMorph.left,
+              top: ctaMorph.top,
+              scale: ctaMorph.scale,
+            }}
+          />
+          <span className="relative z-[1]">Start a project →</span>
+        </Motion.a>
       </section>
     </div>
   );

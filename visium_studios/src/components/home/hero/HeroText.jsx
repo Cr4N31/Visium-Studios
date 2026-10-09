@@ -1,6 +1,4 @@
-import {
-  motion as Motion,
-} from "framer-motion";
+import { motion as Motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useMagnetic, useMorphPointer } from "../../../shared/useCtaPointer";
 
@@ -32,7 +30,7 @@ function HeroText() {
     >
       <Motion.div className="hero-copy relative z-20 flex w-full flex-col items-center justify-center gap-6">
         <p
-          className="hero-copy__headline relative w-full text-center text-[clamp(2.9rem,9vw,5rem)] font-normal leading-[1.08] md:mt-24 md:leading-[1.06] lg:mt-20 md:text-[clamp(3rem,5vw,5rem)]"
+          className="hero-copy__headline relative w-full text-center text-[clamp(2rem,8vw,5rem)] font-normal leading-[1] sm:text-[clamp(2.5rem,7vw,5rem)] sm:leading-[1.02] md:mt-24 md:text-[clamp(3rem,5vw,5rem)] md:leading-[1.06] lg:mt-20"
           onPointerEnter={headlineMorph.onPointerEnter}
           onPointerLeave={headlineMorph.onPointerLeave}
           onPointerMove={headlineMorph.onPointerMove}
@@ -48,24 +46,24 @@ function HeroText() {
           />
 
           <span className="block font-[400] leading-[0.95]">
-            <Motion.span className="block" variants={revealUp}>
+            <Motion.span className="block tracking-wide" variants={revealUp}>
               <span className="hero-copy__accent">Ambition</span> should
             </Motion.span>
           </span>
           <span className="block leading-[0.95] font-[400]">
-            <Motion.span className="block" variants={revealUp}>
+            <Motion.span className="block tracking-wide" variants={revealUp}>
               have a{" "}
-              <span className="hero-copy__accent whitespace-nowrap">
+              <span className="hero-copy__accent tracking-wide whitespace-nowrap">
                 visual
               </span>
               <br className="md:hidden" />
-              <span className="hero-copy__accent whitespace-nowrap">
+              <span className="hero-copy__accent tracking-wide whitespace-nowrap">
                 &nbsp;language
               </span>
             </Motion.span>
           </span>
         </p>
-        <p className="text-white/90 text-xl text-center">
+        <p className="max-w-lg text-center text-base text-white/90 sm:text-xl">
           We build the visual systems that set ambitions brands apart
         </p>
         <MotionLink
@@ -92,7 +90,7 @@ function HeroText() {
               scale: ctaMorph.scale,
             }}
           />
-          <span className="relative z-[1]">Start a project</span>
+          <span className="relative z-[1] font-semibold">Start a project</span>
           <span
             aria-hidden="true"
             className="relative z-[1] text-lg leading-none transition-transform duration-300 group-hover:translate-x-1"

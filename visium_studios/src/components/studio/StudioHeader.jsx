@@ -20,7 +20,7 @@ const fadeUp = {
 
 function StudioHeader() {
   return (
-    <header className="relative isolate overflow-hidden px-8 pb-20 pt-32 md:pb-28 md:pt-44">
+    <header className="relative isolate overflow-hidden px-5 pb-16 pt-28 sm:px-8 md:pb-28 md:pt-44">
       <div
         className="pointer-events-none absolute inset-0 -z-10"
         aria-hidden="true"
@@ -41,7 +41,6 @@ function StudioHeader() {
         className="mx-auto max-w-[1600px]"
       >
         <div className="mb-16 flex items-start justify-between border-b border-white/15 pb-4 text-[10px] uppercase tracking-[0.2em] text-white/40 md:mb-24 md:text-xs">
-          <Motion.span variants={fadeUp}>Studio</Motion.span>
           <Motion.span variants={fadeUp}>Who we are / How we work</Motion.span>
         </div>
 
@@ -52,7 +51,7 @@ function StudioHeader() {
           <div className="overflow-hidden">
             <Motion.h1
               variants={revealUp}
-              className="max-w-[1250px] text-[clamp(2.9rem,9vw,5rem)] font-normal leading-[1.08] tracking-[-0.07em] md:text-[clamp(3rem,5vw,5rem)] md:leading-[1.06]"
+              className="max-w-[1250px] text-[clamp(2rem,8vw,5rem)] font-normal leading-[1] sm:text-[clamp(2.5rem,7vw,5rem)] sm:leading-[1.02] md:text-[clamp(3rem,5vw,5rem)] md:leading-[1.06]"
             >
               A multidisciplinary studio for brands with somewhere to go.
             </Motion.h1>
@@ -62,7 +61,7 @@ function StudioHeader() {
         <div className="mt-14 grid gap-10 border-t border-white/15 pt-6 md:mt-20 md:grid-cols-[1fr_minmax(18rem,0.7fr)] md:gap-16">
           <Motion.p
             variants={fadeUp}
-            className="max-w-4xl text-xl leading-snug text-white md:text-3xl"
+            className="max-w-4xl text-lg leading-snug text-white sm:text-xl md:text-3xl"
           >
             Visium brings strategy, identity, digital and motion into one
             connected practice—so every expression of a brand feels like it
@@ -88,7 +87,6 @@ function StudioHeader() {
           <span>Motion</span>
           <span>One connected studio</span>
         </Motion.div>
-
       </Motion.div>
     </header>
   );

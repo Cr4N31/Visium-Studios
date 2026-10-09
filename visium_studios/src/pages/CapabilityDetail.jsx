@@ -1,6 +1,10 @@
 import { useEffect } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
+import { motion as Motion } from "framer-motion";
 import { capabilities } from "../data/capabilitiesPage";
+import { useMagnetic, useMorphPointer } from "../shared/useCtaPointer";
+
+const MotionLink = Motion(Link);
 
 const capabilityStories = {
   brand: {
@@ -66,6 +70,8 @@ const capabilityStories = {
 };
 
 function CapabilityDetail() {
+  const ctaMorph = useMorphPointer();
+  const ctaMagnetic = useMagnetic();
   const { slug } = useParams();
   const item = capabilities.find((capability) => capability.id === slug);
 
@@ -183,14 +189,34 @@ function CapabilityDetail() {
         <p className="max-w-2xl text-2xl leading-tight tracking-[-0.04em] md:text-4xl">
           Have a project that needs {item.label.toLowerCase()}?
         </p>
-        <Link
+        <MotionLink
           to="/startaproject"
+          data-blob
+          style={{ x: ctaMagnetic.x, y: ctaMagnetic.y }}
+          onPointerEnter={ctaMorph.onPointerEnter}
+          onPointerLeave={(event) => {
+            ctaMorph.onPointerLeave(event);
+            ctaMagnetic.onPointerLeave(event);
+          }}
+          onPointerMove={(event) => {
+            ctaMorph.onPointerMove(event);
+            ctaMagnetic.onPointerMove(event);
+          }}
           className="hero-cta relative isolate inline-flex items-center gap-4 overflow-hidden rounded-full border-2 border-white bg-white px-8 py-4 text-black transition-colors hover:border-white"
         >
+          <Motion.span
+            aria-hidden="true"
+            className="cta-morph"
+            style={{
+              left: ctaMorph.left,
+              top: ctaMorph.top,
+              scale: ctaMorph.scale,
+            }}
+          />
           <span className="relative z-[1] font-semibold">
             Start a project →
           </span>
-        </Link>
+        </MotionLink>
       </section>
     </main>
   );

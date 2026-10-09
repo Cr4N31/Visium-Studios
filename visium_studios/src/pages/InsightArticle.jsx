@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion as Motion } from "framer-motion";
+import { useMagnetic, useMorphPointer } from "../shared/useCtaPointer";
 import {
   formatDate,
   getAdjacent,
@@ -9,6 +10,7 @@ import {
 } from "../data/insights";
 
 const ease = [0.22, 1, 0.36, 1];
+const MotionLink = Motion(Link);
 
 function Block({ block }) {
   switch (block.type) {
@@ -56,6 +58,8 @@ function Block({ block }) {
 }
 
 function InsightArticle() {
+  const ctaMorph = useMorphPointer();
+  const ctaMagnetic = useMagnetic();
   const { slug } = useParams();
   const article = getInsight(slug);
 
@@ -72,23 +76,23 @@ function InsightArticle() {
     <article className="bg-black text-white">
       {/* Opening */}
       <header className="px-8 pb-10 pt-32 md:pb-16 md:pt-44">
-        <motion.p
+        <Motion.p
           className="mb-6 text-[11px] uppercase tracking-[0.2em] text-white/40"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.8 }}
         >
           {article.category}
-        </motion.p>
+        </Motion.p>
 
-        <motion.h1
+        <Motion.h1
           className="max-w-6xl text-[clamp(2.25rem,6.5vw,6.5rem)] font-semibold leading-[0.92] tracking-[-0.045em]"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, ease }}
         >
           {article.title}
-        </motion.h1>
+        </Motion.h1>
 
         <div className="mt-10 flex flex-wrap gap-x-10 gap-y-2 text-[11px] uppercase tracking-[0.2em] text-white/50">
           <p>{formatDate(article.date)}</p>
@@ -96,7 +100,7 @@ function InsightArticle() {
         </div>
       </header>
 
-      <motion.div
+      <Motion.div
         className="px-8"
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -107,7 +111,7 @@ function InsightArticle() {
           alt={article.title}
           className="aspect-[16/10] w-full object-cover md:aspect-[21/9]"
         />
-      </motion.div>
+      </Motion.div>
 
       {/* Content */}
       <div className="mx-auto max-w-2xl px-8 pb-24 pt-14 md:px-0 md:pb-36 md:pt-24">
@@ -175,18 +179,38 @@ function InsightArticle() {
 
       {/* End */}
       <section className="px-8 pb-24 md:pb-40">
-        <Link
+        <MotionLink
           to="/contact"
-          className="group inline-flex items-baseline gap-4 text-[clamp(2.5rem,8vw,8rem)] font-semibold leading-[0.9] tracking-[-0.045em] text-white/80 transition-colors duration-500 hover:text-white"
+          data-blob
+          style={{ x: ctaMagnetic.x, y: ctaMagnetic.y }}
+          onPointerEnter={ctaMorph.onPointerEnter}
+          onPointerLeave={(event) => {
+            ctaMorph.onPointerLeave(event);
+            ctaMagnetic.onPointerLeave(event);
+          }}
+          onPointerMove={(event) => {
+            ctaMorph.onPointerMove(event);
+            ctaMagnetic.onPointerMove(event);
+          }}
+          className="hero-cta group relative isolate inline-flex items-baseline gap-4 overflow-hidden text-[clamp(2.5rem,8vw,8rem)] font-semibold leading-[0.9] tracking-[-0.045em] text-white/80 transition-colors duration-500 hover:text-white"
         >
-          Start a project
+          <Motion.span
+            aria-hidden="true"
+            className="cta-morph"
+            style={{
+              left: ctaMorph.left,
+              top: ctaMorph.top,
+              scale: ctaMorph.scale,
+            }}
+          />
+          <span className="relative z-[1]">Start a project</span>
           <span
             aria-hidden="true"
-            className="transition-transform duration-500 ease-out group-hover:translate-x-3"
+            className="relative z-[1] transition-transform duration-500 ease-out group-hover:translate-x-3"
           >
             →
           </span>
-        </Link>
+        </MotionLink>
       </section>
     </article>
   );

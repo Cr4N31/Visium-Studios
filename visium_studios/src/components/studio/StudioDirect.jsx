@@ -60,7 +60,7 @@ function StudioDirect() {
               className="flex flex-col border-b border-white/10 py-7 md:border-b-0 md:px-7 md:py-8 first:md:pl-0 last:md:pr-0"
             >
               <span className="text-[10px] uppercase tracking-[0.2em] text-white/35">
-                {discipline.number} / Discipline
+                Discipline
               </span>
               <h3 className="mt-7 text-2xl font-normal leading-tight tracking-[-0.04em] md:text-3xl">
                 {discipline.title}

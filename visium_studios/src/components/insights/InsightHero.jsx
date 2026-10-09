@@ -1,20 +1,19 @@
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion as Motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
-import { sortedInsights } from "../../data/insights";
 
 const ease = [0.22, 1, 0.36, 1];
 
 function Line({ children, delay = 0, className = "" }) {
   return (
     <span className="block overflow-hidden pb-[0.08em]">
-      <motion.span
+      <Motion.span
         className={`block ${className}`}
         initial={{ y: "110%" }}
         animate={{ y: 0 }}
         transition={{ duration: 1.1, ease, delay }}
       >
         {children}
-      </motion.span>
+      </Motion.span>
     </span>
   );
 }
@@ -30,11 +29,11 @@ function InsightHero() {
   return (
     <section
       ref={ref}
-      className="relative flex min-h-[70vh] flex-col justify-center md:px-6 px-7 text-white"
+      className="relative flex min-h-[70vh] flex-col justify-center px-5 text-white sm:px-7 md:px-6"
     >
       {/* Headline */}
-      <motion.h1 style={{ y: headY, opacity: headOpacity }}>
-        <span className="text-[clamp(2.9rem,9vw,5rem)] tracking-[-0.07em] font-normal leading-[1.08] md:leading-[1.06] md:text-[clamp(3rem,5vw,5rem)]">
+      <Motion.h1 style={{ y: headY, opacity: headOpacity }}>
+        <span className="text-[clamp(2rem,8vw,5rem)] font-normal leading-[1] sm:text-[clamp(2.5rem,7vw,5rem)] sm:leading-[1.02] md:text-[clamp(3rem,5vw,5rem)] md:leading-[1.06]">
           <Line delay={0.1}>Our thoughts on building</Line>
           <Line delay={0.25}>
             <span className=" underline">brands</span>,{" "}
@@ -42,7 +41,7 @@ function InsightHero() {
             <span className=" underline">visual systems</span>.
           </Line>
         </span>
-      </motion.h1>
+      </Motion.h1>
     </section>
   );
 }
