@@ -46,18 +46,18 @@ function HeroText() {
           />
 
           <span className="block font-[400] leading-[0.95]">
-            <Motion.span className="block tracking-wide" variants={revealUp}>
+            <Motion.span className="block" variants={revealUp}>
               <span className="hero-copy__accent">Ambition</span> should
             </Motion.span>
           </span>
           <span className="block leading-[0.95] font-[400]">
-            <Motion.span className="block tracking-wide" variants={revealUp}>
+            <Motion.span className="block" variants={revealUp}>
               have a{" "}
-              <span className="hero-copy__accent tracking-wide whitespace-nowrap">
+              <span className="hero-copy__accent whitespace-nowrap">
                 visual
               </span>
               <br className="md:hidden" />
-              <span className="hero-copy__accent tracking-wide whitespace-nowrap">
+              <span className="hero-copy__accent whitespace-nowrap">
                 &nbsp;language
               </span>
             </Motion.span>
