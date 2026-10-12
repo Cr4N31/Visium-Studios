@@ -82,10 +82,7 @@ function Footer() {
       className={`mt-24 overflow-hidden border-t px-8 py-8 ${themeClasses.shell}`}
     >
       {/* ================= MAIN NAVIGATION ================= */}
-      <div
-        className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-4"
-        data-aos="fade-up"
-      >
+      <div className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-4">
         {/* Site Map */}
         <div>
           <p
@@ -207,10 +204,7 @@ function Footer() {
       </div>
 
       {/* ================= STUDIO / CONTACT ================= */}
-      <div
-        className="mt-20 grid grid-cols-1 gap-12 md:grid-cols-4"
-        data-aos="fade-up"
-      >
+      <div className="mt-20 grid grid-cols-1 gap-12 md:grid-cols-4">
         {/* Studio */}
         <div>
           <p
