@@ -308,7 +308,7 @@ function CaseStudy() {
 
         <div className="mt-20 text-center">
           <MotionLink
-            to="/work"
+            to="/startaproject"
             data-blob
             style={{ x: ctaMagnetic.x, y: ctaMagnetic.y }}
             onPointerEnter={ctaMorph.onPointerEnter}
@@ -320,7 +320,7 @@ function CaseStudy() {
               ctaMorph.onPointerMove(event);
               ctaMagnetic.onPointerMove(event);
             }}
-            className="hero-cta relative isolate inline-flex items-center justify-center overflow-hidden rounded-full border border-white/15 bg-white/5 px-6 py-3 text-[11px] uppercase tracking-[0.26em] text-white/80 transition hover:bg-white/10"
+            className="hero-cta relative isolate inline-flex items-center justify-center overflow-hidden rounded-full border border-white/15 bg-white px-6 py-3 text-[11px] uppercase tracking-[0.26em] text-white/80 transition hover:bg-white/10"
           >
             <Motion.span
               aria-hidden="true"
