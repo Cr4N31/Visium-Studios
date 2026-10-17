@@ -130,7 +130,7 @@ function Studio() {
                 ease: [0.22, 1, 0.36, 1],
               }}
             >
-              <span className="text-[clamp(2rem,9vw,1rem)] font-[400] leading-[0.95] md:text-[clamp(2.3rem,5vw,3rem)] tracking-[-0.05em]">
+              <span className="text-3xl font-[400] leading-[0.95] md:text-[clamp(2.3rem,5vw,3rem)] tracking-[-0.05em]">
                 A multidisciplinary studio for brands with somewhere to go.
               </span>
             </motion.h2>
@@ -181,7 +181,7 @@ function Studio() {
             viewport={{ once: true, amount: 0.4 }}
             transition={{ duration: 0.7 }}
           >
-            <span className="text-[clamp(2.9rem,9vw,5rem)] font-[400] leading-[0.95] md:text-[clamp(3rem,5vw,5rem)] tracking-tight">
+            <span className="block w-full max-w-full text-[clamp(1rem,8vw,3rem)] font-[400] leading-[1.05] tracking-tight [overflow-wrap:anywhere] md:text-[clamp(3rem,5vw,5rem)] md:leading-[0.95]">
               A multidisciplinary studio for brands with somewhere to go.
             </span>
           </motion.h2>
