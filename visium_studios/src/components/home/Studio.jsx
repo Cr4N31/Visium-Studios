@@ -153,7 +153,7 @@ function Studio() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.6 }}
               transition={{ duration: 0.6, delay: 0.4 }}
-              className="mt-8 inline-flex items-center gap-2 border-b border-black pb-1 text-sm font-medium uppercase tracking-[0.15em] transition-opacity hover:opacity-60"
+              className="mt-8 inline-flex items-center gap-2 border-b border-white pb-1 text-sm font-medium uppercase tracking-[0.15em] transition-opacity hover:opacity-60"
             >
               Meet the Studio <span aria-hidden="true">→</span>
             </motion.a>
@@ -170,7 +170,7 @@ function Studio() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.6 }}
             transition={{ duration: 0.6 }}
-            className="mb-5 inline-block rounded-full border border-black/20 px-4 py-1.5 text-xs uppercase tracking-[0.25em] text-black/60"
+            className="mb-5 inline-block rounded-full border border-white/20 px-4 py-1.5 text-xs uppercase tracking-[0.25em] text-white/60"
           >
             The Studio
           </motion.span>
@@ -191,7 +191,7 @@ function Studio() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.6 }}
             transition={{ duration: 0.6, delay: 0.15 }}
-            className="mx-auto mt-5 max-w-sm text-lg leading-relaxed text-black/60"
+            className="mx-auto mt-5 max-w-sm text-lg leading-relaxed text-white/60"
           >
             Visium brings together brand, digital, product, motion, development
             and strategy under one visual direction.
@@ -219,7 +219,7 @@ function Studio() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.6 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="mt-6 inline-flex items-center gap-2 border-b border-black pb-1 text-sm font-medium uppercase tracking-[0.15em]"
+            className="mt-6 inline-flex items-center gap-2 border-b border-white pb-1 text-sm font-medium uppercase tracking-[0.15em]"
           >
             Meet the Studio <span aria-hidden="true">→</span>
           </motion.a>
