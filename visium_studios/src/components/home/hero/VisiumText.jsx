@@ -13,7 +13,7 @@ function VisiumText() {
         </span>
       </div>
       <div className="flex justify-center items-center">
-        <img src={wordmark} className="w-[80vw]" />
+        <img src={wordmark} className="w-[100vw]" />
       </div>
 
       <p className="text-right font-mono text-[10px] uppercase tracking-widest sm:text-lg">
