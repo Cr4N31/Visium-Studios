@@ -4,7 +4,7 @@ import TextScramble from "../../../shared/TextScramble";
 function VisiumText() {
   return (
     <div className="flex w-full flex-col gap-3">
-      <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-widest sm:text-lg">
+      <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-widest sm:text-3xl font-semibold">
         <span>
           <TextScramble>Brand &amp; Digital Studio</TextScramble>
         </span>
