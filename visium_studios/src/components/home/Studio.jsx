@@ -130,7 +130,7 @@ function Studio() {
                 ease: [0.22, 1, 0.36, 1],
               }}
             >
-              <span className="text-[clamp(2.9rem,9vw,5rem)] font-[400] leading-[0.95] md:text-[clamp(2.3rem,5vw,3rem)] tracking-[-0.05em]">
+              <span className="text-[clamp(2rem,9vw,1rem)] font-[400] leading-[0.95] md:text-[clamp(2.3rem,5vw,3rem)] tracking-[-0.05em]">
                 A multidisciplinary studio for brands with somewhere to go.
               </span>
             </motion.h2>

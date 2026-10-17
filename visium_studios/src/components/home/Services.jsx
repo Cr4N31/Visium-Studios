@@ -53,8 +53,7 @@ function Row({ s, index, hovered, reduce, onActivate, onDeactivate }) {
       variants={rowFadeUp}
       custom={index * 0.08}
     >
-      <Link
-        to={`/services#${s.slug}`}
+      <div
         className="relative block overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-white"
         onPointerEnter={(e) => e.pointerType === "mouse" && onActivate(s)}
         onPointerLeave={onDeactivate}
@@ -75,7 +74,7 @@ function Row({ s, index, hovered, reduce, onActivate, onDeactivate }) {
         >
           {content}
         </motion.div>
-      </Link>
+      </div>
     </motion.div>
   );
 }
