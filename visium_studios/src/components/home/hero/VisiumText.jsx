@@ -16,8 +16,10 @@ function VisiumText() {
         <img src={wordmark} className="w-[100vw]" />
       </div>
 
-      <p className="text-right font-mono text-[10px] uppercase tracking-widest sm:text-3xl font-semibold">
-        <TextScramble>Available Worldwide</TextScramble>
+      <p className="text-right  text-[10px]">
+        <span className="font-mono uppercase tracking-widest font-semibold sm:text-3xl">
+          <TextScramble>Available Worldwide</TextScramble>
+        </span>
       </p>
     </div>
   );

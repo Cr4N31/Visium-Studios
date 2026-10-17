@@ -8,7 +8,7 @@ const team = [
 function HeroCTA() {
   return (
     <section className="w-full shrink-0 overflow-hidden rounded-xl text-black md:w-[340px]">
-      <div className="flex h-60 overflow-hidden rounded-xl border border-white md:h-full">
+      <div className="flex h-60 overflow-hidden rounded-xl border border-2 border-[#ffff] md:h-full">
         <div className="flex min-w-0 flex-1 flex-col justify-between bg-white p-5 sm:p-7">
           <div>
             <h2 className="text-xl font-bold uppercase leading-[1.05] tracking-wide sm:text-2xl">
@@ -21,12 +21,12 @@ function HeroCTA() {
           </div>
           <a
             href="/call-page"
-            className="flex h-10 items-center justify-center rounded-md bg-white text-sm font-bold uppercase tracking-wide transition-colors hover:bg-black hover:text-white"
+            className="flex h-10  items-center justify-center rounded-md bg-[#fff] uppercase tracking-wide transition-colors hover:bg-black hover:text-white"
           >
-            Book call
+            <span className="font-mono font-semibold text-base">Book call</span>
           </a>
         </div>
-        <div className="relative w-[30%] shrink-0 overflow-hidden bg-neutral-200">
+        <div className="relative w-[30%] shrink-0 overflow-hidden border-l border-l-[#fff] bg-neutral-200">
           <img
             className="h-full w-full object-cover object-top"
             src="/assets/team/Jace Kayode.png"
