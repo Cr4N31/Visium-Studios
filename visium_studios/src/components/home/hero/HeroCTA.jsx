@@ -7,21 +7,21 @@ const team = [
 
 function HeroCTA() {
   return (
-    <section className="home-hero-cta w-full shrink-0 overflow-hidden rounded-xl text-white md:w-[340px]">
+    <section className="w-full shrink-0 overflow-hidden rounded-xl text-black md:w-[340px]">
       <div className="flex h-60 overflow-hidden rounded-xl border border-white md:h-full">
-        <div className="flex min-w-0 flex-1 flex-col justify-between bg-[#0B0B0B] p-5 sm:p-7">
+        <div className="flex min-w-0 flex-1 flex-col justify-between bg-white p-5 sm:p-7">
           <div>
-            <h2 className="text-xl font-bold uppercase leading-[1.05] tracking-wide text-white sm:text-2xl">
+            <h2 className="text-xl font-bold uppercase leading-[1.05] tracking-wide sm:text-2xl">
               Start
               <br />A project
             </h2>
-            <p className="mt-2 text-sm leading-tight text-white/65 sm:text-base">
+            <p className="mt-2 text-sm leading-tight text-black/65 sm:text-base">
               Let&apos;s book &amp; talk with our manager.
             </p>
           </div>
           <a
             href="/call-page"
-            className="flex h-10 items-center justify-center rounded-md border border-white/50 bg-transparent text-sm font-bold uppercase tracking-wide text-white transition-all ease duration-250 hover:bg-white hover:text-black"
+            className="flex h-10 items-center justify-center rounded-md bg-white text-sm font-bold uppercase tracking-wide transition-colors hover:bg-black hover:text-white"
           >
             Book call
           </a>

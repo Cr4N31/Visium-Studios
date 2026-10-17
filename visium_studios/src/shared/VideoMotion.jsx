@@ -5,14 +5,14 @@ import {
   motion,
   useMotionValue,
   useSpring,
-} from "framer-motion"; // use "framer-motion" if that is what you have installed
+} from "framer-motion";
 
 const SRC = "/assets/video/final_motion.mp4";
 const CURSOR_SIZE = 96;
 const RADIUS = 12;
 const EASE = [0.76, 0, 0.24, 1];
 
-// Shows the current state, as you described it.
+// Label inside the expanded overlay shows the current state.
 // To show the action instead, return playing ? "Pause" : "Play".
 const labelFor = (playing) => (playing ? "Play" : "Pause");
 
@@ -44,13 +44,13 @@ function VideoMotion() {
   const smallRef = useRef(null);
   const bigRef = useRef(null);
   const resume = useRef({ time: 0, playing: true });
-  const locked = useRef(false);
 
   const [muted, setMuted] = useState(true);
   const [open, setOpen] = useState(false);
   const [from, setFrom] = useState(null);
   const [playing, setPlaying] = useState(true);
   const [overUI, setOverUI] = useState(false);
+  const [hovering, setHovering] = useState(false);
 
   const mx = useMotionValue(-200);
   const my = useMotionValue(-200);
@@ -62,21 +62,37 @@ function VideoMotion() {
     my.set(e.clientY - CURSOR_SIZE / 2);
   };
 
-  const openOverlay = (e) => {
-    if (open || locked.current || !wrapRef.current) return;
+  // Hover on the small video only drives the cursor. It never opens anything.
+  const handleEnter = (e) => {
+    if (e.pointerType !== "mouse") return;
+    const x = e.clientX - CURSOR_SIZE / 2;
+    const y = e.clientY - CURSOR_SIZE / 2;
+    mx.jump(x);
+    my.jump(y);
+    sx.jump(x);
+    sy.jump(y);
+    setHovering(true);
+  };
+
+  const handleMove = (e) => {
+    if (e.pointerType !== "mouse") return;
+    moveCursor(e);
+    if (!hovering && !open) setHovering(true);
+  };
+
+  const handleLeave = () => {
+    setHovering(false);
+    setOverUI(false);
+  };
+
+  // Click is what expands the video.
+  const openOverlay = () => {
+    if (open || !wrapRef.current) return;
     const r = wrapRef.current.getBoundingClientRect();
     const small = smallRef.current;
     if (small) {
       resume.current = { time: small.currentTime, playing: !small.paused };
       small.pause();
-    }
-    if (e && typeof e.clientX === "number") {
-      const x = e.clientX - CURSOR_SIZE / 2;
-      const y = e.clientY - CURSOR_SIZE / 2;
-      mx.jump(x);
-      my.jump(y);
-      sx.jump(x);
-      sy.jump(y);
     }
     setFrom({ top: r.top, left: r.left, width: r.width, height: r.height });
     setPlaying(resume.current.playing);
@@ -92,8 +108,8 @@ function VideoMotion() {
       small.currentTime = resume.current.time;
       if (resume.current.playing) small.play().catch(() => {});
     }
-    locked.current = true; // do not reopen until the pointer leaves the small video
     setOverUI(false);
+    setHovering(false);
     setOpen(false);
   };
 
@@ -130,21 +146,12 @@ function VideoMotion() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
-  // After closing, only re-arm hover once the pointer has left the small video
-  useEffect(() => {
-    if (open) return;
-    const onMove = (e) => {
-      if (e.target.closest?.("[data-video-overlay]")) return;
-      if (!wrapRef.current?.contains(e.target)) locked.current = false;
-    };
-    window.addEventListener("pointermove", onMove);
-    return () => window.removeEventListener("pointermove", onMove);
-  }, [open]);
-
   const uiHover = {
     onPointerEnter: () => setOverUI(true),
     onPointerLeave: () => setOverUI(false),
   };
+
+  const showCursor = hovering || open;
 
   return (
     <>
@@ -152,12 +159,18 @@ function VideoMotion() {
         ref={wrapRef}
         role="button"
         tabIndex={0}
-        aria-label="Expand video"
-        onMouseEnter={openOverlay}
+        aria-label="Play show reel"
+        onPointerEnter={handleEnter}
+        onPointerMove={handleMove}
+        onPointerLeave={handleLeave}
+        onClick={openOverlay}
         onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") openOverlay();
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            openOverlay();
+          }
         }}
-        className="relative h-full w-full overflow-hidden bg-transparent"
+        className="relative h-full w-full cursor-none overflow-hidden bg-transparent [@media(hover:none)]:cursor-pointer"
         data-aos="fade-up"
       >
         <video
@@ -174,7 +187,8 @@ function VideoMotion() {
         <SoundToggle
           muted={muted}
           onToggle={toggleSound}
-          className="absolute left-1/2 top-4 -translate-x-1/2"
+          className="absolute left-1/2 top-4 -translate-x-1/2 cursor-none"
+          {...uiHover}
         />
       </div>
 
@@ -227,6 +241,7 @@ function VideoMotion() {
                 <SoundToggle
                   muted={muted}
                   onToggle={toggleSound}
+                  className="cursor-none"
                   {...uiHover}
                 />
               </motion.div>
@@ -242,7 +257,7 @@ function VideoMotion() {
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1, transition: { delay: 0.5 } }}
                 exit={{ opacity: 0, transition: { duration: 0.15 } }}
-                className="absolute right-6 top-6 flex h-12 w-12 items-center justify-center rounded-full border border-white/40 bg-black text-white"
+                className="absolute right-6 top-6 flex h-12 w-12 cursor-none items-center justify-center rounded-full border border-white/40 bg-black text-white"
               >
                 <svg
                   width="16"
@@ -259,11 +274,13 @@ function VideoMotion() {
             </motion.div>
           )}
 
-          {open && from && (
+          {/* One white circle cursor: "Show reel" over the small video,
+              Play/Pause inside the expanded overlay. */}
+          {showCursor && (
             <motion.div
               key="cursor"
               aria-hidden
-              className="pointer-events-none fixed left-0 top-0 z-[210] flex items-center justify-center rounded-full bg-white text-[11px] font-medium uppercase tracking-[0.12em] text-black [@media(hover:none)]:hidden"
+              className="pointer-events-none fixed left-0 top-0 z-[210] flex items-center justify-center whitespace-nowrap rounded-full bg-white text-[11px] font-medium uppercase tracking-[0.12em] text-black [@media(hover:none)]:hidden"
               style={{ x: sx, y: sy, width: CURSOR_SIZE, height: CURSOR_SIZE }}
               initial={{ scale: 0 }}
               animate={{ scale: overUI ? 0.14 : 1 }}
@@ -271,7 +288,7 @@ function VideoMotion() {
               transition={{ duration: 0.25, ease: "easeOut" }}
             >
               <motion.span animate={{ opacity: overUI ? 0 : 1 }}>
-                {labelFor(playing)}
+                {open ? labelFor(playing) : "Show reel"}
               </motion.span>
             </motion.div>
           )}
