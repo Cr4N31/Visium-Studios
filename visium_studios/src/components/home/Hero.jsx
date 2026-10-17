@@ -6,7 +6,7 @@ function Hero() {
   return (
     <section
       id="home"
-      className="home-hero relative flex min-h-screen border-b border-b-transparent rounded-4xl flex-col justify-between gap-8 overflow-x-clip px-10 pb-8 md:pb-24 mb-24 pt-16 text-black"
+      className="home-hero relative flex min-h-screen flex-col justify-start gap-[12vh] overflow-x-clip rounded-4xl border-b border-b-transparent px-10 pb-8 pt-16 text-black md:mb-24 md:justify-between md:gap-8 md:pb-24"
     >
       <div className="flex w-full flex-col gap-2 md:flex-row md:items-stretch">
         <div className="h-60 min-w-0 flex-1 overflow-hidden rounded-xl">
