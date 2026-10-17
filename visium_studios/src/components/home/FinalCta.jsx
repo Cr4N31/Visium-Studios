@@ -88,7 +88,7 @@ function FinalCTA({ eyebrow = "Start a Project" }) {
               ctaMorph.onPointerMove(event);
               ctaMagnetic.onPointerMove(event);
             }}
-            className="hero-cta group relative isolate w-fit overflow-hidden rounded-full bg-white px-4 py-3 text-2xl text-sm font-semibold uppercase tracking-[0.16em] text-black transition-colors flex items-center justify-center gap-5"
+            className="hero-cta group relative isolate w-fit overflow-hidden rounded-sm bg-white px-4 py-3 text-2xl text-sm font-semibold uppercase tracking-tight text-black transition-colors flex items-center justify-center gap-5"
           >
             <Motion.span
               aria-hidden="true"
@@ -99,7 +99,7 @@ function FinalCTA({ eyebrow = "Start a Project" }) {
                 scale: ctaMorph.scale,
               }}
             />
-            <span className="relative z-[1] font-semibold">
+            <span className="relative z-[1] font-semibold tracking-tight">
               Start a project
             </span>
 

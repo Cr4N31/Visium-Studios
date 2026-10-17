@@ -1,4 +1,5 @@
 import { motion as Motion } from "framer-motion";
+import TextScramble from "../../shared/TextScramble";
 
 const container = {
   hidden: {},
@@ -53,7 +54,9 @@ function StudioHeader() {
               variants={revealUp}
               className="max-w-[1250px] text-[clamp(2rem,8vw,5rem)] font-normal leading-[1] sm:text-[clamp(2.5rem,7vw,5rem)] sm:leading-[1.02] md:text-[clamp(3rem,5vw,5rem)] md:leading-[1.06]"
             >
-              A multidisciplinary studio for brands with somewhere to go.
+              <TextScramble>
+                A multidisciplinary studio for brands with somewhere to go.
+              </TextScramble>
             </Motion.h1>
           </div>
         </div>

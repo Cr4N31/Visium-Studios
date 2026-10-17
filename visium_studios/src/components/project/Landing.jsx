@@ -1,5 +1,6 @@
 import { useRef, useState, useCallback } from "react";
 import { motion, useReducedMotion } from "framer-motion";
+import TextScramble from "../../shared/TextScramble";
 import { href } from "react-router-dom";
 
 const actions = [
@@ -95,7 +96,7 @@ function Landing() {
           variants={fadeUp}
           className="text-center text-4xl font-medium md:text-6xl"
         >
-          What do you want to do?
+          <TextScramble>What do you want to do?</TextScramble>
         </motion.h1>
       </div>
 

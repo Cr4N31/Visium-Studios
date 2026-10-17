@@ -2,7 +2,7 @@ import { useState, useRef, useEffect, useCallback, useMemo, memo } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 
 // Accent used for the selected chip state and the primary action button —
-const ACCENT = "#fff";
+const ACCENT = "#F4F4F1";
 
 const STEPS = [
   {
@@ -187,7 +187,7 @@ function StepBody({ step, value, onChange, onSubmitText }) {
             if (e.key === "Enter") onSubmitText();
           }}
           className="w-full rounded-sm px-4 py-3 text-3xl font-medium outline-none md:text-4xl"
-          style={{ backgroundColor: "#000" }}
+          style={{ backgroundColor: "#0B0B0B" }}
         />
         {step.helper && (
           <p className="mt-2 text-sm text-black/50">{step.helper}</p>

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useLayoutEffect, useRef } from "react";
 
 import Hero from "../components/home/Hero";
 import CapabilitiesMarquee from "../shared/CapabilitiesMarquee";
@@ -8,60 +8,70 @@ import VisiumStandard from "../components/home/VisiumStandard";
 import Studio from "../components/home/Studio";
 import StudioNotes from "../components/home/StudioNotes";
 import FinalCta from "../components/home/FinalCta";
-import ClientsCarousel from "../context/ClientsCarousel";
-import ContactSection from "../components/home/ContactSection";
-import StackedHero from "../shared/StackedHero";
+import Services from "../components/home/Services";
+import About from "../components/home/About";
 
 function Home({ onThemeChange }) {
-  const [isInverted, setIsInverted] = useState(false);
+  const themeRef = useRef(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    const hero = document.getElementById("home");
+    if (!hero) return undefined;
+
     const updateTheme = () => {
-      const approach = document.querySelector("#visium-approach");
-      const contact = document.querySelector("#final-cta");
+      const scrollProgress = Math.min(
+        1,
+        Math.max(
+          0,
+          -hero.getBoundingClientRect().top / (hero.offsetHeight * 0.75),
+        ),
+      );
+      const progress =
+        scrollProgress * scrollProgress * (3 - 2 * scrollProgress);
 
-      if (!approach || !contact) return;
-
-      // Hero starts black.
-      // Once VisiumApproach reaches 82% of the viewport,
-      // switch to white and keep it white.
-      const triggerLine = window.innerHeight * 0.82;
-
-      const approachReached =
-        approach.getBoundingClientRect().top <= triggerLine;
-
-      const contactHasEnded =
-        contact.getBoundingClientRect().top <= triggerLine;
-
-      const nextValue = contactHasEnded ? false : approachReached;
-
-      setIsInverted(nextValue);
-      onThemeChange(nextValue);
+      document.documentElement.style.setProperty(
+        "--home-inversion",
+        `${progress * 100}%`,
+      );
+      const nextTheme = progress < 0.5;
+      if (themeRef.current !== nextTheme) {
+        themeRef.current = nextTheme;
+        onThemeChange(nextTheme);
+      }
     };
 
-    updateTheme();
+    let frameId = 0;
+    const scheduleUpdate = () => {
+      if (frameId) return;
+      frameId = window.requestAnimationFrame(() => {
+        frameId = 0;
+        updateTheme();
+      });
+    };
 
-    window.addEventListener("scroll", updateTheme, { passive: true });
-    window.addEventListener("resize", updateTheme);
+    scheduleUpdate();
+    window.addEventListener("scroll", scheduleUpdate, { passive: true });
+    window.addEventListener("resize", scheduleUpdate);
 
     return () => {
-      window.removeEventListener("scroll", updateTheme);
-      window.removeEventListener("resize", updateTheme);
+      window.removeEventListener("scroll", scheduleUpdate);
+      window.removeEventListener("resize", scheduleUpdate);
+      window.cancelAnimationFrame(frameId);
 
+      document.documentElement.style.setProperty("--home-inversion", "0%");
+      themeRef.current = false;
       onThemeChange(false);
     };
   }, [onThemeChange]);
 
   return (
-    <main className={`home-page${isInverted ? " home-page--inverted" : ""}`}>
-      <StackedHero>
-        <Hero />
-      </StackedHero>
-
-      <div className="relative z-10 bg-black rounded-t-[32px]">
+    <main className="home-page">
+      <Hero />
+      <div className="relative z-10 bg-black">
         <div className="flex flex-col gap-12 py-8">
+          <About />
           <CapabilitiesMarquee />
-
+          <Services />
           <VisiumApproach />
 
           <div id="work-preview">
@@ -75,7 +85,6 @@ function Home({ onThemeChange }) {
           <div id="studio-preview">
             <Studio />
           </div>
-          <ClientsCarousel />
           <div id="studio-notes">
             <StudioNotes />
           </div>

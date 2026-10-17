@@ -40,13 +40,16 @@ function ScrollToTop() {
 }
 
 function App() {
-  const [homeInverted, setHomeInverted] = useState(false);
   const location = useLocation();
+  const isHomePage = location.pathname === "/";
+  const [homeInverted, setHomeInverted] = useState(isHomePage);
 
   useEffect(() => {
     AOS.init({
-      duration: 1000,
-      once: false,
+      duration: 650,
+      easing: "ease-out-cubic",
+      once: true,
+      mirror: false,
     });
   }, []);
 
@@ -60,7 +63,9 @@ function App() {
 
   return (
     <CurtainNavigationProvider>
-      <div className="bg-black text-white">
+      <div
+        className={`bg-black text-white${isHomePage ? " site-shell--home" : ""}`}
+      >
         <ScrollToTop />
         <SeoMetadata />
         <CustomCursor inverted={cursorInverted} />

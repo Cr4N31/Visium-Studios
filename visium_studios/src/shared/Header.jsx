@@ -719,7 +719,7 @@ function Header({ inverted = false }) {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 py-4 px-2 bg-transparent transition-colors duration-500 ease-out ${
+      className={`fixed top-0 left-0 right-0 z-50 py-4 px-2 bg-transparent transition-colors duration-300 ease-out ${
         inverted ? "text-black" : "text-white"
       }`}
     >
@@ -739,7 +739,7 @@ function Header({ inverted = false }) {
           <img
             src={header_logo}
             alt="Visium Studios"
-            className={`block w-36 transition-opacity duration-500 ease-out ${
+            className={`block w-36 transition-opacity duration-300 ease-out ${
               inverted ? "opacity-0" : "opacity-100"
             }`}
           />
@@ -747,7 +747,7 @@ function Header({ inverted = false }) {
             src={header_logo_black}
             alt=""
             aria-hidden="true"
-            className={`absolute inset-0 w-36 transition-opacity duration-500 ease-out ${
+            className={`absolute inset-0 w-36 transition-opacity duration-300 ease-out ${
               inverted ? "opacity-100" : "opacity-0"
             }`}
           />
@@ -783,11 +783,23 @@ function Header({ inverted = false }) {
       </div>
 
       <div className="flex h-[72px] items-stretch justify-between md:hidden">
-        <img
-          src={inverted ? header_logo_black : header_logo}
-          className="ml-6 w-24 self-center"
-          alt="Visium Studios"
-        />
+        <span className="relative ml-6 w-24 self-center">
+          <img
+            src={header_logo}
+            className={`block w-full transition-opacity duration-300 ease-out ${
+              inverted ? "opacity-0" : "opacity-100"
+            }`}
+            alt="Visium Studios"
+          />
+          <img
+            src={header_logo_black}
+            className={`absolute inset-0 w-full transition-opacity duration-300 ease-out ${
+              inverted ? "opacity-100" : "opacity-0"
+            }`}
+            alt=""
+            aria-hidden="true"
+          />
+        </span>
 
         <button
           type="button"

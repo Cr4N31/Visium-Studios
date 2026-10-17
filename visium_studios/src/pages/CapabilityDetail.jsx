@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { motion as Motion } from "framer-motion";
 import { capabilities } from "../data/capabilitiesPage";
+import TextScramble from "../shared/TextScramble";
 import { useMagnetic, useMorphPointer } from "../shared/useCtaPointer";
 
 const MotionLink = Motion(Link);
@@ -97,7 +98,7 @@ function CapabilityDetail() {
           0{index + 1} / Capability
         </p>
         <h1 className="max-w-6xl text-[clamp(2.5rem,8vw,7rem)] font-normal leading-[0.95] tracking-[-0.06em]">
-          {item.title}
+          <TextScramble>{item.title}</TextScramble>
         </h1>
         <p className="mt-8 max-w-3xl text-[clamp(1.5rem,3.5vw,3rem)] leading-[1.05] tracking-[-0.04em] text-white/75">
           {item.statement}
@@ -202,7 +203,7 @@ function CapabilityDetail() {
             ctaMorph.onPointerMove(event);
             ctaMagnetic.onPointerMove(event);
           }}
-          className="hero-cta relative isolate inline-flex items-center gap-4 overflow-hidden rounded-full border-2 border-white bg-white px-8 py-4 text-black transition-colors hover:border-white"
+          className="hero-cta relative isolate inline-flex items-center gap-4 overflow-hidden rounded-sm border-2 border-white bg-white px-8 py-4 font-semibold tracking-tight text-black transition-colors hover:border-white"
         >
           <Motion.span
             aria-hidden="true"
@@ -213,7 +214,7 @@ function CapabilityDetail() {
               scale: ctaMorph.scale,
             }}
           />
-          <span className="relative z-[1] font-semibold">
+          <span className="relative z-[1] font-semibold tracking-tight">
             Start a project →
           </span>
         </MotionLink>

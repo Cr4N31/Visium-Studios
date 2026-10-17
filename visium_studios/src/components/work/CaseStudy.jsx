@@ -1,6 +1,7 @@
 import { Link, Navigate, useParams } from "react-router-dom";
 import { motion as Motion } from "framer-motion";
 import projects from "../../data/projects";
+import TextScramble from "../../shared/TextScramble";
 import { useMagnetic, useMorphPointer } from "../../shared/useCtaPointer";
 
 const MotionLink = Motion(Link);
@@ -145,7 +146,7 @@ function CaseStudy() {
               {project.category}
             </p>
             <h1 className="text-5xl font-medium tracking-[-0.07em] text-[#f1efe9] md:text-[7rem]">
-              {project.title}
+              <TextScramble>{project.title}</TextScramble>
             </h1>
           </div>
 
@@ -320,7 +321,7 @@ function CaseStudy() {
               ctaMorph.onPointerMove(event);
               ctaMagnetic.onPointerMove(event);
             }}
-            className="hero-cta relative isolate inline-flex items-center justify-center overflow-hidden rounded-full border border-white/15 bg-white px-6 py-3 text-[11px] uppercase tracking-[0.26em] text-black/80 transition hover:bg-white/10"
+            className="hero-cta relative isolate inline-flex items-center justify-center overflow-hidden rounded-sm border border-white/15 bg-white px-6 py-3 text-[11px] font-semibold uppercase tracking-tight text-black/80 transition hover:bg-white/10"
           >
             <Motion.span
               aria-hidden="true"

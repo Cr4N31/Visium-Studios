@@ -1,0 +1,625 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Visium Studios | Recent changes, October 2026</title>
+    <style>
+      @page {
+        size: A4;
+        margin: 15mm;
+      }
+
+      :root {
+        color-scheme: light;
+        font-family: Arial, Helvetica, sans-serif;
+        color: #1b1c19;
+        background: #f5f4ef;
+        font-synthesis: none;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-size: 10pt;
+        line-height: 1.5;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .page {
+        position: relative;
+        min-height: 267mm;
+        padding-bottom: 15mm;
+        page-break-after: always;
+      }
+
+      .page:last-child {
+        page-break-after: auto;
+      }
+
+      .topline,
+      .footer,
+      .eyebrow,
+      .meta,
+      .small-label {
+        font-size: 7pt;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+      }
+
+      .topline {
+        display: flex;
+        justify-content: space-between;
+        padding-bottom: 8mm;
+        border-bottom: 1px solid #c9c9c2;
+      }
+
+      .cover {
+        display: flex;
+        min-height: 252mm;
+        flex-direction: column;
+        justify-content: space-between;
+        margin: -15mm;
+        padding: 18mm 17mm 14mm;
+        color: #f7f6f1;
+        background: #111310;
+      }
+
+      .cover .topline {
+        border-color: #40423d;
+      }
+
+      .cover-main {
+        max-width: 155mm;
+        padding: 12mm 0;
+      }
+
+      .eyebrow {
+        color: #bdff67;
+      }
+
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+
+      h1 {
+        max-width: 145mm;
+        margin: 8mm 0;
+        font-size: 43pt;
+        font-weight: 500;
+        letter-spacing: -0.065em;
+        line-height: 0.98;
+      }
+
+      .dek {
+        max-width: 122mm;
+        color: #c5c6c0;
+        font-size: 13pt;
+        line-height: 1.45;
+      }
+
+      .cover-mark {
+        width: 19mm;
+        height: 1.5mm;
+        margin: 12mm 0;
+        background: #bdff67;
+      }
+
+      .cover-meta {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10mm;
+        padding-top: 7mm;
+        border-top: 1px solid #40423d;
+      }
+
+      .cover-meta span {
+        display: block;
+        margin-top: 1.5mm;
+        color: #f7f6f1;
+        font-size: 10pt;
+        font-weight: 400;
+        letter-spacing: 0;
+        text-transform: none;
+      }
+
+      .footer {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        display: flex;
+        justify-content: space-between;
+        padding-top: 4mm;
+        border-top: 1px solid #c9c9c2;
+        color: #6e7069;
+      }
+
+      .cover .footer {
+        border-color: #40423d;
+        color: #9b9d95;
+      }
+
+      .section-head {
+        margin: 7mm 0 4mm;
+      }
+
+      .section-head h2 {
+        margin: 2mm 0;
+        font-size: 25pt;
+        font-weight: 500;
+        letter-spacing: -0.05em;
+        line-height: 1.08;
+      }
+
+      .section-head p {
+        max-width: 145mm;
+        margin-bottom: 0;
+        color: #656760;
+      }
+
+      .eyebrow.dark {
+        color: #536d32;
+      }
+
+      .metrics {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 3mm;
+        margin: 7mm 0;
+      }
+
+      .metric {
+        min-height: 27mm;
+        padding: 5mm;
+        background: #e9e9e1;
+      }
+
+      .metric strong {
+        display: block;
+        font-size: 20pt;
+        font-weight: 500;
+        letter-spacing: -0.05em;
+        line-height: 1.1;
+      }
+
+      .metric span {
+        display: block;
+        margin-top: 2mm;
+        color: #656760;
+        font-size: 7pt;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+      }
+
+      .summary {
+        padding: 7mm;
+        border-left: 2px solid #91c650;
+        background: #eeeee8;
+      }
+
+      .summary p:last-child {
+        margin-bottom: 0;
+      }
+
+      .summary strong {
+        font-weight: 700;
+      }
+
+      .workstreams {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 3mm;
+        margin-top: 5mm;
+      }
+
+      .workstream {
+        min-height: 36mm;
+        padding: 4mm;
+        border: 1px solid #d6d6cf;
+        background: #fbfaf6;
+        break-inside: avoid;
+      }
+
+      .workstream .number {
+        display: block;
+        margin-bottom: 2mm;
+        color: #637f3b;
+        font-size: 8pt;
+        font-weight: 700;
+        letter-spacing: 0.13em;
+      }
+
+      .workstream h3 {
+        margin-bottom: 2mm;
+        font-size: 12pt;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+      }
+
+      .workstream p {
+        margin-bottom: 0;
+        color: #5d5f58;
+        font-size: 8.5pt;
+        line-height: 1.45;
+      }
+
+      .latest-list {
+        margin-top: 5mm;
+        border-top: 1px solid #d1d2ca;
+      }
+
+      .latest-item {
+        display: grid;
+        grid-template-columns: 25mm 1fr;
+        gap: 4mm;
+        padding: 4mm 0;
+        border-bottom: 1px solid #d1d2ca;
+        break-inside: avoid;
+      }
+
+      .latest-item .date {
+        color: #637f3b;
+        font-size: 8pt;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+
+      .latest-item p {
+        margin-bottom: 0;
+        color: #5d5f58;
+        font-size: 8.5pt;
+      }
+
+      .latest-item strong {
+        color: #1b1c19;
+      }
+
+      .review-box {
+        margin: 6mm 0;
+        padding: 6mm;
+        background: #111310;
+        color: #f7f6f1;
+        break-inside: avoid;
+      }
+
+      .review-box h3 {
+        margin-bottom: 3mm;
+        color: #bdff67;
+        font-size: 11pt;
+        font-weight: 600;
+      }
+
+      .review-box p {
+        margin-bottom: 0;
+        color: #d0d1cb;
+        font-size: 9pt;
+      }
+
+      .review-list {
+        margin: 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .review-list li {
+        position: relative;
+        margin: 0 0 3mm;
+        padding-left: 5mm;
+        color: #555750;
+        font-size: 9pt;
+      }
+
+      .review-list li::before {
+        position: absolute;
+        left: 0;
+        color: #637f3b;
+        content: "—";
+      }
+
+      .status {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4mm;
+        margin-top: 5mm;
+      }
+
+      .status-card {
+        padding: 5mm;
+        border: 1px solid #d6d6cf;
+        break-inside: avoid;
+      }
+
+      .status-card strong {
+        display: block;
+        margin-bottom: 1mm;
+        font-size: 10pt;
+      }
+
+      .status-card p {
+        margin-bottom: 0;
+        color: #5d5f58;
+        font-size: 8.5pt;
+      }
+
+      .fine {
+        margin-top: 5mm;
+        color: #777971;
+        font-size: 7.5pt;
+      }
+
+      @media screen {
+        body {
+          max-width: 210mm;
+          margin: 12mm auto;
+          box-shadow: 0 8px 40px #0002;
+        }
+
+        .page {
+          padding: 15mm;
+        }
+
+        .cover {
+          margin: -15mm;
+        }
+      }
+
+      @media print {
+        body {
+          background: #f5f4ef;
+        }
+
+        .page {
+          min-height: 267mm;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <section class="page">
+      <div class="cover">
+        <div class="topline">
+          <span>Visium Studios</span>
+          <span>Studio update / 2026</span>
+        </div>
+        <div class="cover-main">
+          <p class="eyebrow">Recent changes · Lead review</p>
+          <div class="cover-mark"></div>
+          <h1>A more complete studio experience.</h1>
+          <p class="dek">
+            A concise review of the latest product, content, design and
+            technical updates across the Visium Studios website.
+          </p>
+        </div>
+        <div>
+          <div class="cover-meta">
+            <div class="meta">
+              Review window
+              <span>02—12 October 2026</span>
+            </div>
+            <div class="meta">
+              Prepared for
+              <span>Studio Lead</span>
+            </div>
+            <div class="meta">
+              Source
+              <span>18 most recent repository commits</span>
+            </div>
+            <div class="meta">
+              Snapshot date
+              <span>12 October 2026</span>
+            </div>
+          </div>
+          <div class="footer">
+            <span>Visium Studios · Internal review</span>
+            <span>01 / 03</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page">
+      <div class="topline">
+        <span>Visium Studios</span>
+        <span>01 / What changed</span>
+      </div>
+      <div class="section-head">
+        <p class="eyebrow dark">The latest snapshot</p>
+        <h2>More useful journeys.<br />A clearer point of view.</h2>
+        <p>
+          Recent work expands the site beyond a portfolio into a more rounded
+          studio platform: deeper service and editorial content, a stronger
+          studio story, improved discovery and more consistent interactions.
+        </p>
+      </div>
+      <div class="metrics">
+        <div class="metric">
+          <strong>18</strong>
+          <span>Recent commits</span>
+        </div>
+        <div class="metric">
+          <strong>54</strong>
+          <span>Files touched</span>
+        </div>
+        <div class="metric">
+          <strong>+2,278</strong>
+          <span>Lines added</span>
+        </div>
+        <div class="metric">
+          <strong>6</strong>
+          <span>Core workstreams</span>
+        </div>
+      </div>
+      <div class="summary">
+        <p class="small-label">Executive summary</p>
+        <p>
+          The most meaningful gains are the new <strong>Insights</strong>
+          experience, dedicated <strong>capability detail pages</strong>, a
+          more structured <strong>Studio</strong> story and foundational
+          <strong>SEO improvements</strong>. Portfolio, navigation and
+          animation refinements bring the new and existing journeys into
+          closer alignment.
+        </p>
+      </div>
+      <div class="workstreams">
+        <article class="workstream">
+          <span class="number">01 / CONTENT</span>
+          <h3>Insights, from archive to article</h3>
+          <p>
+            Added a browsable, category-filtered Insights archive and
+            individual article pages, backed by structured content and direct
+            routes. Studio Notes now points into the editorial experience.
+          </p>
+        </article>
+        <article class="workstream">
+          <span class="number">02 / SERVICES</span>
+          <h3>Deeper capability journeys</h3>
+          <p>
+            Added dedicated capability detail pages and refined the service
+            grid, giving visitors a clearer path from the overview to
+            individual offerings.
+          </p>
+        </article>
+        <article class="workstream">
+          <span class="number">03 / STUDIO</span>
+          <h3>A more considered studio story</h3>
+          <p>
+            Reworked the Studio page around distinct environment, process and
+            work sections, alongside refreshed team data and profile content.
+          </p>
+        </article>
+        <article class="workstream">
+          <span class="number">04 / DISCOVERY</span>
+          <h3>Search and sharing foundations</h3>
+          <p>
+            Added route-aware SEO titles and descriptions, canonical and Open
+            Graph metadata, plus sitemap and robots files. Hosting rewrites
+            preserve those files for crawlers.
+          </p>
+        </article>
+        <article class="workstream">
+          <span class="number">05 / WORK &amp; ENQUIRIES</span>
+          <h3>Clearer portfolio-to-contact paths</h3>
+          <p>
+            Refined project cards, the work grid and case-study layouts;
+            improved internal navigation and added a reusable floating
+            project CTA across relevant pages.
+          </p>
+        </article>
+        <article class="workstream">
+          <span class="number">06 / EXPERIENCE</span>
+          <h3>More consistent interaction and polish</h3>
+          <p>
+            Consolidated motion and pointer behavior across key screens, and
+            made a series of responsive layout, hierarchy, legibility and
+            markup cleanups.
+          </p>
+        </article>
+      </div>
+      <div class="footer">
+        <span>Visium Studios · Internal review</span>
+        <span>02 / 03</span>
+      </div>
+    </section>
+
+    <section class="page">
+      <div class="topline">
+        <span>Visium Studios</span>
+        <span>02 / Lead review</span>
+      </div>
+      <div class="section-head">
+        <p class="eyebrow dark">What landed most recently</p>
+        <h2>Final refinements,<br />with a few checks to close.</h2>
+        <p>
+          The latest commits focus on consistency and legibility, following a
+          broader round of page and interaction work.
+        </p>
+      </div>
+      <div class="latest-list">
+        <div class="latest-item">
+          <div class="date">12 Oct</div>
+          <p>
+            <strong>Case studies and footer.</strong> Tuned the case-study
+            back-link destination and button styling, improved text visibility,
+            and removed redundant footer data attributes.
+          </p>
+        </div>
+        <div class="latest-item">
+          <div class="date">11 Oct</div>
+          <p>
+            <strong>Team and home-page type.</strong> Refined team data and
+            removed obsolete profile assets; simplified unnecessary tracking
+            classes in the hero text.
+          </p>
+        </div>
+        <div class="latest-item">
+          <div class="date">09 Oct</div>
+          <p>
+            <strong>Motion and pointer behavior.</strong> Updated shared
+            animation and pointer patterns across capabilities, branding,
+            contact, studio and project surfaces.
+          </p>
+        </div>
+      </div>
+      <div class="review-box">
+        <h3>Recommended before external release</h3>
+        <p>
+          The project data identifies itself as mock content and includes
+          example.com destinations. Please confirm final client copy, media,
+          credits and every public-facing project link before presenting the
+          live site externally.
+        </p>
+      </div>
+      <ul class="review-list">
+        <li>
+          Approve the Insights and capability copy, including article imagery
+          and the service naming hierarchy.
+        </li>
+        <li>
+          Walk the key mobile journeys: work → case study, service → detail,
+          and CTA → project enquiry.
+        </li>
+        <li>
+          Confirm route metadata, canonical URLs and sitemap coverage for the
+          final set of public pages.
+        </li>
+      </ul>
+      <div class="status">
+        <div class="status-card">
+          <strong>Production build · Passed</strong>
+          <p>
+            Vite compiled 539 modules successfully. The generated JavaScript
+            bundle is 580 kB minified; Vite flags bundles above 500 kB for
+            potential code-splitting review.
+          </p>
+        </div>
+        <div class="status-card">
+          <strong>Lint · Follow-up needed</strong>
+          <p>
+            ESLint currently reports 35 errors across the repository,
+            including unused imports/variables and React effect-state
+            findings. The build succeeds, but lint is not clean.
+          </p>
+        </div>
+      </div>
+      <p class="fine">
+        Scope: repository history from 35d1e7a through 1ce5570 (18 commits,
+        02–12 Oct 2026). Change totals are from the aggregate Git diff. This
+        report summarizes committed changes; it is not a content or QA sign-off.
+      </p>
+      <div class="footer">
+        <span>Visium Studios · Internal review</span>
+        <span>03 / 03</span>
+      </div>
+    </section>
+  </body>
+</html>

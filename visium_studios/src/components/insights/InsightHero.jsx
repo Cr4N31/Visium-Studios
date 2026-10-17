@@ -1,5 +1,6 @@
 import { motion as Motion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
+import TextScramble from "../../shared/TextScramble";
 
 const ease = [0.22, 1, 0.36, 1];
 
@@ -34,11 +35,22 @@ function InsightHero() {
       {/* Headline */}
       <Motion.h1 style={{ y: headY, opacity: headOpacity }}>
         <span className="text-[clamp(2rem,8vw,5rem)] font-normal leading-[1] sm:text-[clamp(2.5rem,7vw,5rem)] sm:leading-[1.02] md:text-[clamp(3rem,5vw,5rem)] md:leading-[1.06]">
-          <Line delay={0.1}>Our thoughts on building</Line>
+          <Line delay={0.1}>
+            <TextScramble>Our thoughts on building</TextScramble>
+          </Line>
           <Line delay={0.25}>
-            <span className=" underline">brands</span>,{" "}
-            <span className=" underline">products</span> and{" "}
-            <span className=" underline">visual systems</span>.
+            <span className="underline">
+              <TextScramble>brands</TextScramble>
+            </span>
+            ,{" "}
+            <span className="underline">
+              <TextScramble>products</TextScramble>
+            </span>{" "}
+            and{" "}
+            <span className="underline">
+              <TextScramble>visual systems</TextScramble>
+            </span>
+            .
           </Line>
         </span>
       </Motion.h1>

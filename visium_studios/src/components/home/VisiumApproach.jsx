@@ -15,6 +15,7 @@ import {
   useMotionTemplate,
   useReducedMotion,
 } from "framer-motion";
+import TextScramble from "../../shared/TextScramble";
 
 import room_Image from "/assets/img/room.webp";
 
@@ -231,7 +232,7 @@ function VisiumApproach() {
       const dx = (cw - dw) / 2;
       const dy = (ch - dh) / 2;
 
-      ctx.fillStyle = "#fff";
+      ctx.fillStyle = "#F4F4F1";
       ctx.fillRect(0, 0, cw, ch);
 
       ctx.imageSmoothingEnabled = true;
@@ -413,8 +414,9 @@ function VisiumApproach() {
         <div className="mt-2 flex flex-col justify-start">
           <h1 className="mb-4">
             <span className="block text-[clamp(2.9rem,9vw,5rem)] font-[400] leading-[0.95] tracking-[-0.05em] md:text-[clamp(3rem,5vw,5rem)]">
-              We don't design assets. <br />
-              We build systems.
+              <TextScramble>We don&apos;t design assets.</TextScramble>
+              <br />
+              <TextScramble>We build systems.</TextScramble>
             </span>
           </h1>
           <span className="text-left text-base leading-relaxed text-white/70 md:text-xl">
@@ -697,7 +699,7 @@ function ConstellationNode({ point, progress, arriveAt }) {
       cx={point.x}
       cy={point.y}
       r="2.5"
-      fill="#ffffff"
+      fill="#F4F4F1"
       style={{ opacity: glow }}
     />
   );

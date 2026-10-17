@@ -96,7 +96,7 @@ function Studio() {
   const scattered = team.slice(0, 4);
 
   return (
-    <section className="relative overflow-hidden bg-white px-8 py-6 text-black">
+    <section className="relative overflow-hidden bg-black px-8 py-6 text-white">
       {/* Desktop: scattered composition around the centered text */}
       {!isMobile && (
         <div className="relative mx-auto min-h-[850px] max-w-5xl">
@@ -115,7 +115,7 @@ function Studio() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.6 }}
               transition={{ duration: 0.6 }}
-              className="mb-6 inline-block rounded-full border border-black/20 px-4 py-1.5 text-xs uppercase tracking-[0.25em] text-black/60"
+              className="mb-6 inline-block rounded-full border border-white/20 px-4 py-1.5 text-xs uppercase tracking-[0.25em] text-white/60"
             >
               The Studio
             </motion.span>
@@ -130,7 +130,7 @@ function Studio() {
                 ease: [0.22, 1, 0.36, 1],
               }}
             >
-              <span className="text-[clamp(2.9rem,9vw,5rem)] font-[400] leading-[0.95] md:text-[clamp(3rem,5vw,5rem)] tracking-[-0.05em]">
+              <span className="text-[clamp(2.9rem,9vw,5rem)] font-[400] leading-[0.95] md:text-[clamp(2.3rem,5vw,3rem)] tracking-[-0.05em]">
                 A multidisciplinary studio for brands with somewhere to go.
               </span>
             </motion.h2>
@@ -140,7 +140,7 @@ function Studio() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.6 }}
               transition={{ duration: 0.6, delay: 0.25 }}
-              className="mx-auto mt-6 max-w-md text-base leading-relaxed text-black/60 md:text-lg"
+              className="mx-auto mt-6 max-w-md text-base leading-relaxed text-white/60 md:text-lg"
             >
               Visium brings together brand, digital, product, motion,
               development and strategy under one visual direction — a single

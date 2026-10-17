@@ -69,7 +69,7 @@ function HeroText() {
         <MotionLink
           to="/startaproject"
           data-blob
-          className="hero-cta group relative isolate inline-flex items-center gap-5 overflow-hidden rounded-full border-2 border-white bg-white px-5 py-3 text-xs font-bold uppercase tracking-[0.16em] text-black transition-colors hover:bg-transparent hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white motion-reduce:transition-none"
+          className="hero-cta group relative isolate inline-flex items-center gap-5 overflow-hidden rounded-sm border-2 border-white bg-white px-5 py-3 text-xs font-semibold uppercase tracking-tight text-black transition-colors hover:bg-transparent hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white motion-reduce:transition-none"
           style={{ x: ctaMagnetic.x, y: ctaMagnetic.y }}
           onPointerEnter={ctaMorph.onPointerEnter}
           onPointerLeave={(event) => {
@@ -90,7 +90,7 @@ function HeroText() {
               scale: ctaMorph.scale,
             }}
           />
-          <span className="relative z-[1] font-semibold">Start a project</span>
+          <span className="relative z-[1] font-semibold tracking-tight">Start a project</span>
           <span
             aria-hidden="true"
             className="relative z-[1] text-lg leading-none transition-transform duration-300 group-hover:translate-x-1"

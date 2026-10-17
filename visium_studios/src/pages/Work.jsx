@@ -1,6 +1,7 @@
 import { motion as Motion } from "framer-motion";
 import WorkGrid from "../components/work/WorkGrid";
 import projects from "../data/projects";
+import TextScramble from "../shared/TextScramble";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -22,8 +23,10 @@ function Work() {
       >
         <h1>
           <span className="text-[clamp(2rem,8vw,5rem)] font-normal leading-[1] sm:text-[clamp(2.5rem,7vw,5rem)] sm:leading-[1.02] md:text-[clamp(3rem,5vw,5rem)] md:leading-[1.06]">
-            A selection of identities, digital experiences and visual systems
-            built for ambitious brands.
+            <TextScramble>
+              A selection of identities, digital experiences and visual systems
+              built for ambitious brands.
+            </TextScramble>
           </span>
         </h1>
       </Motion.div>

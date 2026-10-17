@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { motion as Motion } from "framer-motion";
 import { useMagnetic, useMorphPointer } from "../shared/useCtaPointer";
+import TextScramble from "../shared/TextScramble";
 import {
   formatDate,
   getAdjacent,
@@ -91,7 +92,7 @@ function InsightArticle() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, ease }}
         >
-          {article.title}
+          <TextScramble>{article.title}</TextScramble>
         </Motion.h1>
 
         <div className="mt-10 flex flex-wrap gap-x-10 gap-y-2 text-[11px] uppercase tracking-[0.2em] text-white/50">
@@ -192,7 +193,7 @@ function InsightArticle() {
             ctaMorph.onPointerMove(event);
             ctaMagnetic.onPointerMove(event);
           }}
-          className="hero-cta group relative isolate inline-flex items-baseline gap-4 overflow-hidden text-[clamp(2.5rem,8vw,8rem)] font-semibold leading-[0.9] tracking-[-0.045em] text-white/80 transition-colors duration-500 hover:text-white"
+          className="hero-cta group relative isolate inline-flex items-baseline gap-4 overflow-hidden rounded-sm text-[clamp(2.5rem,8vw,8rem)] font-semibold leading-[0.9] tracking-tight text-white/80 transition-colors duration-500 hover:text-white"
         >
           <Motion.span
             aria-hidden="true"

@@ -2,6 +2,7 @@ import { useState } from "react";
 import emailjs from "@emailjs/browser";
 import { motion as Motion } from "framer-motion";
 import { useMagnetic, useMorphPointer } from "../../shared/useCtaPointer";
+import TextScramble from "../../shared/TextScramble";
 
 const initialForm = {
   name: "",
@@ -74,7 +75,7 @@ function ContactSection({ onSubmit }) {
             id="contact-heading"
             className="max-w-4xl text-[clamp(2.9rem,9vw,5rem)] font-normal leading-[1.08] md:leading-[1.06] md:text-[clamp(3rem,5vw,5rem)]"
           >
-            Let&apos;s build something worth looking at.
+            <TextScramble>Let&apos;s build something worth looking at.</TextScramble>
           </h2>
 
           <p className="mt-8 max-w-md text-base leading-relaxed text-white/50 md:text-lg">
@@ -150,7 +151,7 @@ function ContactSection({ onSubmit }) {
                 ctaMorph.onPointerMove(event);
                 ctaMagnetic.onPointerMove(event);
               }}
-              className="group relative isolate flex items-center gap-6 overflow-hidden rounded-full bg-white px-5 py-3 text-xs font-semibold uppercase tracking-[0.16em] text-black transition-colors hero-cta disabled:cursor-not-allowed disabled:opacity-50"
+              className="group relative isolate flex items-center gap-6 overflow-hidden rounded-sm bg-white px-5 py-3 text-xs font-semibold uppercase tracking-tight text-black transition-colors hero-cta disabled:cursor-not-allowed disabled:opacity-50"
             >
               <Motion.span
                 aria-hidden="true"

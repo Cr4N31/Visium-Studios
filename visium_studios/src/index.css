@@ -1,5 +1,16 @@
 @import "tailwindcss";
 
+:root {
+  --site-white: #f4f4f1;
+  --site-black: #0b0b0b;
+  --home-inversion: 0%;
+}
+
+@theme {
+  --color-white: #f4f4f1;
+  --color-black: #0b0b0b;
+}
+
 @font-face {
   font-family: "Suisse Intl";
   src: url("/assets/fonts/Suisse/SuisseIntl-Light/Web%20Fonts/03d5b20d124cd26dc873bd4a8e42313e.woff2")
@@ -41,6 +52,30 @@
   src: url("/assets/fonts/Suisse/SuisseIntl-Bold/Web%20Fonts/d1a580023d40c546276decde1c711e60.woff2")
     format("woff2");
   font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "DM Mono";
+  src: url("/assets/fonts/DMMono/DMMono-Light.ttf") format("truetype");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "DM Mono";
+  src: url("/assets/fonts/DMMono/DMMono-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "DM Mono";
+  src: url("/assets/fonts/DMMono/DMMono-Medium.ttf") format("truetype");
+  font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
@@ -164,7 +199,7 @@ a {
   background: linear-gradient(
     90deg,
     rgba(255, 255, 255, 0),
-    #fff 54%,
+    var(--site-white) 54%,
     rgba(255, 255, 255, 0)
   );
   animation: visium-loader-bar 1.4s ease-in-out infinite;
@@ -242,14 +277,16 @@ a {
 h1,
 h2,
 h3,
-h4 {
-  font-family: "Suisse Intl", sans-serif !important;
+h4,
+h5,
+h6 {
+  font-family: "DM Mono", monospace !important;
   font-weight: 500 !important;
 }
 
 .font-serif,
 p.font-serif {
-  font-family: "Suisse Intl", sans-serif !important;
+  font-family: "DM Mono", monospace !important;
   font-weight: 300;
 }
 
@@ -344,7 +381,7 @@ p.font-serif {
   filter: invert(1);
   transition:
     opacity 180ms ease,
-    filter 700ms ease;
+    filter 300ms ease;
 }
 
 .custom-cursor img {
@@ -404,8 +441,12 @@ p.font-serif {
 }
 
 .desktop-nav-link {
-  font-family: "Suisse Intl", serif !important;
+  font-family: "DM Mono", monospace !important;
   font-weight: 400;
+}
+
+nav a {
+  font-family: "DM Mono", monospace !important;
 }
 
 /* Chrome, Edge, Safari */
@@ -414,7 +455,7 @@ p.font-serif {
 }
 
 ::-webkit-scrollbar-track {
-  background: #0a0a0a;
+  background: var(--site-black);
 }
 
 ::-webkit-scrollbar-thumb {
@@ -429,7 +470,7 @@ p.font-serif {
 /* Firefox */
 * {
   scrollbar-width: thin;
-  scrollbar-color: rgba(255, 255, 255, 0.486) #0a0a0a;
+  scrollbar-color: rgba(255, 255, 255, 0.486) var(--site-black);
 }
 
 .home-page {
@@ -439,74 +480,60 @@ p.font-serif {
     filter 900ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.home-page,
-.home-page .bg-black,
-.home-page .text-white,
-.home-page [class*="text-white/"],
-.home-page [class*="bg-white/"],
-.home-page [class*="border-white"],
-.home-page [class*="divide-gray-200"] {
-  transition:
-    background-color 900ms cubic-bezier(0.22, 1, 0.36, 1),
-    color 900ms cubic-bezier(0.22, 1, 0.36, 1),
-    border-color 900ms cubic-bezier(0.22, 1, 0.36, 1),
-    box-shadow 900ms cubic-bezier(0.22, 1, 0.36, 1),
-    filter 900ms cubic-bezier(0.22, 1, 0.36, 1);
+.site-shell--home {
+  --home-surface: color-mix(
+    in srgb,
+    var(--site-white) calc(100% - var(--home-inversion)),
+    var(--site-black) var(--home-inversion)
+  );
+  --home-foreground: color-mix(
+    in srgb,
+    var(--site-black) calc(100% - var(--home-inversion)),
+    var(--site-white) var(--home-inversion)
+  );
+  background-color: var(--home-surface) !important;
+  color: var(--home-foreground);
+  transition: none;
 }
 
-.home-page::before {
-  content: "";
-  position: fixed;
-  inset: -18vmax;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0;
-  background:
-    radial-gradient(
-      circle at 50% 38%,
-      rgba(255, 255, 255, 0.8),
-      transparent 0 18%
-    ),
-    radial-gradient(
-      circle at 44% 46%,
-      rgba(255, 255, 255, 0.45),
-      transparent 0 24%
-    );
-  filter: blur(54px);
-  transform: scale(0.78);
-  transition:
-    opacity 950ms cubic-bezier(0.22, 1, 0.36, 1),
-    transform 950ms cubic-bezier(0.22, 1, 0.36, 1),
-    filter 950ms cubic-bezier(0.22, 1, 0.36, 1);
+.site-shell--home .bg-black,
+.site-shell--home .home-hero {
+  background-color: var(--home-surface) !important;
+  background-image: none;
+  transition: none;
 }
 
-.home-page--inverted,
-.home-page--inverted .bg-black {
-  background-color: #fff !important;
+.site-shell--home .text-white,
+.site-shell--home [class*="text-white/"],
+.site-shell--home .home-hero.text-black,
+.site-shell--home .home-hero [class*="text-[#f2f2f2]"] {
+  color: var(--home-foreground) !important;
+  transition: none;
 }
 
-.home-page--inverted::before {
-  opacity: 1;
-  filter: blur(30px);
-  transform: scale(1);
+.site-shell--home .home-hero-cta :is(h2, p, span, a) {
+  color: var(--site-white) !important;
 }
 
-.home-page--inverted .text-white,
-.home-page--inverted [class*="text-white/"] {
-  color: #0a0a0a !important;
+.site-shell--home .home-hero-cta a:hover,
+.site-shell--home .home-hero-cta a:focus-visible {
+  color: var(--site-black) !important;
 }
 
-.home-page--inverted [class*="border-white"],
-.home-page--inverted [class*="divide-gray-200"] {
-  border-color: rgba(10, 10, 10, 0.2) !important;
+.site-shell--home .video-sound-toggle {
+  color: var(--site-white) !important;
 }
 
-.home-page--inverted [class*="bg-white/"] {
-  background-color: rgba(10, 10, 10, 0.05) !important;
+.site-shell--home [class*="border-white"] {
+  border-color: color-mix(
+    in srgb,
+    var(--site-white) calc(100% - var(--home-inversion)),
+    #333 var(--home-inversion)
+  );
 }
 
-.home-page--inverted [class*="hover\\:bg-gray-100"]:hover {
-  background-color: rgba(10, 10, 10, 0.08) !important;
+.home-hero {
+  background-color: var(--site-white);
 }
 
 .hero-copy {
@@ -516,7 +543,7 @@ p.font-serif {
 .hero-copy__headline {
   z-index: 1;
   letter-spacing: -0.06em;
-  color: #fff;
+  color: var(--site-white);
   font-family: "Redaction", "Suisse Intl", sans-serif;
   font-weight: 400;
   line-height: 0.84;
@@ -537,7 +564,7 @@ p.font-serif {
   width: clamp(11rem, 31vw, 31rem);
   aspect-ratio: 1 / 0.86;
   border-radius: 44% 56% 62% 38% / 48% 35% 65% 52%;
-  background: #fff;
+  background: var(--site-white);
   mix-blend-mode: difference;
   pointer-events: none;
   translate: -50% -50%;
@@ -622,18 +649,6 @@ p.font-serif {
   border-radius: 999px;
 }
 
-.home-page--inverted #services {
-  color: #0a0a0a !important;
-}
-
-.home-page--inverted .service-tree__branches {
-  color: rgba(10, 10, 10, 0.42);
-}
-
-.home-page--inverted .service-tree__capability {
-  color: rgba(10, 10, 10, 0.78) !important;
-}
-
 @media (max-width: 640px) {
   .service-tree__network {
     height: 15rem;
@@ -661,9 +676,13 @@ p.font-serif {
   width: clamp(2.25rem, 6vw, 3rem);
   aspect-ratio: 1;
   border-radius: 50%;
-  background: #fff;
+  background: var(--site-white);
   mix-blend-mode: difference;
   pointer-events: none;
   translate: -50% -50%;
   will-change: left, top, scale;
+}
+
+.video-expanded .custom-cursor {
+  opacity: 0 !important;
 }

@@ -43,11 +43,11 @@ function StudioIllustration({ className = "" }) {
         and a potted plant.
       </desc>
 
-      <rect x="0" y="0" width="1200" height="800" fill="#ffffff" />
+      <rect x="0" y="0" width="1200" height="800" fill="#F4F4F1" />
 
       <motion.g
         fill="none"
-        stroke="#000000"
+        stroke="#0B0B0B"
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"

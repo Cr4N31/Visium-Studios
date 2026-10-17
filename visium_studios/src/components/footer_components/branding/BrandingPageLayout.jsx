@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion as Motion, AnimatePresence } from "framer-motion";
 import { useMagnetic, useMorphPointer } from "../../../shared/useCtaPointer";
+import TextScramble from "../../../shared/TextScramble";
 
 function AccordionItem({ q, a, isOpen, onToggle }) {
   return (
@@ -71,7 +72,7 @@ function BrandingPageLayout({
     <div className="bg-black text-white">
       <section className="px-8 pb-16 pt-28 md:pt-40">
         <h1 className="text-[clamp(2.5rem,8vw,5rem)] font-normal leading-[1.05] text-white">
-          {title}
+          <TextScramble>{title}</TextScramble>
         </h1>
         <p className="mt-6 max-w-xl text-sm leading-relaxed text-white/60 sm:text-base">
           {intro}
@@ -196,7 +197,7 @@ function BrandingPageLayout({
             ctaMorph.onPointerMove(event);
             ctaMagnetic.onPointerMove(event);
           }}
-          className="hero-cta relative isolate inline-flex overflow-hidden rounded-full border border-white/30 px-6 py-3 text-sm text-white hover:border-white/60"
+          className="hero-cta relative isolate inline-flex overflow-hidden rounded-sm border border-white/30 px-6 py-3 text-sm font-semibold tracking-tight text-white hover:border-white/60"
         >
           <Motion.span
             aria-hidden="true"
@@ -207,7 +208,7 @@ function BrandingPageLayout({
               scale: ctaMorph.scale,
             }}
           />
-          <span className="relative z-[1]">{ctaLabel}</span>
+          <span className="relative z-[1] font-semibold tracking-tight">{ctaLabel}</span>
         </Motion.a>
       </section>
     </div>

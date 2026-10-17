@@ -51,11 +51,11 @@ function InsightCard({ article, featured = false }) {
         {/* Content */}
         <div className="pt-5">
           <div className="mb-3 flex items-center justify-between gap-4">
-            <span className="text-[10px] uppercase tracking-[0.2em] text-black/80">
+            <span className="text-[10px] uppercase tracking-[0.2em] text-white/80">
               {article.category}
             </span>
 
-            <span className="text-[10px] uppercase tracking-[0.15em] text-black/80">
+            <span className="text-[10px] uppercase tracking-[0.15em] text-white/80">
               {formatDate(article.date)}
             </span>
           </div>
@@ -73,13 +73,13 @@ function InsightCard({ article, featured = false }) {
           </h3>
 
           <p
-            className={`mt-4 max-w-xl leading-relaxed text-black/55 ${
+            className={`mt-4 max-w-xl leading-relaxed text-white/55 ${
               featured ? "text-sm md:text-base" : "text-sm"
             }`}
           >
             {article.excerpt}
           </p>
-          <span className="mt-6 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-black">
+          <span className="mt-6 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-white">
             <span className="relative">
               Read now
               <span className="absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-black transition-transform duration-500 ease-out group-hover:scale-x-100" />
@@ -112,7 +112,7 @@ function StudioNotes() {
             viewport={{ once: true, amount: 0.6 }}
             transition={{ duration: 0.6 }}
           >
-            <span className="inline-block border border-black/50 px-4 py-1.5 text-xs uppercase tracking-[0.25em] text-black/80">
+            <span className="inline-block border border-white/50 px-4 py-1.5 text-xs uppercase tracking-[0.25em] text-white/80">
               Studio Notes
             </span>
           </motion.div>
@@ -154,7 +154,7 @@ function StudioNotes() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.6 }}
           transition={{ duration: 0.6 }}
-          className="mt-20 border-t border-black/10 pt-6"
+          className="mt-20 border-t border-white/10 pt-6"
         ></motion.div>
       </div>
     </section>
