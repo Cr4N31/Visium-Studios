@@ -11,9 +11,11 @@ function HeroCTA() {
       <div className="flex h-60 overflow-hidden rounded-xl border border-2 border-[#ffff] md:h-full">
         <div className="flex min-w-0 flex-1 flex-col justify-between bg-white p-5 sm:p-7">
           <div>
-            <h2 className="text-xl font-bold uppercase leading-[1.05] tracking-wide sm:text-2xl">
-              Start
-              <br />A project
+            <h2 className="text-xl uppercase leading-[1.05] tracking-wide sm:text-2xl">
+              <span className="font-bold">
+                Start
+                <br />A project
+              </span>
             </h2>
             <p className="mt-2 text-sm leading-tight text-black/65 sm:text-base">
               Let&apos;s book &amp; talk with our manager.
