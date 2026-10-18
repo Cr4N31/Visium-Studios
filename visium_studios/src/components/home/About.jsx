@@ -1,8 +1,15 @@
+import { motion } from "framer-motion";
+
+const MotionSection = motion.section;
+
 function About() {
   return (
-    <section
+    <MotionSection
       className="bg-black px-5 py-16 text-white sm:px-8 md:px-10 md:py-20"
-      data-aos="fade-up"
+      initial={{ opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
     >
       <div className="flex items-start gap-4 md:gap-7">
         <h2 className="text-[clamp(4rem,10vw,8rem)] font-normal leading-[0.88] tracking-[-0.06em]">
@@ -14,7 +21,7 @@ function About() {
         design identities, interfaces, and the systems that hold them together,
         so a young company looks as credible as the product it is building.
       </p>
-    </section>
+    </MotionSection>
   );
 }
 export default About;
