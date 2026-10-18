@@ -2,9 +2,7 @@ import { useLayoutEffect, useRef } from "react";
 
 import Hero from "../components/home/Hero";
 import CapabilitiesMarquee from "../shared/CapabilitiesMarquee";
-import VisiumApproach from "../components/home/VisiumApproach";
 import FeaturedWork from "../components/home/FeaturedWork";
-import VisiumStandard from "../components/home/VisiumStandard";
 import Studio from "../components/home/Studio";
 import StudioNotes from "../components/home/StudioNotes";
 import FinalCta from "../components/home/FinalCta";
@@ -62,13 +60,6 @@ function Home({ onThemeChange }) {
           <div id="work-preview">
             <FeaturedWork />
           </div>
-
-          <VisiumApproach />
-
-          <div id="visium-standard">
-            <VisiumStandard />
-          </div>
-
           <div id="studio-preview">
             <Studio />
           </div>
