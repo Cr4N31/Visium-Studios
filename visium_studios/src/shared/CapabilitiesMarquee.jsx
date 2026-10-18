@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import capabilities from "../data/capabilities";
 
 const SPEED = 60; // px per second
+const MAX_COPIES = 6;
 
 const EDGE_MASK =
   "linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%)";
@@ -67,7 +68,10 @@ export default function CapabilitiesMarquee() {
 
     const measure = () => {
       width = group.getBoundingClientRect().width;
-      if (width) setCopies(Math.ceil(root.clientWidth / width) + 1);
+      if (width) {
+        const needed = Math.ceil(window.innerWidth / width) + 1;
+        setCopies(Math.min(Math.max(needed, 2), MAX_COPIES));
+      }
       render();
     };
 
@@ -134,11 +138,14 @@ export default function CapabilitiesMarquee() {
   }, []);
 
   return (
-    <div style={{ maskImage: EDGE_MASK, WebkitMaskImage: EDGE_MASK }}>
+    <div
+      className="w-full min-w-0 max-w-full overflow-hidden"
+      style={{ maskImage: EDGE_MASK, WebkitMaskImage: EDGE_MASK }}
+    >
       <section
         ref={rootRef}
         aria-label="Capabilities"
-        className="cursor-grab touch-pan-y select-none overflow-hidden py-10 text-5xl font-medium leading-none tracking-tight text-white active:cursor-grabbing md:py-14 md:text-7xl"
+        className="w-full max-w-full touch-pan-y select-none overflow-hidden py-10 text-5xl font-medium leading-none tracking-tight text-white active:cursor-grabbing md:py-14 md:text-7xl"
       >
         <div
           ref={trackRef}

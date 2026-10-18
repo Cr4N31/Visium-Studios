@@ -7,7 +7,7 @@ const MotionSection = motion.section;
 function About() {
   return (
     <MotionSection
-      className="bg-black px-5 py-16 text-white sm:px-8 md:px-10"
+      className="overflow-x-clip bg-black px-5 py-16 text-white sm:px-8 md:px-10"
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
@@ -22,7 +22,7 @@ function About() {
       </div>
 
       {/* Body: paragraph on the left, capabilities carousel beside it */}
-      <div className="mt-8 flex items-center flex-col gap-10 md:mt-10 md:flex-row md:gap-10 lg:gap-16">
+      <div className="mt-8 flex flex-col items-stretch gap-10 md:mt-10 md:flex-row md:items-center md:gap-10 lg:gap-16">
         <p className="indent-8 text-[15px] leading-[1.12] tracking-[-0.02em] md:w-[24%] md:min-w-[16rem] md:shrink-0">
           Visium is a visual systems studio for early-stage tech founders. We
           design identities, interfaces, and the systems that hold them
@@ -30,7 +30,7 @@ function About() {
           building.
         </p>
 
-        <div className="min-w-0 flex-1">
+        <div className="w-full min-w-0 md:flex-1">
           <div className="flex items-start justify-between text-sm">
             <span>We Deliver</span>
             <Link to="/studio" className="flex items-center gap-2">
@@ -39,10 +39,9 @@ function About() {
             </Link>
           </div>
 
-          <CapabilitiesMarquee
-            vertical
-            className="mt-4 h-[22rem] md:h-[26rem]"
-          />
+          <div className="mt-4 min-w-0 max-w-full">
+            <CapabilitiesMarquee />
+          </div>
         </div>
       </div>
     </MotionSection>
