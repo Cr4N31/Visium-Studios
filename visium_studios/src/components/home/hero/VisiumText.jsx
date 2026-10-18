@@ -32,7 +32,7 @@ function VisiumText() {
       </div>
 
       <p className="text-right  text-[10px]">
-        <span className="font-mono uppercase tracking-widest sm:text-[1.5rem] font-[600]">
+        <span className="font-mono uppercase tracking-widest text-2xl md:text-[1.5rem] font-[600]">
           <TextScramble>Available Worldwide</TextScramble>
         </span>
       </p>
