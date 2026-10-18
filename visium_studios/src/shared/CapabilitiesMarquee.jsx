@@ -1,106 +1,158 @@
-import { useRef, useState, useLayoutEffect } from "react";
-import {
-  motion,
-  useMotionValue,
-  useAnimationFrame,
-  useInView,
-} from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 import capabilities from "../data/capabilities";
 
-const SPEED = 60;
+const SPEED = 60; // px per second
 
-// Fade the left and right edges out, like the reference
 const EDGE_MASK =
   "linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%)";
-const MotionSection = motion.section;
 
-function wrapX(value, width) {
-  if (!width) return value;
-  let v = value % width;
-  if (v > 0) v -= width;
-  return v;
-}
-
-function Item({ item, hidden = false }) {
+function Group({ hidden, groupRef }) {
   return (
-    <div className="flex shrink-0 items-center gap-[0.3em]">
-      <span className="whitespace-nowrap">{item.title}</span>
-      <img
-        src={item.src}
-        alt={hidden ? "" : item.title}
-        draggable={false}
-        loading="lazy"
-        className="pointer-events-none aspect-square h-[0.95em] shrink-0 object-cover"
-      />
+    <div
+      ref={groupRef}
+      aria-hidden={hidden || undefined}
+      className="flex shrink-0 items-center gap-[0.3em] pr-[0.3em]"
+    >
+      {capabilities.map((item) => (
+        <div
+          key={item.title}
+          className="flex shrink-0 items-center gap-[0.3em]"
+        >
+          <span className="whitespace-nowrap">{item.title}</span>
+          <img
+            src={item.src}
+            alt={hidden ? "" : item.title}
+            draggable={false}
+            decoding="async"
+            className="pointer-events-none aspect-square h-[0.95em] shrink-0 object-cover"
+          />
+        </div>
+      ))}
     </div>
   );
 }
 
-function CapabilitiesMarquee() {
-  const sectionRef = useRef(null);
+export default function CapabilitiesMarquee() {
+  const rootRef = useRef(null);
+  const trackRef = useRef(null);
   const groupRef = useRef(null);
-  const isInView = useInView(sectionRef, { margin: "100px" });
-  const x = useMotionValue(0);
-  const [isPressed, setIsPressed] = useState(false);
-  const [groupWidth, setGroupWidth] = useState(0);
-  const [viewWidth, setViewWidth] = useState(0);
+  const [copies, setCopies] = useState(2);
 
-  useLayoutEffect(() => {
-    if (!groupRef.current || !sectionRef.current) return;
-    const measure = () => {
-      setGroupWidth(groupRef.current.offsetWidth);
-      setViewWidth(sectionRef.current.offsetWidth);
+  useEffect(() => {
+    const root = rootRef.current;
+    const track = trackRef.current;
+    const group = groupRef.current;
+    if (!root || !track || !group) return;
+
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    let x = 0;
+    let width = 0;
+    let visible = true;
+    let pressed = false;
+    let pointerId = null;
+    let lastPointerX = 0;
+    let lastTime = 0;
+    let raf = 0;
+
+    const render = () => {
+      if (width) {
+        x %= width;
+        if (x > 0) x -= width; // keep x in (-width, 0]
+      }
+      track.style.transform = `translate3d(${x}px,0,0)`;
     };
+
+    const measure = () => {
+      width = group.getBoundingClientRect().width;
+      if (width) setCopies(Math.ceil(root.clientWidth / width) + 1);
+      render();
+    };
+
+    const tick = (time) => {
+      const dt = Math.min(time - (lastTime || time), 50);
+      lastTime = time;
+      if (visible && !pressed && width && !reduceMotion) {
+        x -= (SPEED * dt) / 1000;
+        render();
+      }
+      raf = requestAnimationFrame(tick);
+    };
+
+    // Dragging (native pointer events, one pointer at a time)
+    const onDown = (e) => {
+      if (pointerId !== null) return;
+      pointerId = e.pointerId;
+      lastPointerX = e.clientX;
+      pressed = true;
+      root.setPointerCapture(e.pointerId);
+    };
+    const onMove = (e) => {
+      if (e.pointerId !== pointerId) return;
+      x += e.clientX - lastPointerX;
+      lastPointerX = e.clientX;
+      render();
+    };
+    const onEnd = (e) => {
+      if (e.pointerId !== pointerId) return;
+      pointerId = null;
+      pressed = false;
+    };
+
+    root.addEventListener("pointerdown", onDown);
+    root.addEventListener("pointermove", onMove);
+    root.addEventListener("pointerup", onEnd);
+    root.addEventListener("pointercancel", onEnd);
+    root.addEventListener("lostpointercapture", onEnd);
+
+    const resizeObserver = new ResizeObserver(measure);
+    resizeObserver.observe(group);
+    resizeObserver.observe(root);
+
+    const io = new IntersectionObserver(
+      ([entry]) => (visible = entry.isIntersecting),
+      { rootMargin: "100px" },
+    );
+    io.observe(root);
+
+    document.fonts?.ready.then(measure);
     measure();
-    const ro = new ResizeObserver(measure);
-    ro.observe(groupRef.current);
-    ro.observe(sectionRef.current);
-    return () => ro.disconnect();
+    raf = requestAnimationFrame(tick);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      resizeObserver.disconnect();
+      io.disconnect();
+      root.removeEventListener("pointerdown", onDown);
+      root.removeEventListener("pointermove", onMove);
+      root.removeEventListener("pointerup", onEnd);
+      root.removeEventListener("pointercancel", onEnd);
+      root.removeEventListener("lostpointercapture", onEnd);
+    };
   }, []);
 
-  // Enough copies to fill the viewport, plus one extra for the wrap-around
-  const copies = groupWidth ? Math.ceil(viewWidth / groupWidth) + 1 : 2;
-
-  useAnimationFrame((_, delta) => {
-    if (!isInView || isPressed || !groupWidth) return;
-
-    const frameDelta = Math.min(delta, 32);
-    const moveBy = SPEED * (frameDelta / 1000);
-    x.set(wrapX(x.get() - moveBy, groupWidth));
-  });
-
-  const handlePan = (_, info) => {
-    if (!groupWidth) return;
-    x.set(wrapX(x.get() + info.delta.x, groupWidth));
-  };
-
   return (
-    <MotionSection
-      ref={sectionRef}
-      className="select-none overflow-hidden py-10 text-5xl font-medium leading-none tracking-tight text-white touch-pan-y cursor-grab active:cursor-grabbing md:py-14 md:text-7xl"
-      style={{ maskImage: EDGE_MASK, WebkitMaskImage: EDGE_MASK }}
-      onPointerDown={() => setIsPressed(true)}
-      onPointerUp={() => setIsPressed(false)}
-      onPointerLeave={() => setIsPressed(false)}
-      onPointerCancel={() => setIsPressed(false)}
-      onPan={handlePan}
-    >
-      <motion.div className="flex w-max items-center" style={{ x }}>
-        {Array.from({ length: copies }, (_, copy) => (
-          <div
-            key={copy}
-            ref={copy === 0 ? groupRef : undefined}
-            className="flex items-center gap-[0.3em] pr-[0.3em]"
-            aria-hidden={copy > 0 || undefined}
-          >
-            {capabilities.map((item) => (
-              <Item key={item.title} item={item} hidden={copy > 0} />
-            ))}
-          </div>
-        ))}
-      </motion.div>
-    </MotionSection>
+    <div style={{ maskImage: EDGE_MASK, WebkitMaskImage: EDGE_MASK }}>
+      <section
+        ref={rootRef}
+        aria-label="Capabilities"
+        className="cursor-grab touch-pan-y select-none overflow-hidden py-10 text-5xl font-medium leading-none tracking-tight text-white active:cursor-grabbing md:py-14 md:text-7xl"
+      >
+        <div
+          ref={trackRef}
+          className="flex w-max items-center will-change-transform"
+        >
+          {Array.from({ length: copies }, (_, i) => (
+            <Group
+              key={i}
+              hidden={i > 0}
+              groupRef={i === 0 ? groupRef : undefined}
+            />
+          ))}
+        </div>
+      </section>
+    </div>
   );
 }
-
-export default CapabilitiesMarquee;
