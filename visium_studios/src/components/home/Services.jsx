@@ -8,6 +8,7 @@ import {
   useReducedMotion,
 } from "framer-motion";
 import { serviceList } from "../../data/serviceList";
+import ToolsRing from "../../shared/ToolsRing";
 
 const EASE = [0.76, 0, 0.24, 1];
 
@@ -141,6 +142,9 @@ export default function Services() {
           )}
         </AnimatePresence>
       </motion.div>
+      <div>
+        <ToolsRing />
+      </div>
     </section>
   );
 }
