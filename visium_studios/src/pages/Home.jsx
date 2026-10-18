@@ -59,11 +59,11 @@ function Home({ onThemeChange }) {
           <About />
           <CapabilitiesMarquee />
           <Services />
-          <VisiumApproach />
-
           <div id="work-preview">
             <FeaturedWork />
           </div>
+
+          <VisiumApproach />
 
           <div id="visium-standard">
             <VisiumStandard />
