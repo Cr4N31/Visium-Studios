@@ -23,14 +23,13 @@ function CursorWarpField({ children, className = "", intensity = 28 }) {
 
       targetScale.current = Math.min(velocity * intensity, intensity * 4);
       lastPos.current = { x: e.clientX, y: e.clientY, t: now };
+      wake();
     };
 
     const handleLeave = () => {
       targetScale.current = 0;
+      wake();
     };
-
-    el.addEventListener("mousemove", handleMove);
-    el.addEventListener("mouseleave", handleLeave);
 
     const tick = () => {
       currentScale.current +=
@@ -43,14 +42,34 @@ function CursorWarpField({ children, className = "", intensity = 28 }) {
           currentScale.current.toFixed(2),
         );
       }
+
+      if (
+        Math.abs(targetScale.current) < 0.01 &&
+        Math.abs(currentScale.current) < 0.01
+      ) {
+        currentScale.current = 0;
+        targetScale.current = 0;
+        displacementRef.current?.setAttribute("scale", "0");
+        rafRef.current = null;
+        return;
+      }
+
       rafRef.current = requestAnimationFrame(tick);
     };
-    rafRef.current = requestAnimationFrame(tick);
+
+    const wake = () => {
+      if (rafRef.current === null) {
+        rafRef.current = requestAnimationFrame(tick);
+      }
+    };
+
+    el.addEventListener("mousemove", handleMove);
+    el.addEventListener("mouseleave", handleLeave);
 
     return () => {
       el.removeEventListener("mousemove", handleMove);
       el.removeEventListener("mouseleave", handleLeave);
-      cancelAnimationFrame(rafRef.current);
+      if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
     };
   }, [intensity]);
 

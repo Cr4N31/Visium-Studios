@@ -7,6 +7,7 @@ import {
   useVelocity,
   useSpring,
   useTransform,
+  useInView,
 } from "framer-motion";
 import capabilities from "../data/capabilities";
 
@@ -44,6 +45,7 @@ function Item({ item, hidden = false }) {
 function CapabilitiesMarquee() {
   const sectionRef = useRef(null);
   const groupRef = useRef(null);
+  const isInView = useInView(sectionRef, { margin: "100px" });
   const x = useMotionValue(0);
   const directionFactor = useRef(1);
   const isMobile = useRef(false);
@@ -54,11 +56,11 @@ function CapabilitiesMarquee() {
     damping: 50,
     stiffness: 400,
   });
-  // px/s of scroll -> speed multiplier, clamped so a hard flick can't go wild
+  // Ignore gentle scrolling (dead zone), then ramp up to a modest 3x at most
   const velocityFactor = useTransform(
     smoothVelocity,
-    [-2000, 0, 2000],
-    [-6, 0, 6],
+    [-3000, -250, 0, 250, 3000],
+    [-2, 0, 0, 0, 2],
   );
   const [isPressed, setIsPressed] = useState(false);
   const [groupWidth, setGroupWidth] = useState(0);
@@ -94,19 +96,18 @@ function CapabilitiesMarquee() {
   const copies = groupWidth ? Math.ceil(viewWidth / groupWidth) + 1 : 2;
 
   useAnimationFrame((_, delta) => {
-    if (isPressed || !groupWidth) return;
-
-    let moveBy = directionFactor.current * SPEED * (delta / 1000);
+    if (!isInView || isPressed || !groupWidth) return;
 
     // Scroll-reactive speed and direction, mobile only
+    let boost = 1;
     if (isMobile.current) {
       const vf = velocityFactor.get();
       if (vf < 0) directionFactor.current = -1;
       else if (vf > 0) directionFactor.current = 1;
-
-      moveBy += directionFactor.current * moveBy * vf;
+      boost = 1 + Math.abs(vf);
     }
 
+    const moveBy = directionFactor.current * SPEED * boost * (delta / 1000);
     x.set(wrapX(x.get() - moveBy, groupWidth));
   });
 

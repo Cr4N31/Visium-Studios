@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   motion,
@@ -6,14 +6,10 @@ import {
   useMotionValue,
   useSpring,
   useReducedMotion,
-  useInView,
 } from "framer-motion";
 import { serviceList } from "../../data/serviceList";
 
 const EASE = [0.76, 0, 0.24, 1];
-
-// Matches Tailwind's `md` breakpoint (768px)
-const MOBILE_QUERY = "(max-width: 767px)";
 
 const rowFadeUp = {
   hidden: { opacity: 0, y: 40 },
@@ -24,18 +20,6 @@ const rowFadeUp = {
   }),
 };
 
-function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia(MOBILE_QUERY);
-    const update = () => setIsMobile(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
-  return isMobile;
-}
-
 const Note = ({ children }) => (
   <span className="max-w-[22ch] shrink-0 font-mono text-[11px] uppercase tracking-wide opacity-70">
     {children}
@@ -45,26 +29,7 @@ const Note = ({ children }) => (
 /* One row = two stacked copies.
    bottom: white bg, black text (revealed)
    top:    black bg, white text, clip-path closes to the center line on hover */
-function Row({
-  s,
-  index,
-  hovered,
-  spotlight,
-  dimmed,
-  reduce,
-  onActivate,
-  onDeactivate,
-  onCenter,
-}) {
-  const ref = useRef(null);
-
-  // Thin band across the middle of the viewport: the row inside it is "in focus"
-  const inCenter = useInView(ref, { margin: "-48% 0px -48% 0px" });
-
-  useEffect(() => {
-    if (inCenter) onCenter?.(s.slug);
-  }, [inCenter, onCenter, s.slug]);
-
+function Row({ s, index, hovered, reduce, onActivate, onDeactivate }) {
   const content = (
     <div className="px-5 py-3 md:px-10 md:py-4">
       <div
@@ -88,12 +53,8 @@ function Row({
       variants={rowFadeUp}
       custom={index * 0.08}
     >
-      <motion.div
-        ref={ref}
+      <div
         className="relative block overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-white"
-        initial={false}
-        animate={{ opacity: dimmed ? 0.35 : 1 }}
-        transition={{ duration: reduce ? 0 : 0.35, ease: "easeOut" }}
         onPointerEnter={(e) => e.pointerType === "mouse" && onActivate(s)}
         onPointerLeave={onDeactivate}
         onFocus={() => onActivate(s)}
@@ -113,35 +74,14 @@ function Row({
         >
           {content}
         </motion.div>
-
-        {/* Mobile: divider line draws in as the row appears */}
-        <motion.span
-          aria-hidden
-          className="absolute inset-x-5 top-0 z-10 h-px origin-left bg-white/20 md:hidden"
-          initial={reduce ? false : { scaleX: 0 }}
-          whileInView={reduce ? undefined : { scaleX: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.9, ease: EASE, delay: 0.1 }}
-        />
-
-        {/* Mobile: accent bar grows on the row that is in focus */}
-        <motion.span
-          aria-hidden
-          className="absolute bottom-2 left-0 top-2 z-10 w-[3px] origin-center bg-white md:hidden"
-          initial={false}
-          animate={{ scaleY: spotlight ? 1 : 0 }}
-          transition={{ duration: reduce ? 0 : 0.35, ease: EASE }}
-        />
-      </motion.div>
+      </div>
     </motion.div>
   );
 }
 
 export default function Services() {
   const reduce = useReducedMotion();
-  const isMobile = useIsMobile();
   const [active, setActive] = useState(null);
-  const [centered, setCentered] = useState(null);
 
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -172,11 +112,8 @@ export default function Services() {
             index={index}
             reduce={reduce}
             hovered={active?.slug === s.slug}
-            spotlight={isMobile && centered === s.slug}
-            dimmed={isMobile && centered !== null && centered !== s.slug}
             onActivate={setActive}
             onDeactivate={() => setActive(null)}
-            onCenter={isMobile ? setCentered : undefined}
           />
         ))}
       </div>
