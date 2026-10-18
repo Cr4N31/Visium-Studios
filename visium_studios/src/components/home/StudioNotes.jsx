@@ -1,161 +1,88 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { sortedInsights, formatDate } from "../../data/insights";
+import { sortedInsights } from "../../data/insights";
 
-function InsightCard({ article, featured = false }) {
+const MotionArticle = motion.article;
+
+function InsightRow({ article, index }) {
+  const imageFirst = index % 2 === 0;
+
   return (
-    <Link
-      to={`/insights/${article.slug}`}
-      className={`group block ${featured ? "md:row-span-2" : ""}`}
+    <MotionArticle
+      className="grid grid-cols-[minmax(0,1fr)_3rem] overflow-hidden rounded-md md:grid-cols-[minmax(0,1fr)_3.75rem]"
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
     >
-      <motion.article
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.2 }}
-        transition={{
-          duration: 0.7,
-          ease: [0.22, 1, 0.36, 1],
-        }}
+      <Link
+        to={`/insights/${article.slug}`}
+        className="group col-start-1 row-start-1 grid min-w-0 overflow-hidden border border-gray-500/20 md:min-h-28 md:grid-cols-2"
       >
-        {/* Image */}
         <div
-          className={`relative overflow-hidden bg-black/5 ${
-            featured ? "aspect-[4/3]" : "aspect-[16/10]"
+          className={`relative aspect-[16/7] overflow-hidden md:aspect-auto md:min-h-28 ${
+            imageFirst ? "md:order-1" : "md:order-2"
           }`}
         >
-          <motion.img
+          <img
             src={article.image}
             alt={article.title}
-            className="h-full w-full rounded-3xl object-cover"
-            animate={{
-              scale: [1, 1.025, 1],
-              x: [0, 3, 0],
-              y: [0, -3, 0],
-            }}
-            whileHover={{
-              scale: 1.045,
-              x: 0,
-              y: 0,
-            }}
-            transition={{
-              duration: 8,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
+            loading="lazy"
+            className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
           />
-
-          {/* subtle image overlay */}
-          <div className="absolute inset-0 bg-black/0 transition-colors duration-500 group-hover:bg-black/[0.04]" />
         </div>
 
-        {/* Content */}
-        <div className="pt-5">
-          <div className="mb-3 flex items-center justify-between gap-4">
-            <span className="text-[10px] uppercase tracking-[0.2em] text-white/80">
-              {article.category}
-            </span>
-
-            <span className="text-[10px] uppercase tracking-[0.15em] text-white/80">
-              {formatDate(article.date)}
-            </span>
-          </div>
-
-          <h3
-            className={`max-w-3xl font-serif leading-[1.05] tracking-tight transition-transform duration-500 group-hover:translate-x-1 ${
-              featured
-                ? "text-[clamp(1.9rem,9vw,0.9rem)] md:text-[clamp(1.7rem,5vw,2rem)]"
-                : "text-[clamp(1.9rem,9vw,0.9rem)] md:text-[clamp(1.7rem,5vw,2rem)]"
-            }`}
-          >
-            <span className=" font-[400] leading-[0.95] tracking-[-0.05em]">
-              {article.title}
-            </span>
+        <div
+          className={`flex min-w-0 flex-col justify-center px-5 py-5 md:px-7 md:py-4 ${
+            imageFirst ? "md:order-2 md:border-l" : "md:order-1 md:border-r"
+          }`}
+        >
+          <h3 className="font-mono text-lg uppercase leading-tight tracking-[-0.04em] md:text-xl">
+            {article.title}
           </h3>
-
-          <p
-            className={`mt-4 max-w-xl leading-relaxed text-white/55 ${
-              featured ? "text-sm md:text-base" : "text-sm"
-            }`}
-          >
+          <p className="mt-3 max-w-2xl text-xs leading-relaxed text-white/70 md:text-[11px]">
             {article.excerpt}
           </p>
-          <span className="mt-6 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-white">
-            <span className="relative">
-              Read now
-              <span className="absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-black transition-transform duration-500 ease-out group-hover:scale-x-100" />
-            </span>
-            <span
-              aria-hidden="true"
-              className="transition-transform duration-500 ease-out group-hover:translate-x-1.5"
-            >
-              →
-            </span>
-          </span>
         </div>
-      </motion.article>
-    </Link>
+      </Link>
+
+      <Link
+        to={`/insights/${article.slug}`}
+        aria-label={`Read more: ${article.title}`}
+        className="group col-start-2 row-start-1 flex items-center justify-center border border-gray-500/20 bg-[#0B0B0B] transition-colors hover:bg-white hover:text-black"
+      >
+        <span className="font-mono text-[9px] font-semibold uppercase tracking-[0.14em] [writing-mode:vertical-rl] rotate-180">
+          Read more
+        </span>
+      </Link>
+    </MotionArticle>
   );
 }
 
 function StudioNotes() {
-  const featured = sortedInsights.find((article) => article.featured);
-  const secondary = sortedInsights.filter((article) => !article.featured);
-
   return (
-    <section className="relative bg-black px-8 pb-8 pt-6 text-white md:pt-12">
-      <div className="mx-auto max-w-7xl">
-        {/* Header */}
-        <div className="mb-16 grid gap-8 md:grid-cols-[1fr_2fr] md:items-end">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.6 }}
-            transition={{ duration: 0.6 }}
-          >
-            <span className="inline-block border border-white/50 px-4 py-1.5 text-xs uppercase tracking-[0.25em] text-white/80">
-              Studio Notes
-            </span>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.4 }}
-            transition={{
-              duration: 0.8,
-              delay: 0.1,
-              ease: [0.22, 1, 0.36, 1],
-            }}
-          >
-            <h2>
-              <span className="text-[clamp(2.9rem,9vw,5rem)] font-[400] leading-[0.95] md:text-[clamp(3rem,5vw,5rem)] tracking-[-0.05em]">
-                Thoughts on building brands, products and visual systems.
-              </span>
+    <section className="bg-[#0B0B0B] px-3 py-8 text-white sm:px-5 md:px-8 md:py-10">
+      <div className="mx-auto max-w-[90rem]">
+        <header className="mb-8 flex items-center justify-between gap-4 border-b border-black/10 pb-6">
+          <div className="flex items-start gap-2 md:gap-3">
+            <sup className="mt-[0.5em] font-mono text-xs md:text-sm">(06)</sup>
+            <h2 className="text-[clamp(2.5rem,6vw,5rem)] font-normal leading-[0.9] tracking-[-0.05em]">
+              Insights
             </h2>
-          </motion.div>
-        </div>
-
-        {/* Editorial layout */}
-        <div className="grid gap-14 md:grid-cols-[1.35fr_0.65fr] md:gap-8">
-          {/* Featured */}
-          {featured && <InsightCard article={featured} featured />}
-
-          {/* Secondary */}
-          <div className="flex flex-col gap-14">
-            {secondary.map((article) => (
-              <InsightCard key={article.id} article={article} />
-            ))}
           </div>
-        </div>
+          <Link
+            to="/insights"
+            className="font-mono text-[9px] font-semibold uppercase tracking-[0.12em] transition-opacity hover:opacity-55"
+          >
+            [All posts]
+          </Link>
+        </header>
 
-        {/* Footer */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.6 }}
-          transition={{ duration: 0.6 }}
-          className="mt-20 border-t border-white/10 pt-6"
-        ></motion.div>
+        <div className="flex flex-col gap-3">
+          {sortedInsights.slice(0, 3).map((article, index) => (
+            <InsightRow key={article.id} article={article} index={index} />
+          ))}
+        </div>
       </div>
     </section>
   );
