@@ -8,10 +8,7 @@ function HeroCTA() {
           <div>
             <h2 className="text-xl uppercase leading-[1.05] tracking-wide sm:text-2xl">
               <span className="font-bold">
-                <TextScramble>
-                  Start
-                  <br />A project
-                </TextScramble>
+                <TextScramble>Start A project</TextScramble>
               </span>
             </h2>
             <p className="mt-2 text-sm leading-tight text-black/65 sm:text-base">
