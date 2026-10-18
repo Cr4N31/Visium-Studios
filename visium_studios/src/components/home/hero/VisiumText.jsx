@@ -13,7 +13,7 @@ const variants = []; // empty = inverted wordmark fallback
 function VisiumText() {
   return (
     <div className="flex w-full flex-col gap-3">
-      <div className="flex items-center justify-between font-mono text-[10px] uppercase tracking-widest sm:text-[1.5rem] font-[600]">
+      <div className="flex items-center justify-between  font-mono text-[10px] uppercase tracking-widest sm:text-[1.5rem] font-[600]">
         <span>
           <TextScramble>Brand &amp; Digital Studio</TextScramble>
         </span>
@@ -32,7 +32,7 @@ function VisiumText() {
       </div>
 
       <p className="text-right  text-[10px]">
-        <span className="font-mono uppercase tracking-widest text-2xl md:text-[1.5rem] font-[600]">
+        <span className="font-mono uppercase tracking-widest text-xs md:text-[1.5rem] font-[600]">
           <TextScramble>Available Worldwide</TextScramble>
         </span>
       </p>
