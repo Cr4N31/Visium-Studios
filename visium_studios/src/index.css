@@ -3,7 +3,6 @@
 :root {
   --site-white: #f4f4f1;
   --site-black: #0b0b0b;
-  --home-inversion: 0%;
 }
 
 @theme {
@@ -471,65 +470,6 @@ nav a {
 * {
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.486) var(--site-black);
-}
-
-.home-page {
-  transition:
-    background-color 900ms cubic-bezier(0.22, 1, 0.36, 1),
-    color 900ms cubic-bezier(0.22, 1, 0.36, 1),
-    filter 900ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.site-shell--home {
-  --home-surface: color-mix(
-    in srgb,
-    var(--site-white) calc(100% - var(--home-inversion)),
-    var(--site-black) var(--home-inversion)
-  );
-  --home-foreground: color-mix(
-    in srgb,
-    var(--site-black) calc(100% - var(--home-inversion)),
-    var(--site-white) var(--home-inversion)
-  );
-  background-color: var(--home-surface) !important;
-  color: var(--home-foreground);
-  transition: none;
-}
-
-.site-shell--home .bg-black,
-.site-shell--home .home-hero {
-  background-color: var(--home-surface) !important;
-  background-image: none;
-  transition: none;
-}
-
-.site-shell--home .text-white,
-.site-shell--home [class*="text-white/"],
-.site-shell--home .home-hero.text-black,
-.site-shell--home .home-hero [class*="text-[#f2f2f2]"] {
-  color: var(--home-foreground) !important;
-  transition: none;
-}
-
-.site-shell--home .home-hero-cta :is(h2, p, span, a) {
-  color: var(--site-white) !important;
-}
-
-.site-shell--home .home-hero-cta a:hover,
-.site-shell--home .home-hero-cta a:focus-visible {
-  color: var(--site-black) !important;
-}
-
-.site-shell--home .video-sound-toggle {
-  color: var(--site-white) !important;
-}
-
-.site-shell--home [class*="border-white"] {
-  border-color: color-mix(
-    in srgb,
-    var(--site-white) calc(100% - var(--home-inversion)),
-    #333 var(--home-inversion)
-  );
 }
 
 .home-hero {

@@ -63,9 +63,7 @@ function App() {
 
   return (
     <CurtainNavigationProvider>
-      <div
-        className={`bg-black text-white${isHomePage ? " site-shell--home" : ""}`}
-      >
+      <div className="bg-black text-white">
         <ScrollToTop />
         <SeoMetadata />
         <CustomCursor inverted={cursorInverted} />

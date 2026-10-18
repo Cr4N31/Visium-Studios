@@ -1,5 +1,14 @@
 import wordmark from "/assets/logo/vs wordmark display.svg";
 import TextScramble from "../../../shared/TextScramble";
+import WordmarkReveal from "./WordmarkReveal";
+
+// Add your alternate wordmark renders here, in the order they should cycle.
+// Each image must have the SAME aspect ratio as the wordmark svg so the letters line up.
+// import inflated from "/assets/reveal/inflated.png";
+// import glossy from "/assets/reveal/glossy.png";
+// import chrome from "/assets/reveal/chrome.png";
+// const variants = [inflated, glossy, chrome];
+const variants = []; // empty = inverted wordmark fallback
 
 function VisiumText() {
   return (
@@ -12,8 +21,14 @@ function VisiumText() {
           <TextScramble>Setting the visual standard</TextScramble>
         </span>
       </div>
+
       <div className="flex justify-center items-center">
-        <img src={wordmark} className="w-[100vw]" />
+        <WordmarkReveal
+          src={wordmark}
+          variants={variants}
+          blobColor="#0B0B0B"
+          className="w-[100vw]"
+        />
       </div>
 
       <p className="text-right  text-[10px]">

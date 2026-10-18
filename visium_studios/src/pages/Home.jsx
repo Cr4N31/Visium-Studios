@@ -19,21 +19,9 @@ function Home({ onThemeChange }) {
     if (!hero) return undefined;
 
     const updateTheme = () => {
-      const scrollProgress = Math.min(
-        1,
-        Math.max(
-          0,
-          -hero.getBoundingClientRect().top / (hero.offsetHeight * 0.75),
-        ),
-      );
-      const progress =
-        scrollProgress * scrollProgress * (3 - 2 * scrollProgress);
+      const isInverted = hero.getBoundingClientRect().bottom <= 0;
 
-      document.documentElement.style.setProperty(
-        "--home-inversion",
-        `${progress * 100}%`,
-      );
-      const nextTheme = progress < 0.5;
+      const nextTheme = !isInverted;
       if (themeRef.current !== nextTheme) {
         themeRef.current = nextTheme;
         onThemeChange(nextTheme);
@@ -58,7 +46,6 @@ function Home({ onThemeChange }) {
       window.removeEventListener("resize", scheduleUpdate);
       window.cancelAnimationFrame(frameId);
 
-      document.documentElement.style.setProperty("--home-inversion", "0%");
       themeRef.current = false;
       onThemeChange(false);
     };

@@ -1,6 +1,9 @@
 function About() {
   return (
-    <section className="bg-black px-5 py-16 text-white sm:px-8 md:px-10 md:py-20">
+    <section
+      className="bg-black px-5 py-16 text-white sm:px-8 md:px-10 md:py-20"
+      data-aos="fade-up"
+    >
       <div className="flex items-start gap-4 md:gap-7">
         <h2 className="text-[clamp(4rem,10vw,8rem)] font-normal leading-[0.88] tracking-[-0.06em]">
           About

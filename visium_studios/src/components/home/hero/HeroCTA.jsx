@@ -1,10 +1,3 @@
-const team = [
-  { src: "/assets/team/Jace Kayode.png", name: "Jace Kayode" },
-  { src: "/assets/team/Chioma Okoye.png", name: "Chioma Okoye" },
-  { src: "/assets/team/Gold Wuraola.png", name: "Gold Wuraola" },
-  { src: "/assets/team/Wisdom Chukwu.png", name: "Wisdom Chukwu" },
-];
-
 function HeroCTA() {
   return (
     <section className="w-full shrink-0 overflow-hidden rounded-xl text-black md:w-[340px]">
@@ -31,7 +24,7 @@ function HeroCTA() {
         <div className="relative w-[30%] shrink-0 overflow-hidden border-l border-l-[#fff] bg-neutral-200">
           <img
             className="h-full w-full object-cover object-top"
-            src="/assets/team/Jace Kayode.png"
+            src="/assets/img/first.png"
             alt="Jace Kayode"
           />
           <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 to-transparent px-2 pb-3 pt-8 text-center text-[10px] font-semibold uppercase tracking-wider text-white">
