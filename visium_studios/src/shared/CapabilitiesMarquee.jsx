@@ -1,4 +1,4 @@
-import { useRef, useState, useLayoutEffect } from "react";
+import { useRef, useState, useLayoutEffect, useEffect } from "react";
 import {
   motion,
   useMotionValue,
@@ -10,7 +10,14 @@ import {
 } from "framer-motion";
 import capabilities from "../data/capabilities";
 
-const SPEED = 40;
+const SPEED = 60;
+
+// Matches Tailwind's `md` breakpoint (768px)
+const MOBILE_QUERY = "(max-width: 767px)";
+
+// Fade the left and right edges out, like the reference
+const EDGE_MASK =
+  "linear-gradient(to right, transparent 0%, black 12%, black 88%, transparent 100%)";
 
 function wrapX(value, width) {
   if (!width) return value;
@@ -19,39 +26,18 @@ function wrapX(value, width) {
   return v;
 }
 
-function Card({ item, index, hidden = false }) {
-  // Alternate the tilt direction so neighbouring cards fan out differently
-  const tilt = index % 2 === 0 ? -2.5 : 2.5;
-
+function Item({ item, hidden = false }) {
   return (
-    <motion.figure
-      className="relative w-[220px] shrink-0 md:w-[300px]"
-      style={{
-        marginTop: item.offset,
-        boxShadow: "0 0 0 0 rgba(0,0,0,0)",
-      }}
-      whileHover={{
-        y: -24,
-        scale: 1.05,
-        rotate: tilt,
-        zIndex: 20,
-        boxShadow: "0 28px 40px -14px rgba(0,0,0,0.4)",
-      }}
-      transition={{ type: "spring", stiffness: 320, damping: 22 }}
-    >
-      <div
-        className="overflow-hidden bg-white/10"
-        style={{ aspectRatio: item.ratio }}
-      >
-        <img
-          src={item.src}
-          alt={hidden ? "" : item.title}
-          draggable={false}
-          loading="lazy"
-          className="pointer-events-none h-full w-full object-cover"
-        />
-      </div>
-    </motion.figure>
+    <div className="flex shrink-0 items-center gap-[0.3em]">
+      <span className="whitespace-nowrap">{item.title}</span>
+      <img
+        src={item.src}
+        alt={hidden ? "" : item.title}
+        draggable={false}
+        loading="lazy"
+        className="pointer-events-none aspect-square h-[0.95em] shrink-0 object-cover"
+      />
+    </div>
   );
 }
 
@@ -60,6 +46,7 @@ function CapabilitiesMarquee() {
   const groupRef = useRef(null);
   const x = useMotionValue(0);
   const directionFactor = useRef(1);
+  const isMobile = useRef(false);
 
   const { scrollY } = useScroll();
   const scrollVelocity = useVelocity(scrollY);
@@ -76,6 +63,19 @@ function CapabilitiesMarquee() {
   const [isPressed, setIsPressed] = useState(false);
   const [groupWidth, setGroupWidth] = useState(0);
   const [viewWidth, setViewWidth] = useState(0);
+
+  // Track whether we're on a mobile viewport (kept in a ref, no re-renders)
+  useEffect(() => {
+    const mq = window.matchMedia(MOBILE_QUERY);
+    const update = () => {
+      isMobile.current = mq.matches;
+      // Reset to the default direction when leaving mobile
+      if (!mq.matches) directionFactor.current = 1;
+    };
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
 
   useLayoutEffect(() => {
     if (!groupRef.current || !sectionRef.current) return;
@@ -98,11 +98,14 @@ function CapabilitiesMarquee() {
 
     let moveBy = directionFactor.current * SPEED * (delta / 1000);
 
-    const vf = velocityFactor.get();
-    if (vf < 0) directionFactor.current = -1;
-    else if (vf > 0) directionFactor.current = 1;
+    // Scroll-reactive speed and direction, mobile only
+    if (isMobile.current) {
+      const vf = velocityFactor.get();
+      if (vf < 0) directionFactor.current = -1;
+      else if (vf > 0) directionFactor.current = 1;
 
-    moveBy += directionFactor.current * moveBy * vf;
+      moveBy += directionFactor.current * moveBy * vf;
+    }
 
     x.set(wrapX(x.get() - moveBy, groupWidth));
   });
@@ -115,23 +118,24 @@ function CapabilitiesMarquee() {
   return (
     <motion.section
       ref={sectionRef}
-      className="-mt-32 select-none overflow-hidden pb-16 pt-24 touch-pan-y cursor-grab active:cursor-grabbing md:pb-24"
+      className="select-none overflow-hidden py-10 text-5xl font-medium leading-none tracking-tight text-white touch-pan-y cursor-grab active:cursor-grabbing md:py-14 md:text-7xl"
+      style={{ maskImage: EDGE_MASK, WebkitMaskImage: EDGE_MASK }}
       onPointerDown={() => setIsPressed(true)}
       onPointerUp={() => setIsPressed(false)}
       onPointerLeave={() => setIsPressed(false)}
       onPointerCancel={() => setIsPressed(false)}
       onPan={handlePan}
     >
-      <motion.div className="flex w-max items-start" style={{ x }}>
+      <motion.div className="flex w-max items-center" style={{ x }}>
         {Array.from({ length: copies }, (_, copy) => (
           <div
             key={copy}
             ref={copy === 0 ? groupRef : undefined}
-            className="flex items-start gap-2.5 pr-2.5"
+            className="flex items-center gap-[0.3em] pr-[0.3em]"
             aria-hidden={copy > 0 || undefined}
           >
-            {capabilities.map((item, i) => (
-              <Card key={item.title} item={item} index={i} hidden={copy > 0} />
+            {capabilities.map((item) => (
+              <Item key={item.title} item={item} hidden={copy > 0} />
             ))}
           </div>
         ))}

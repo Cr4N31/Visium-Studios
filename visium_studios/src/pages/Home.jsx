@@ -55,7 +55,6 @@ function Home({ onThemeChange }) {
       <div className="relative z-10 bg-black">
         <div className="flex flex-col gap-12 py-8">
           <About />
-          <CapabilitiesMarquee />
           <Services />
           <div id="work-preview">
             <FeaturedWork />

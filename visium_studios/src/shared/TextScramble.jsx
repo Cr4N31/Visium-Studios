@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useReducedMotion } from "framer-motion";
 
 const GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-const DURATION = 900;
+const DURATION = 2000;
 const FRAME_INTERVAL = 45;
 
 function scramble(text, progress) {
