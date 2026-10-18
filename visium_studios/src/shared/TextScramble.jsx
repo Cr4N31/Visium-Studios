@@ -17,16 +17,13 @@ function scramble(text, progress) {
     .join("");
 }
 
-function TextScramble({ children, className = "" }) {
+function TextScramble({ children, className = "", active = true }) {
   const text = String(children ?? "");
   const prefersReducedMotion = useReducedMotion();
   const [displayText, setDisplayText] = useState(text);
 
   useEffect(() => {
-    if (prefersReducedMotion) {
-      setDisplayText(text);
-      return undefined;
-    }
+    if (!active || prefersReducedMotion) return undefined;
 
     const startedAt = performance.now();
     let timeoutId;
@@ -42,20 +39,19 @@ function TextScramble({ children, className = "" }) {
       }
     };
 
-    setDisplayText(scramble(text, 0));
     animationFrameId = window.requestAnimationFrame(update);
 
     return () => {
       window.clearTimeout(timeoutId);
       window.cancelAnimationFrame(animationFrameId);
     };
-  }, [prefersReducedMotion, text]);
+  }, [active, prefersReducedMotion, text]);
 
   return (
     <>
       <span className="sr-only">{text}</span>
       <span aria-hidden="true" className={className}>
-        {displayText}
+        {active && !prefersReducedMotion ? displayText : text}
       </span>
     </>
   );

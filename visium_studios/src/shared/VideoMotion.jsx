@@ -41,7 +41,6 @@ function SoundToggle({ muted, onToggle, className = "", ...rest }) {
 
 function VideoMotion() {
   const wrapRef = useRef(null);
-  const smallRef = useRef(null);
   const bigRef = useRef(null);
   const resume = useRef({ time: 0, playing: true });
 
@@ -62,7 +61,7 @@ function VideoMotion() {
     my.set(e.clientY - CURSOR_SIZE / 2);
   };
 
-  // Hover on the small video only drives the cursor. It never opens anything.
+  // Hovering over the cover only drives the cursor; clicking opens the video.
   const handleEnter = (e) => {
     if (e.pointerType !== "mouse") return;
     const x = e.clientX - CURSOR_SIZE / 2;
@@ -89,11 +88,6 @@ function VideoMotion() {
   const openOverlay = () => {
     if (open || !wrapRef.current) return;
     const r = wrapRef.current.getBoundingClientRect();
-    const small = smallRef.current;
-    if (small) {
-      resume.current = { time: small.currentTime, playing: !small.paused };
-      small.pause();
-    }
     setFrom({ top: r.top, left: r.left, width: r.width, height: r.height });
     setPlaying(resume.current.playing);
     setOverUI(false);
@@ -102,12 +96,7 @@ function VideoMotion() {
 
   const closeOverlay = () => {
     const big = bigRef.current;
-    const small = smallRef.current;
     if (big) resume.current = { time: big.currentTime, playing: !big.paused };
-    if (small) {
-      small.currentTime = resume.current.time;
-      if (resume.current.playing) small.play().catch(() => {});
-    }
     setOverUI(false);
     setHovering(false);
     setOpen(false);
@@ -122,9 +111,7 @@ function VideoMotion() {
 
   const toggleSound = () => {
     const next = !muted;
-    [smallRef.current, bigRef.current].forEach((v) => {
-      if (v) v.muted = next;
-    });
+    if (bigRef.current) bigRef.current.muted = next;
     setMuted(next);
   };
 
@@ -143,7 +130,6 @@ function VideoMotion() {
       document.body.style.overflow = prevOverflow;
       document.body.classList.remove("video-expanded");
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   const uiHover = {
@@ -170,25 +156,14 @@ function VideoMotion() {
             openOverlay();
           }
         }}
-        className="relative h-full w-full cursor-none overflow-hidden bg-transparent [@media(hover:none)]:cursor-pointer"
+        className="relative flex h-full w-full cursor-none items-center justify-center overflow-hidden rounded-lg bg-black [@media(hover:none)]:cursor-pointer"
         data-aos="fade-up"
       >
-        <video
-          ref={smallRef}
-          autoPlay
-          muted={muted}
-          loop
-          playsInline
-          className="block h-full w-full rounded-lg object-cover"
-        >
-          <source src={SRC} type="video/mp4" />
-        </video>
-
-        <SoundToggle
-          muted={muted}
-          onToggle={toggleSound}
-          className="absolute left-1/2 top-4 -translate-x-1/2 cursor-none"
-          {...uiHover}
+        <img
+          src="/assets/logo/fullWhite.png"
+          alt=""
+          aria-hidden="true"
+          className="pointer-events-none w-32 max-w-[45%] object-contain"
         />
       </div>
 

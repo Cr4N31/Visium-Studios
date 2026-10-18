@@ -25,7 +25,7 @@ function HeroCTA() {
         <div className="relative w-[30%] shrink-0 overflow-hidden border-l border-l-[#fff] bg-neutral-200">
           <img
             className="h-full w-full object-cover object-top"
-            src="/assets/img/first.png"
+            src="/assets/img/img.png"
             alt="Jace Kayode"
           />
           <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 to-transparent px-2 pb-3 pt-8 text-center text-[10px] font-semibold uppercase tracking-wider text-white">

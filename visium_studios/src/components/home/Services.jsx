@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   motion,
@@ -6,9 +6,11 @@ import {
   useMotionValue,
   useSpring,
   useReducedMotion,
+  useInView,
 } from "framer-motion";
 import { serviceList } from "../../data/serviceList";
 import ToolsRing from "../../shared/ToolsRing";
+import TextScramble from "../../shared/TextScramble";
 
 const EASE = [0.76, 0, 0.24, 1];
 
@@ -31,7 +33,10 @@ const Note = ({ children }) => (
    bottom: white bg, black text (revealed)
    top:    black bg, white text, clip-path closes to the center line on hover */
 function Row({ s, index, hovered, reduce, onActivate, onDeactivate }) {
-  const content = (
+  const ref = useRef(null);
+  const isInView = useInView(ref, { amount: 0.15 });
+
+  const content = (scramble = true) => (
     <div className="px-5 py-3 md:px-10 md:py-4">
       <div
         className="flex min-w-0 flex-wrap items-center gap-x-6 gap-y-1 md:ml-[var(--o)]"
@@ -39,7 +44,11 @@ function Row({ s, index, hovered, reduce, onActivate, onDeactivate }) {
       >
         {s.noteSide === "left" && <Note>{s.note}</Note>}
         <span className="shrink-0 whitespace-nowrap font-mono uppercase leading-none text-[clamp(2rem,7.5vw,6.5rem)]">
-          {s.title}
+          {scramble ? (
+            <TextScramble active={isInView}>{s.title}</TextScramble>
+          ) : (
+            s.title
+          )}
         </span>
         {s.noteSide === "right" && <Note>{s.note}</Note>}
       </div>
@@ -48,9 +57,10 @@ function Row({ s, index, hovered, reduce, onActivate, onDeactivate }) {
 
   return (
     <motion.div
+      ref={ref}
       initial={reduce ? false : "hidden"}
       whileInView={reduce ? undefined : "show"}
-      viewport={{ once: true, amount: 0.5 }}
+      viewport={{ once: false, amount: 0.5 }}
       variants={rowFadeUp}
       custom={index * 0.08}
     >
@@ -62,7 +72,7 @@ function Row({ s, index, hovered, reduce, onActivate, onDeactivate }) {
         onBlur={onDeactivate}
       >
         <div aria-hidden className="absolute inset-0 bg-white text-black">
-          {content}
+          {content(false)}
         </div>
 
         <motion.div
@@ -73,7 +83,7 @@ function Row({ s, index, hovered, reduce, onActivate, onDeactivate }) {
           }}
           transition={{ duration: reduce ? 0 : 0.38, ease: EASE }}
         >
-          {content}
+          {content()}
         </motion.div>
       </div>
     </motion.div>

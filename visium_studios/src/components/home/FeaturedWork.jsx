@@ -18,19 +18,16 @@ function FeaturedWork() {
       data-aos="fade-up"
     >
       <div className="px-8 py-4 md:py-12">
-        <p>
-          <span className="text-[clamp(2.9rem,9vw,5rem)] font-[400] leading-[0.95] md:text-[clamp(3rem,5vw,5rem)] tracking-tight">
+        <div className="flex items-start gap-2 md:gap-3">
+          <sup className="mt-[0.5em] font-mono text-xs md:text-sm">(04)</sup>
+          <h2 className="text-[clamp(2.5rem,6vw,5rem)] font-normal leading-[0.9] tracking-[-0.05em]">
             Selected Work
-          </span>
-        </p>
-        <p className="mt-5 text-xl">
-          A collection of visual experiences and works created and tailored for
-          ambitious and forward thinking teams
-        </p>
+          </h2>
+        </div>
       </div>
 
       {gridProjects.length > 0 && (
-        <div className="mt-4 grid max-w-[1600px] grid-cols-1 gap-4 px-8 md:mx-auto md:mt-6 md:grid-cols-2 md:gap-6">
+        <div className="mt-4 grid max-w-[1600px] grid-cols-1 gap-2 px-8 md:mx-auto md:mt-6 md:grid-cols-2 md:gap-2">
           {gridProjects.map((project) => (
             <EditorialProjectCard key={project.id} project={project} />
           ))}
