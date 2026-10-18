@@ -9,8 +9,10 @@ import {
 
 const SRC = "/assets/video/final_motion.mp4";
 const CURSOR_SIZE = 96;
-const RADIUS = 12;
 const EASE = [0.76, 0, 0.24, 1];
+const MotionDiv = motion.div;
+const MotionButton = motion.button;
+const MotionSpan = motion.span;
 
 // Label inside the expanded overlay shows the current state.
 // To show the action instead, return playing ? "Pause" : "Play".
@@ -46,7 +48,6 @@ function VideoMotion() {
 
   const [muted, setMuted] = useState(true);
   const [open, setOpen] = useState(false);
-  const [from, setFrom] = useState(null);
   const [playing, setPlaying] = useState(true);
   const [overUI, setOverUI] = useState(false);
   const [hovering, setHovering] = useState(false);
@@ -86,9 +87,7 @@ function VideoMotion() {
 
   // Click is what expands the video.
   const openOverlay = () => {
-    if (open || !wrapRef.current) return;
-    const r = wrapRef.current.getBoundingClientRect();
-    setFrom({ top: r.top, left: r.left, width: r.width, height: r.height });
+    if (open) return;
     setPlaying(resume.current.playing);
     setOverUI(false);
     setOpen(true);
@@ -169,90 +168,98 @@ function VideoMotion() {
 
       {createPortal(
         <AnimatePresence>
-          {open && from && (
-            <motion.div
+          {open && (
+            <MotionDiv
               key="overlay"
               data-video-overlay
-              className="fixed z-[150] cursor-none overflow-hidden bg-black"
-              initial={{ ...from, borderRadius: RADIUS }}
-              animate={{
-                top: 0,
-                left: 0,
-                width: "100vw",
-                height: "100dvh",
-                borderRadius: 0,
-              }}
-              exit={{ ...from, borderRadius: RADIUS }}
-              transition={{ duration: 0.7, ease: EASE }}
+              className="fixed inset-0 z-[150] flex cursor-none items-center justify-center p-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.25 }}
               onPointerMove={moveCursor}
-              onClick={togglePlay}
             >
-              <video
-                ref={bigRef}
-                muted={muted}
-                loop
-                playsInline
-                className="block h-full w-full object-cover"
-                onPlay={() => setPlaying(true)}
-                onPause={() => setPlaying(false)}
-                onLoadedMetadata={(e) => {
-                  const v = e.currentTarget;
-                  v.currentTime = resume.current.time;
-                  v.muted = muted;
-                  if (resume.current.playing) {
-                    v.play().catch(() => setPlaying(false));
-                  }
-                }}
-              >
-                <source src={SRC} type="video/mp4" />
-              </video>
-
-              <motion.div
-                className="absolute left-1/2 top-6 -translate-x-1/2"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1, transition: { delay: 0.5 } }}
-                exit={{ opacity: 0, transition: { duration: 0.15 } }}
-              >
-                <SoundToggle
-                  muted={muted}
-                  onToggle={toggleSound}
-                  className="cursor-none"
-                  {...uiHover}
-                />
-              </motion.div>
-
-              <motion.button
+              <MotionButton
                 type="button"
                 aria-label="Close video"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  closeOverlay();
-                }}
-                {...uiHover}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1, transition: { delay: 0.5 } }}
-                exit={{ opacity: 0, transition: { duration: 0.15 } }}
-                className="absolute right-6 top-6 flex h-12 w-12 cursor-none items-center justify-center rounded-full border border-white/40 bg-black text-white"
+                onClick={closeOverlay}
+                className="absolute inset-0 cursor-none bg-black/55 backdrop-blur-md"
+              />
+              <MotionDiv
+                className="relative z-10 max-h-[80dvh] max-w-[90vw] overflow-hidden rounded-lg bg-black shadow-2xl"
+                initial={{ opacity: 0, scale: 0.94 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.94 }}
+                transition={{ duration: 0.3, ease: EASE }}
+                onClick={togglePlay}
               >
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 16 16"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
+                <video
+                  ref={bigRef}
+                  muted={muted}
+                  loop
+                  playsInline
+                  className="block h-auto w-auto max-h-[80dvh] max-w-[90vw] object-contain"
+                  onPlay={() => setPlaying(true)}
+                  onPause={() => setPlaying(false)}
+                  onLoadedMetadata={(e) => {
+                    const v = e.currentTarget;
+                    v.currentTime = resume.current.time;
+                    v.muted = muted;
+                    if (resume.current.playing) {
+                      v.play().catch(() => setPlaying(false));
+                    }
+                  }}
                 >
-                  <path d="M2 2l12 12M14 2L2 14" />
-                </svg>
-              </motion.button>
-            </motion.div>
+                  <source src={SRC} type="video/mp4" />
+                </video>
+
+                <MotionDiv
+                  className="absolute left-1/2 top-3 -translate-x-1/2"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1, transition: { delay: 0.2 } }}
+                  exit={{ opacity: 0, transition: { duration: 0.15 } }}
+                >
+                  <SoundToggle
+                    muted={muted}
+                    onToggle={toggleSound}
+                    className="cursor-none"
+                    {...uiHover}
+                  />
+                </MotionDiv>
+
+                <MotionButton
+                  type="button"
+                  aria-label="Close video"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    closeOverlay();
+                  }}
+                  {...uiHover}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1, transition: { delay: 0.2 } }}
+                  exit={{ opacity: 0, transition: { duration: 0.15 } }}
+                  className="absolute right-3 top-3 flex h-10 w-10 cursor-none items-center justify-center rounded-full border border-white/40 bg-black/80 text-white"
+                >
+                  <svg
+                    width="16"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                  >
+                    <path d="M2 2l12 12M14 2L2 14" />
+                  </svg>
+                </MotionButton>
+              </MotionDiv>
+            </MotionDiv>
           )}
 
           {/* One white circle cursor: "Show reel" over the small video,
               Play/Pause inside the expanded overlay. */}
           {showCursor && (
-            <motion.div
+            <MotionDiv
               key="cursor"
               aria-hidden
               className="pointer-events-none fixed left-0 top-0 z-[210] flex items-center justify-center whitespace-nowrap rounded-full bg-white text-[11px] font-medium uppercase tracking-[0.12em] text-black [@media(hover:none)]:hidden"
@@ -262,10 +269,10 @@ function VideoMotion() {
               exit={{ scale: 0 }}
               transition={{ duration: 0.25, ease: "easeOut" }}
             >
-              <motion.span animate={{ opacity: overUI ? 0 : 1 }}>
+              <MotionSpan animate={{ opacity: overUI ? 0 : 1 }}>
                 {open ? labelFor(playing) : "Show reel"}
-              </motion.span>
-            </motion.div>
+              </MotionSpan>
+            </MotionDiv>
           )}
         </AnimatePresence>,
         document.body,
