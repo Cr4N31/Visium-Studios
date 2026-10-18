@@ -1,3 +1,5 @@
+import TextScramble from "../../../shared/TextScramble";
+
 function HeroCTA() {
   return (
     <section className="w-full shrink-0 overflow-hidden rounded-xl text-black md:w-[340px]">
@@ -6,8 +8,10 @@ function HeroCTA() {
           <div>
             <h2 className="text-xl uppercase leading-[1.05] tracking-wide sm:text-2xl">
               <span className="font-bold">
-                Start
-                <br />A project
+                <TextScramble>
+                  Start
+                  <br />A project
+                </TextScramble>
               </span>
             </h2>
             <p className="mt-2 text-sm leading-tight text-black/65 sm:text-base">
