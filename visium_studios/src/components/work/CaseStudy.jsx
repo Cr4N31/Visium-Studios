@@ -84,8 +84,8 @@ const normalizeProject = (project) => {
     intro:
       project.intro ||
       project.summary ||
-      project.brief ||
       project.tagline ||
+      project.brief ||
       "Project overview.",
     heroMedia: normalizeHeroMedia(
       project.heroMedia,
@@ -112,6 +112,37 @@ const normalizeProject = (project) => {
   };
 };
 
+function ProjectMedia({ media, title, className }) {
+  const src = media?.src || "";
+  const isVideo =
+    media?.type === "video" ||
+    /\.(mp4|webm|mov)$/i.test(src);
+
+  if (isVideo) {
+    return (
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="metadata"
+        className={className}
+      >
+        <source src={encodeURI(src)} type="video/mp4" />
+      </video>
+    );
+  }
+
+  return (
+    <img
+      src={encodeURI(src)}
+      alt={title}
+      loading="lazy"
+      className={className}
+    />
+  );
+}
+
 function CaseStudy() {
   const ctaMorph = useMorphPointer();
   const ctaMagnetic = useMagnetic();
@@ -126,159 +157,191 @@ function CaseStudy() {
 
   const related = projects
     .filter((item) => item.slug !== project.slug)
-    .slice(0, 2);
+    .slice(0, 3);
+  const featureMedia = project.gallery[0];
+  const gallery = project.gallery.slice(featureMedia ? 1 : 0);
+  const resultSection = project.sections.find(
+    (section) => section.label.toLowerCase() === "result",
+  );
+  const storySections = project.sections.filter(
+    (section) => section.label.toLowerCase() !== "result",
+  );
 
   return (
     <main className="bg-[#050505] text-white" data-aos="fade-up">
-      <div className="mx-auto max-w-[1200px] px-8 pb-24 pt-4">
-        <div className="mb-8 mt-24 flex items-center justify-between">
+      <div className="mx-auto max-w-[1440px] px-3 pb-20 pt-24 sm:px-5 md:px-8">
+        <section className="relative mb-6 h-[clamp(12rem,32vw,26rem)] overflow-hidden rounded-lg bg-[#111111]">
+          <ProjectMedia
+            media={project.heroMedia}
+            title={project.title}
+            className="h-full w-full object-cover"
+          />
           <Link
             to="/work"
-            className="inline-flex items-center rounded-full border border-white/15 bg-white/5 px-4 py-2 text-[10px] uppercase tracking-[0.24em] text-white/70 transition hover:bg-white/10"
+            className="absolute left-4 top-4 rounded-full border border-white/30 bg-black/45 px-3 py-2 text-[10px] uppercase tracking-[0.2em] text-white backdrop-blur-sm transition hover:bg-black/75"
           >
-            ← Back
+            ← Back to work
           </Link>
-        </div>
+          <span className="absolute right-4 top-4 font-mono text-[10px] uppercase tracking-[0.18em] text-white/80">
+            {project.id}
+          </span>
+        </section>
 
-        <header className="mb-10 grid gap-8 md:grid-cols-[1.2fr_0.8fr] md:items-end">
-          <div>
-            <p className="mb-3 text-[10px] uppercase tracking-[0.28em] text-white/45">
-              {project.category}
-            </p>
-            <h1 className="text-5xl font-medium tracking-[-0.07em] text-[#f1efe9] md:text-[7rem]">
+        <header className="mb-8 border-b border-white/20 pb-5">
+          <div className="flex flex-col justify-between gap-5 md:flex-row md:items-end">
+            <h1 className="text-[clamp(3.5rem,10vw,8rem)] font-medium leading-[0.8] tracking-[-0.08em] text-[#f1efe9]">
               <TextScramble>{project.title}</TextScramble>
             </h1>
-          </div>
-
-          <div className="text-sm text-white/70 md:text-right">
-            <p>{project.client}</p>
-            <p>{project.location}</p>
-            <p>{project.year}</p>
+            <div className="flex flex-wrap gap-1.5 md:justify-end">
+              {project.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="rounded-full border border-white/25 px-2.5 py-1 text-[9px] uppercase tracking-wide text-white/75"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
           </div>
         </header>
 
-        <section className="mb-12 overflow-hidden rounded-[2rem] border border-white/10 bg-[#111111]">
-          {project.heroMedia.type === "video" ? (
-            <video
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="auto"
-              className="h-[420px] w-full object-cover md:h-[620px]"
-            >
-              <source src={encodeURI(project.heroMedia.src)} type="video/mp4" />
-            </video>
-          ) : (
-            <img
-              src={encodeURI(project.heroMedia.src)}
-              alt={project.title}
-              className="h-[420px] w-full object-cover md:h-[620px]"
-            />
-          )}
-        </section>
-
-        <section
-          className="mb-12 grid gap-8 md:grid-cols-[0.7fr_1.3fr]"
-          data-aos="fade-up"
-        >
-          <div className="text-[10px] uppercase tracking-[0.28em] text-white/45">
-            Overview
-          </div>
-          <div className="space-y-5 text-lg leading-relaxed text-white/75 md:text-xl">
-            <p>{project.intro}</p>
-            <p>{project.brief}</p>
-          </div>
-        </section>
-
-        <div className="mb-12 space-y-8">
-          {project.sections.map((section, index) => (
-            <section
-              key={`${project.slug}-${section.label}`}
-              className="grid gap-6 border-t border-white/10 pt-8 md:grid-cols-[120px_1fr] md:gap-10"
-            >
-              <span className="text-[10px] uppercase tracking-[0.28em] text-white/45">
-                {String(index + 1).padStart(2, "0")}
-              </span>
-              <div className="space-y-3">
-                <h2 className="text-xl font-medium text-white md:text-2xl">
-                  {section.label}
-                </h2>
-                <p className="text-base leading-relaxed text-white/75 md:text-lg">
-                  {section.copy}
-                </p>
-              </div>
-            </section>
-          ))}
-        </div>
-
-        <section className="mb-12 grid gap-4 md:grid-cols-3">
-          {project.metrics.map((metric) => (
-            <div
-              key={`${project.slug}-${metric.label}`}
-              className="rounded-[1.5rem] border border-white/10 bg-white/3 p-5"
-            >
-              <div className="mb-3 text-[10px] uppercase tracking-[0.24em] text-white/45">
-                {metric.label}
-              </div>
-              <div className="text-lg text-white/80 md:text-xl">
-                {metric.value}
-              </div>
+        <section className="mb-10 grid grid-cols-2 border-b border-white/15 pb-6 md:grid-cols-4">
+          {[
+            ["Client", project.client],
+            ["Location", project.location],
+            ["Services", project.category],
+            ["Year", project.year],
+          ].map(([label, value]) => (
+            <div key={label} className="py-3 pr-4 md:py-4">
+              <p className="mb-1.5 font-mono text-[9px] uppercase tracking-[0.18em] text-white/45">
+                {label}
+              </p>
+              <p className="text-xs text-white/85">{value}</p>
             </div>
           ))}
         </section>
 
-        <section className="grid gap-5 md:grid-cols-3">
-          {project.gallery.map((media, index) => {
-            const src = media.src;
-            const isVideo =
-              media.type === "video" ||
-              src.toLowerCase().endsWith(".mp4") ||
-              src.toLowerCase().endsWith(".webm") ||
-              src.toLowerCase().endsWith(".mov");
-            const isGif =
-              media.type === "gif" || src.toLowerCase().endsWith(".gif");
-
-            return (
-              <div
-                key={`${project.slug}-gallery-${index}`}
-                className={media.className || "col-span-1"}
-              >
-                <div
-                  className="overflow-hidden rounded-[1.5rem] border border-white/10 bg-[#111111]"
-                  data-aos="fade-up"
-                >
-                  {isVideo ? (
-                    <video
-                      autoPlay
-                      muted
-                      loop
-                      playsInline
-                      preload="auto"
-                      className="h-[240px] w-full object-cover md:h-[360px]"
-                      data-aos="fade-in"
-                    >
-                      <source src={encodeURI(src)} type="video/mp4" />
-                    </video>
-                  ) : (
-                    <img
-                      src={encodeURI(src)}
-                      alt={project.title}
-                      className="h-[240px] w-full object-cover md:h-[360px]"
-                      data-aos="fade-in"
-                    />
-                  )}
-                </div>
-              </div>
-            );
-          })}
+        <section className="mb-10 grid gap-6 md:grid-cols-[1fr_2fr] md:gap-12">
+          <h2 className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/55">
+            Overview
+          </h2>
+          <p className="max-w-4xl text-sm leading-relaxed text-white/80 md:text-base">
+            {project.intro}
+          </p>
         </section>
 
-        <section className="mt-16 border-t border-white/10 pt-12">
-          <div className="mb-8 text-[10px] uppercase tracking-[0.28em] text-white/45">
-            Next work
+        {featureMedia && (
+          <section className="mb-10 overflow-hidden rounded-lg bg-[#111111]">
+            <ProjectMedia
+              media={featureMedia}
+              title={project.title}
+              className="aspect-[16/9] w-full object-cover"
+            />
+          </section>
+        )}
+
+        {storySections.length > 0 && (
+          <section className="mb-10 grid gap-6 md:grid-cols-[1fr_2fr] md:gap-12">
+            <h2 className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/55">
+              Started from
+            </h2>
+            <div className="grid gap-6 sm:grid-cols-2">
+              {storySections.map((section) => (
+                <article
+                  key={`${project.slug}-${section.label}`}
+                  className="space-y-3"
+                >
+                  <h3 className="font-mono text-[10px] uppercase tracking-[0.14em] text-white/85">
+                    {section.label}
+                  </h3>
+                  <p className="text-xs leading-relaxed text-white/65">
+                    {section.copy}
+                  </p>
+                </article>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {gallery.length > 0 && (
+          <section className="mb-12 grid grid-cols-2 gap-2 md:gap-3">
+            {gallery.map((media, index) => {
+              const wide = index % 7 === 4;
+              return (
+                <div
+                  key={`${project.slug}-gallery-${index}`}
+                  className={`overflow-hidden rounded-lg bg-[#111111] ${
+                    wide ? "col-span-2" : "col-span-1"
+                  }`}
+                  data-aos="fade-up"
+                >
+                  <ProjectMedia
+                    media={media}
+                    title={`${project.title} — image ${index + 2}`}
+                    className={`w-full object-cover ${
+                      wide
+                        ? "aspect-[2/1]"
+                        : "aspect-[4/3]"
+                    }`}
+                  />
+                </div>
+              );
+            })}
+          </section>
+        )}
+
+        {resultSection && (
+          <section className="mb-10 grid gap-6 border-t border-white/15 pt-6 md:grid-cols-[1fr_2fr] md:gap-12">
+            <h2 className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/55">
+              Results
+            </h2>
+            <p className="max-w-4xl text-xs leading-relaxed text-white/70">
+              {resultSection.copy}
+            </p>
+          </section>
+        )}
+
+        <section className="mb-14 grid gap-6 border-t border-white/15 pt-6 md:grid-cols-[1fr_2fr] md:gap-12">
+          <h2 className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/55">
+            Credits
+          </h2>
+          <div className="grid grid-cols-2 gap-x-8 gap-y-5 md:grid-cols-4">
+            {project.metrics.map((metric) => (
+              <div key={`${project.slug}-${metric.label}`}>
+                <p className="mb-1.5 font-mono text-[9px] uppercase tracking-[0.14em] text-white/45">
+                  {metric.label}
+                </p>
+                <p className="text-xs leading-relaxed text-white/80">
+                  {metric.value}
+                </p>
+              </div>
+            ))}
           </div>
-          <div className="grid gap-6 md:grid-cols-2">
+        </section>
+
+        <section className="border-t border-white/15 pt-6">
+          <div className="mb-6 flex items-end justify-between">
+            <div>
+              <span className="mb-2 block font-mono text-[9px] text-white/50">
+                ·
+              </span>
+              <h2 className="text-3xl tracking-[-0.06em] md:text-5xl">
+                Other Works
+              </h2>
+            </div>
+            <Link
+              to="/work"
+              className="text-right transition-opacity hover:opacity-60"
+            >
+              <span className="block text-xl leading-none">
+                ({String(projects.length - 1).padStart(2, "0")})
+              </span>
+              <span className="font-mono text-[8px] uppercase tracking-[0.14em]">
+                View all
+              </span>
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
             {related.map((item) => {
               const itemProject = normalizeProject(item);
 
@@ -286,19 +349,16 @@ function CaseStudy() {
                 <Link
                   key={itemProject.slug}
                   to={`/work/${itemProject.slug}`}
-                  className="group block rounded-[1.5rem] border border-white/10 bg-white/3 p-4 transition hover:bg-white/5"
+                  className="group block overflow-hidden rounded-lg border border-white/10"
                 >
-                  <div className="mb-4 overflow-hidden rounded-[1rem]">
-                    <img
-                      src={encodeURI(itemProject.heroMedia.src)}
-                      alt={itemProject.title}
-                      className="h-52 w-full object-cover transition duration-300 group-hover:scale-[1.03]"
+                  <div className="aspect-[4/3] overflow-hidden bg-[#111111]">
+                    <ProjectMedia
+                      media={itemProject.heroMedia}
+                      title={itemProject.title}
+                      className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
                     />
                   </div>
-                  <div className="text-xs uppercase tracking-[0.24em] text-white/45">
-                    {itemProject.category}
-                  </div>
-                  <h3 className="mt-3 text-2xl font-medium text-white">
+                  <h3 className="border-t border-white/10 px-3 py-2 text-sm text-white/90">
                     {itemProject.title}
                   </h3>
                 </Link>
