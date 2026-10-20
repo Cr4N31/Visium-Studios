@@ -12,7 +12,7 @@ const team = [
     image: "/assets/team/Fawaz Madelewi.png",
   },
   {
-    name: "Ken Godswill",
+    name: "Kenechukwu Godswill",
     role: "Studio operations lead",
     roleShort: "Studio Lead",
     image: "/assets/team/Ken Godswill.png",
