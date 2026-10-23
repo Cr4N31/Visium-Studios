@@ -135,34 +135,34 @@ function CapabilitySection({ item, index }) {
       </div>
 
       {/* Centered content */}
-      <div className="relative z-10 flex max-w-xl flex-col items-center text-center">
+      <div className="relative z-10 flex max-w-xl flex-col items-start text-start">
         <motion.p
-          className="border border-white/25 px-2 py-1 text-[10px] uppercase tracking-[0.2em] text-white/60"
+          className="font-mono md:text-3xl text-white/40 text-xl"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          {item.title}
+          <span className="font-[300]">{item.title}</span>
         </motion.p>
 
         <motion.h2
-          className="mt-8 text-[clamp(2.25rem,5vw,4.5rem)] font-medium leading-[0.95] tracking-[-0.04em] text-white"
+          className="mt-4 text-[clamp(2rem,5vw,4rem)] md:text-[clamp(1.2rem,3vw,3rem)] leading-[0.95] tracking-[-0.04em] text-white"
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-15%" }}
           transition={{ duration: 1, ease }}
         >
-          {item.statement}
+          <span className="font-[400]">{item.statement}</span>
         </motion.h2>
 
-        <p className="mt-8 max-w-sm text-xs leading-relaxed text-white/55 md:text-sm">
+        <p className="mt-3 max-w-sm text-xs leading-relaxed text-white/55 md:text-sm">
           {item.what}
         </p>
 
         <Link
           to={`/capabilities/${item.id}`}
-          className="hero-cta relative isolate mt-10 inline-flex items-center gap-4 overflow-hidden rounded-full border-2 border-white bg-white px-5 py-2 text-black transition-colors hover:border-white"
+          className="hero-cta relative isolate mt-6 inline-flex items-center gap-4 overflow-hidden rounded-full border-2 border-white bg-white px-5 py-2 text-black transition-colors hover:border-white"
         >
           <span className="relative z-[1] font-semibold">Read more →</span>
         </Link>

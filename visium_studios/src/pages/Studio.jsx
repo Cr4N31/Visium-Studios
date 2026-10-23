@@ -11,8 +11,9 @@ function Studio() {
     <main className="bg-black text-white">
       <StudioHeader />
       <StudioEnvironment />
+      {/*
       <StudioDirect />
-      <StudioProcess />
+      <StudioProcess /> */}
       <StudioWork />
       <TeamGrid />
       <FinalCTA eyebrow="The next chapter starts here" />

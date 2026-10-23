@@ -1,5 +1,4 @@
 // Mock data — swap thumbnail/media paths and copy once real assets/CMS exist.
-// `size` drives the masonry span in WorkGrid: "tall" | "wide" | "normal"
 
 const projects = [
   {
@@ -8,8 +7,7 @@ const projects = [
     title: "Horizona",
     featured: true,
     tagline: "The future of aerial imaging.",
-    tags: ["Brand Identity", "Digital Product", "Web Design"],
-    size: "tall",
+    tags: ["Branding", "UI/UX Design", "Website"],
     thumbnail: "/assets/portfolio_images/Horizona/Preview Cover.png",
     coverImage: "/assets/portfolio_images/Horizona/Preview Cover.png",
     year: "2023",
@@ -94,8 +92,7 @@ const projects = [
     title: "Rallow™  — Streetwear",
     featured: true,
     tagline: "Wear Your Bold Side, Wear Your Rebellion.",
-    tags: ["Brand Strategy", "Visual Identity"],
-    size: "wide",
+    tags: ["Branding", "SMM"],
     thumbnail: "/assets/portfolio_images/Rallow/Preview Cover.png",
     coverImage: "/assets/portfolio_images/Rallow/Preview Cover.png",
     year: "2025",
@@ -184,8 +181,7 @@ const projects = [
     slug: "harbor-clinic",
     title: "Harbor Clinic",
     tagline: "A calm, clear digital experience for a modern medical practice.",
-    tags: ["Web Design", "Development"],
-    size: "tall",
+    tags: ["Website", "UI/UX Design", "Development"],
     thumbnail: "/placeholders/project-02.jpg",
     year: "2025",
     client: "Harbor Clinic Group",
@@ -229,8 +225,7 @@ const projects = [
     featured: true,
     tagline:
       "Building a distribution brand that feels engineered, not generic.",
-    tags: ["Brand Identity", "Creative Direction"],
-    size: "normal",
+    tags: ["Branding"],
     thumbnail: "/placeholders/project-03.jpg",
     year: "2024",
     client: "Foundry Supply Co.",
@@ -274,8 +269,7 @@ const projects = [
     slug: "atrium-realty",
     title: "Atrium Realty",
     tagline: "Positioning premium real estate through restraint, not excess.",
-    tags: ["Brand Strategy", "Web Design", "Content"],
-    size: "wide",
+    tags: ["Branding", "Website", "SEO Optimization"],
     thumbnail: "/placeholders/project-04.jpg",
     year: "2024",
     client: "Atrium Realty Group",
@@ -316,8 +310,7 @@ const projects = [
     slug: "meridian-labs",
     title: "Meridian Labs",
     tagline: "A visual system for a biotech startup entering public trials.",
-    tags: ["Visual Identity", "Web Design", "Development"],
-    size: "normal",
+    tags: ["Branding", "Website", "UI/UX Design", "Development"],
     thumbnail: "/placeholders/project-05.jpg",
     year: "2023",
     client: "Meridian Labs",

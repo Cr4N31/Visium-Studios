@@ -30,27 +30,49 @@ const Note = ({ children }) => (
 );
 
 /* One row = two stacked copies.
-   bottom: white bg, black text (revealed)
-   top:    black bg, white text, clip-path closes to the center line on hover */
-function Row({ s, index, hovered, reduce, onActivate, onDeactivate }) {
+   bottom: white bg, black text (revealed on hover or when open)
+   top:    black bg, white text, clip-path closes to the center line
+   Both copies contain the expandable details and animate identically,
+   so their heights always match. */
+function Row({
+  s,
+  index,
+  hovered,
+  open,
+  reduce,
+  onActivate,
+  onDeactivate,
+  onToggle,
+}) {
   const ref = useRef(null);
   const isInView = useInView(ref, { amount: 0.15 });
+  const revealed = hovered || open;
 
   const content = (scramble = true) => (
     <div className="px-5 py-3 md:px-10 md:py-4">
-      <div
-        className="flex min-w-0 flex-wrap items-center gap-x-6 gap-y-1 md:ml-[var(--o)]"
-        style={{ "--o": s.offset }}
-      >
-        {s.noteSide === "left" && <Note>{s.note}</Note>}
-        <span className="shrink-0 whitespace-nowrap font-mono uppercase leading-none text-[clamp(2rem,7.5vw,6.5rem)]">
-          {scramble ? (
-            <TextScramble active={isInView}>{s.title}</TextScramble>
-          ) : (
-            s.title
-          )}
-        </span>
-        {s.noteSide === "right" && <Note>{s.note}</Note>}
+      <div className="md:ml-[var(--o)]" style={{ "--o": s.offset }}>
+        <div className="flex min-w-0 flex-wrap items-center gap-x-6 gap-y-1">
+          {s.noteSide === "left" && <Note>{s.note}</Note>}
+          <span className="shrink-0 whitespace-nowrap font-mono uppercase leading-none text-[clamp(2rem,7.5vw,6.5rem)]">
+            {scramble ? (
+              <TextScramble active={isInView}>{s.title}</TextScramble>
+            ) : (
+              s.title
+            )}
+          </span>
+          {s.noteSide === "right" && <Note>{s.note}</Note>}
+        </div>
+
+        <motion.div
+          initial={false}
+          animate={{ height: open ? "auto" : 0, opacity: open ? 1 : 0 }}
+          transition={{ duration: reduce ? 0 : 0.45, ease: EASE }}
+          className="overflow-hidden"
+        >
+          <p className="max-w-[56ch] pb-3 pt-5 text-sm leading-relaxed md:text-[15px]">
+            {s.description}
+          </p>
+        </motion.div>
       </div>
     </div>
   );
@@ -65,7 +87,17 @@ function Row({ s, index, hovered, reduce, onActivate, onDeactivate }) {
       custom={index * 0.08}
     >
       <div
-        className="relative block overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-white"
+        role="button"
+        tabIndex={0}
+        aria-expanded={open}
+        className="relative block cursor-pointer overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-white"
+        onClick={() => onToggle(s.slug)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            onToggle(s.slug);
+          }
+        }}
         onPointerEnter={(e) => e.pointerType === "mouse" && onActivate(s)}
         onPointerLeave={onDeactivate}
         onFocus={() => onActivate(s)}
@@ -79,7 +111,7 @@ function Row({ s, index, hovered, reduce, onActivate, onDeactivate }) {
           className="relative bg-black text-white"
           initial={false}
           animate={{
-            clipPath: hovered ? "inset(50% 0% 50% 0%)" : "inset(0% 0% 0% 0%)",
+            clipPath: revealed ? "inset(50% 0% 50% 0%)" : "inset(0% 0% 0% 0%)",
           }}
           transition={{ duration: reduce ? 0 : 0.38, ease: EASE }}
         >
@@ -93,11 +125,14 @@ function Row({ s, index, hovered, reduce, onActivate, onDeactivate }) {
 export default function Services() {
   const reduce = useReducedMotion();
   const [active, setActive] = useState(null);
+  const [openSlug, setOpenSlug] = useState(null);
 
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const sx = useSpring(x, { stiffness: 220, damping: 24, mass: 0.6 });
   const sy = useSpring(y, { stiffness: 220, damping: 24, mass: 0.6 });
+
+  const toggle = (slug) => setOpenSlug((cur) => (cur === slug ? null : slug));
 
   return (
     <section
@@ -123,6 +158,8 @@ export default function Services() {
             index={index}
             reduce={reduce}
             hovered={active?.slug === s.slug}
+            open={openSlug === s.slug}
+            onToggle={toggle}
             onActivate={setActive}
             onDeactivate={() => setActive(null)}
           />

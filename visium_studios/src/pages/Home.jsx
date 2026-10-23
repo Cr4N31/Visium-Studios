@@ -8,6 +8,7 @@ import StudioNotes from "../components/home/StudioNotes";
 import FinalCta from "../components/home/FinalCta";
 import Services from "../components/home/Services";
 import About from "../components/home/About";
+import HowWeWork from "../components/home/HowWeWork";
 
 function Home({ onThemeChange }) {
   const themeRef = useRef(null);
@@ -62,6 +63,7 @@ function Home({ onThemeChange }) {
           <div id="studio-preview">
             <Studio />
           </div>
+          <HowWeWork />
           <div id="studio-notes">
             <StudioNotes />
           </div>

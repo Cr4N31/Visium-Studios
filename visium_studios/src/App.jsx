@@ -4,7 +4,7 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import { CurtainNavigationProvider } from "./context/CurtainNavigationContext";
 import Header from "./shared/Header";
 import Footer from "./shared/Footer";
-import FloatingProjectCta from "./shared/FloatingProjectCta";
+//import FloatingProjectCta from "./shared/FloatingProjectCta";
 import Home from "./pages/Home";
 import Work from "./pages/Work";
 import Capabilities from "./pages/Capabilities";
@@ -55,9 +55,11 @@ function App() {
 
   const isBrandingPage = location.pathname === "/branding";
   const isCaseStudyPage = /^\/work\/[^/]+$/.test(location.pathname);
-  const showFloatingProjectCta = !/^\/(contact|startaproject)\/?$/.test(
+  {
+    /*const showFloatingProjectCta = !/^\/(contact|startaproject)\/?$/.test(
     location.pathname,
-  );
+  ) */
+  }
   const cursorInverted = isBrandingPage ? false : homeInverted;
   const headerInverted = isBrandingPage ? false : homeInverted;
 
@@ -68,16 +70,13 @@ function App() {
         <SeoMetadata />
         <CustomCursor inverted={cursorInverted} />
         <Header inverted={headerInverted} />
-        {showFloatingProjectCta && <FloatingProjectCta />}
+        {/* {showFloatingProjectCta && <FloatingProjectCta />}*/}
         <Routes>
           <Route path="/" element={<Home onThemeChange={setHomeInverted} />} />
           <Route path="/work" element={<Work />} />
           <Route path="/studio" element={<Studio />} />
           <Route path="/capabilities" element={<Capabilities />} />
-          <Route
-            path="/capabilities/:slug"
-            element={<CapabilityDetail />}
-          />
+          <Route path="/capabilities/:slug" element={<CapabilityDetail />} />
           <Route path="/insights" element={<Insights />} />
           <Route path="/insights/:slug" element={<InsightArticle />} />
           <Route path="/contact" element={<ContactSection />} />

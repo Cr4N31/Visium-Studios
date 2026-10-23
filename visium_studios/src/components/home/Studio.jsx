@@ -1,230 +1,177 @@
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useRef } from "react";
+import {
+  motion as Motion,
+  useAnimationFrame,
+  useInView,
+  useReducedMotion,
+} from "framer-motion";
+import { Link } from "react-router-dom";
 import team from "../../data/team";
+import TextScramble from "../../shared/TextScramble";
 
-const SCATTER_LAYOUT = [
-  {
-    top: "10%",
-    left: "14%",
-    width: "24%",
-    rotate: -2.5,
-    float: { y: 10, x: 4, rotate: 1 },
-    duration: 7,
-  },
-  {
-    top: "16%",
-    left: "88%",
-    width: "15%",
-    rotate: 2,
-    float: { y: -8, x: -3, rotate: -1.2 },
-    duration: 8.5,
-  },
-  {
-    top: "58%",
-    left: "10%",
-    width: "17%",
-    rotate: -1.5,
-    float: { y: 8, x: -4, rotate: 1.3 },
-    duration: 6.5,
-  },
-  {
-    top: "64%",
-    left: "87%",
-    width: "19%",
-    rotate: 2.4,
-    float: { y: -10, x: 3, rotate: -1 },
-    duration: 9,
-  },
-];
-
-function ScatterImage({ item, layout, index }) {
-  return (
-    <motion.div
-      className="absolute -translate-x-1/2 -translate-y-1/2"
-      style={{ top: layout.top, left: layout.left, width: layout.width }}
-      initial={{ opacity: 0, y: 48, rotate: 0, scale: 0.94 }}
-      whileInView={{ opacity: 1, y: 0, rotate: layout.rotate, scale: 1 }}
-      viewport={{ once: true, amount: 0.3 }}
-      transition={{
-        duration: 0.9,
-        delay: index * 0.12,
-        ease: [0.22, 1, 0.36, 1],
-      }}
-    >
-      {/* Inner layer runs a separate, endless float loop so the entrance
-          animation (outer) and the idle "alive" motion (inner) don't
-          fight over the same transform values. */}
-      <motion.div
-        animate={{
-          y: [0, layout.float.y, 0],
-          x: [0, layout.float.x, 0],
-          rotate: [0, layout.float.rotate, 0],
-        }}
-        transition={{
-          duration: layout.duration,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-        className="overflow-hidden shadow-[0_20px_45px_rgba(0,0,0,0.18)]"
-      >
-        <img
-          src={item.image}
-          alt={item.name}
-          className="block h-auto w-full object-cover"
-        />
-      </motion.div>
-
-      <div className="mt-3 text-center">
-        <p className="text-sm font-medium">{item.name}</p>
-        <p className="text-xs text-black/50">{item.roleShort}</p>
-      </div>
-    </motion.div>
-  );
-}
+const AUTO_SPEED = 36;
+const LOOP_COPIES = 2;
 
 function Studio() {
-  const [isMobile, setIsMobile] = useState(false);
+  const sectionRef = useRef(null);
+  const carouselRef = useRef(null);
+  const directionRef = useRef(1);
+  const isMobileRef = useRef(false);
+  const isPointerDownRef = useRef(false);
+  const isInView = useInView(sectionRef, { margin: "100px" });
+  const reduce = useReducedMotion();
+
   useEffect(() => {
-    const mql = window.matchMedia("(max-width: 767px)");
-    setIsMobile(mql.matches);
-    const handler = (e) => setIsMobile(e.matches);
-    mql.addEventListener("change", handler);
-    return () => mql.removeEventListener("change", handler);
+    const mediaQuery = window.matchMedia("(max-width: 767px)");
+    const updateViewport = () => {
+      isMobileRef.current = mediaQuery.matches;
+      if (!mediaQuery.matches) directionRef.current = 1;
+    };
+
+    let previousScrollY = window.scrollY;
+    const updateScrollDirection = () => {
+      const currentScrollY = window.scrollY;
+      if (isMobileRef.current && currentScrollY !== previousScrollY) {
+        directionRef.current = currentScrollY > previousScrollY ? 1 : -1;
+      }
+      previousScrollY = currentScrollY;
+    };
+
+    updateViewport();
+    mediaQuery.addEventListener("change", updateViewport);
+    window.addEventListener("scroll", updateScrollDirection, { passive: true });
+    return () => {
+      mediaQuery.removeEventListener("change", updateViewport);
+      window.removeEventListener("scroll", updateScrollDirection);
+    };
   }, []);
 
-  // Just the first four headshots — one per scatter slot.
-  const scattered = team.slice(0, 4);
+  useAnimationFrame((_, delta) => {
+    const carousel = carouselRef.current;
+    if (!carousel || !isInView || reduce || isPointerDownRef.current) return;
+
+    const loopWidth = carousel.scrollWidth / LOOP_COPIES;
+    if (!loopWidth) return;
+
+    const movement = (AUTO_SPEED * Math.min(delta, 32)) / 1000;
+    carousel.scrollLeft += directionRef.current * movement;
+
+    if (carousel.scrollLeft >= loopWidth) {
+      carousel.scrollLeft -= loopWidth;
+    } else if (carousel.scrollLeft < 0) {
+      carousel.scrollLeft += loopWidth;
+    }
+  });
+
+  const moveCarousel = (direction) => {
+    const carousel = carouselRef.current;
+    if (!carousel) return;
+    const distance = Math.min(carousel.clientWidth * 0.75, 420) * direction;
+    carousel.scrollBy({ left: distance, behavior: "smooth" });
+  };
+
+  const carouselItems = Array.from({ length: LOOP_COPIES }, (_, copy) =>
+    team.map((person) => ({ person, copy })),
+  ).flat();
 
   return (
-    <section className="relative overflow-hidden bg-black px-8 py-6 text-white">
-      {/* Desktop: scattered composition around the centered text */}
-      {!isMobile && (
-        <div className="relative mx-auto min-h-[850px] max-w-5xl">
-          {scattered.map((item, index) => (
-            <ScatterImage
-              key={item.name}
-              item={item}
-              layout={SCATTER_LAYOUT[index]}
-              index={index}
-            />
-          ))}
+    <section
+      ref={sectionRef}
+      className="overflow-hidden bg-black py-10 text-white md:py-14"
+    >
+      <div className="px-5 sm:px-8 md:px-10">
+        <div className="flex items-start gap-2 md:gap-3">
+          <sup className="mt-[0.5em] font-mono text-xs md:text-sm">(05)</sup>
+          <h2 className="text-[clamp(2.5rem,6vw,5rem)] font-normal leading-[0.9] tracking-[-0.05em]">
+            <TextScramble>Studio</TextScramble>
+          </h2>
+        </div>
 
-          <div className="absolute left-1/2 top-1/2 w-full max-w-2xl -translate-x-1/2 -translate-y-1/2 text-center">
-            <motion.span
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.6 }}
-              transition={{ duration: 0.6 }}
-              className="mb-6 inline-block rounded-full border border-white/20 px-4 py-1.5 text-xs uppercase tracking-[0.25em] text-white/60"
-            >
-              The Studio
-            </motion.span>
+        <div className="mt-8 grid gap-6 md:mt-10 md:grid-cols-[1.15fr_0.85fr] md:items-end md:gap-12">
+          <h3 className="max-w-3xl text-[clamp(2rem,4.5vw,4rem)] leading-[0.98] tracking-[-0.055em]">
+            A multidisciplinary studio for brands with somewhere to go.
+          </h3>
 
-            <motion.h2
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.4 }}
-              transition={{
-                duration: 0.8,
-                delay: 0.1,
-                ease: [0.22, 1, 0.36, 1],
-              }}
+          <div className="max-w-xl md:justify-self-end">
+            <p className="text-sm leading-relaxed text-white/65 md:text-base">
+              We bring brand, digital, product, motion, development, and
+              strategy together under one visual direction—building the people,
+              ideas, and systems behind what comes next.
+            </p>
+            <Link
+              to="/studio"
+              className="mt-6 inline-flex items-center gap-3 border-b border-white/30 pb-2 text-xs uppercase tracking-[0.16em] transition-colors hover:border-white"
             >
-              <span className="text-3xl font-[400] leading-[0.95] md:text-[clamp(2.3rem,5vw,3rem)] tracking-[-0.05em]">
-                A multidisciplinary studio for brands with somewhere to go.
-              </span>
-            </motion.h2>
-
-            <motion.p
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.6 }}
-              transition={{ duration: 0.6, delay: 0.25 }}
-              className="mx-auto mt-6 max-w-md text-base leading-relaxed text-white/60 md:text-lg"
-            >
-              Visium brings together brand, digital, product, motion,
-              development and strategy under one visual direction — a single
-              studio shaping every touchpoint a brand has.
-            </motion.p>
-
-            <motion.a
-              href="/studio"
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.6 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="mt-8 inline-flex items-center gap-2 border-b border-white pb-1 text-sm font-medium uppercase tracking-[0.15em] transition-opacity hover:opacity-60"
-            >
-              Meet the Studio <span aria-hidden="true">→</span>
-            </motion.a>
+              Meet the Studio <span aria-hidden="true">↗</span>
+            </Link>
           </div>
         </div>
-      )}
+      </div>
 
-      {/* Mobile: text first, then a horizontal-scroll gallery — the
-          absolute scatter needs room this viewport doesn't have. */}
-      {isMobile && (
-        <div className="text-center">
-          <motion.span
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.6 }}
-            transition={{ duration: 0.6 }}
-            className="mb-5 inline-block rounded-full border border-white/20 px-4 py-1.5 text-xs uppercase tracking-[0.25em] text-white/60"
+      <div className="mt-10 md:mt-12">
+        <div className="mb-4 flex justify-end gap-2 px-5 sm:px-8 md:px-10">
+          <button
+            type="button"
+            aria-label="Scroll team carousel backward"
+            onClick={() => moveCarousel(-1)}
+            className="flex size-10 items-center justify-center rounded-full border border-white/20 text-lg transition-colors hover:bg-white hover:text-black"
           >
-            The Studio
-          </motion.span>
-
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.4 }}
-            transition={{ duration: 0.7 }}
+            ←
+          </button>
+          <button
+            type="button"
+            aria-label="Scroll team carousel forward"
+            onClick={() => moveCarousel(1)}
+            className="flex size-10 items-center justify-center rounded-full border border-white/20 text-lg transition-colors hover:bg-white hover:text-black"
           >
-            <span className="block w-full max-w-full text-[clamp(1rem,8vw,3rem)] font-[400] leading-[1.05] tracking-tight [overflow-wrap:anywhere] md:text-[clamp(3rem,5vw,5rem)] md:leading-[0.95]">
-              A multidisciplinary studio for brands with somewhere to go.
-            </span>
-          </motion.h2>
+            →
+          </button>
+        </div>
 
-          <motion.p
-            initial={{ opacity: 0, y: 14 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.6 }}
-            transition={{ duration: 0.6, delay: 0.15 }}
-            className="mx-auto mt-5 max-w-sm text-lg leading-relaxed text-white/60"
-          >
-            Visium brings together brand, digital, product, motion, development
-            and strategy under one visual direction.
-          </motion.p>
-
-          <div className="mt-10 flex gap-4 overflow-x-auto scrollbar-hidden pb-4">
-            {scattered.map((item) => (
-              <div key={item.name} className="w-40 shrink-0">
+        <div
+          ref={carouselRef}
+          className="studio-team-carousel flex gap-3 overflow-x-auto overscroll-x-contain px-5 pb-3 sm:gap-4 sm:px-8 md:gap-5 md:px-10"
+          onPointerDown={() => {
+            isPointerDownRef.current = true;
+          }}
+          onPointerUp={() => {
+            isPointerDownRef.current = false;
+          }}
+          onPointerCancel={() => {
+            isPointerDownRef.current = false;
+          }}
+          onPointerLeave={() => {
+            isPointerDownRef.current = false;
+          }}
+        >
+          {carouselItems.map(({ person, copy }) => (
+            <Motion.article
+              key={`${copy}-${person.name}`}
+              aria-hidden={copy > 0}
+              initial={false}
+              whileHover={reduce ? undefined : { scale: 0.97 }}
+              whileTap={reduce ? undefined : { scale: 0.97 }}
+              className="group w-[68vw] max-w-[18rem] shrink-0 sm:w-[42vw] md:w-[28vw] md:max-w-[22rem] lg:w-[23vw]"
+            >
+              <div className="aspect-[4/5] overflow-hidden bg-white/10 p-0 transition-[padding] duration-500 ease-out group-hover:p-2">
                 <img
-                  src={item.image}
-                  alt={item.name}
-                  className="block h-auto w-full rounded-sm object-cover"
+                  src={person.image}
+                  alt={copy > 0 ? "" : person.name}
+                  loading="lazy"
+                  draggable="false"
+                  className="h-full w-full object-cover"
                 />
-                <div className="mt-2">
-                  <p className="text-xs font-medium">{item.name}</p>
-                  <p className="text-[10px] text-black/50">{item.roleShort}</p>
-                </div>
               </div>
-            ))}
-          </div>
-
-          <motion.a
-            href="/studio"
-            initial={{ opacity: 0, y: 14 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.6 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="mt-6 inline-flex items-center gap-2 border-b border-white pb-1 text-sm font-medium uppercase tracking-[0.15em]"
-          >
-            Meet the Studio <span aria-hidden="true">→</span>
-          </motion.a>
+              <div className="mt-3 border-t border-white/15 pt-2.5">
+                <p className="text-sm">{person.name}</p>
+                <p className="mt-1 text-[10px] leading-relaxed text-white/50 md:text-xs">
+                  {person.role}
+                </p>
+              </div>
+            </Motion.article>
+          ))}
         </div>
-      )}
+      </div>
     </section>
   );
 }

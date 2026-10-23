@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion as Motion } from "framer-motion";
 import CursorWarpField from "../../context/CursorWarpField";
 import ProjectZoomLink from "../../context/ProjectZoomlink";
 
@@ -11,7 +11,7 @@ function EditorialProjectCard({ project }) {
   const imageSrc = project.coverImage ?? project.thumbnail;
 
   return (
-    <motion.div
+    <Motion.div
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, amount: 0.3 }}
@@ -24,7 +24,7 @@ function EditorialProjectCard({ project }) {
             to={`/work/${project.slug}`}
             image={imageSrc}
             alt={project.title}
-            className="block relative aspect-[3/2] overflow-hidden rounded-lg bg-white/5"
+            className="block relative aspect-[5/2] overflow-hidden rounded-lg bg-white/5"
           >
             <img
               src={imageSrc}
@@ -58,7 +58,7 @@ function EditorialProjectCard({ project }) {
           </span>
         </div>
       </div>
-    </motion.div>
+    </Motion.div>
   );
 }
 

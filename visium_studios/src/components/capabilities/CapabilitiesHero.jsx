@@ -52,7 +52,7 @@ function CapabilitiesHero() {
       </Motion.h1>
 
       <div className="flex flex-col gap-12 md:flex-row md:items-end md:justify-between">
-        <p className="max-w-xs text-sm leading-relaxed text-white/60 md:max-w-sm md:text-base">
+        <p className="text-sm leading-relaxed text-white/60 md:text-base">
           Visium brings brand, digital, product, motion and development together
           under one visual direction.
         </p>

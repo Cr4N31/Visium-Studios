@@ -1,6 +1,31 @@
 import TextScramble from "../../../shared/TextScramble";
 
-function HeroCTA() {
+function HeroCTA({ variant = "default" }) {
+  if (variant === "compact") {
+    return (
+      <section className="flex min-h-32 items-center gap-4 rounded-xl bg-white p-4 text-black sm:p-5">
+        <div className="size-16 shrink-0 overflow-hidden rounded-full bg-neutral-200 sm:size-[4.5rem]">
+          <img
+            className="h-full w-full object-cover object-top"
+            src="/assets/img/img.png"
+            alt="Jace Kayode"
+          />
+        </div>
+        <div className="min-w-0 flex-1">
+          <p className="text-xs leading-relaxed sm:text-sm">
+            Let&apos;s talk with our manager Jace K.
+          </p>
+          <a
+            href="/call-page"
+            className="mt-2 inline-flex min-h-8 items-center justify-center rounded-md border border-black px-4 text-xs transition-colors hover:bg-black hover:text-white"
+          >
+            Book Call
+          </a>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="w-full shrink-0 overflow-hidden rounded-xl text-black md:w-[340px]">
       <div className="flex h-60 overflow-hidden rounded-xl border border-2 border-[#ffff] md:h-full">

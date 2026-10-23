@@ -27,7 +27,7 @@ function FeaturedWork() {
       </div>
 
       {gridProjects.length > 0 && (
-        <div className="mt-4 grid max-w-[1600px] grid-cols-1 gap-2 px-8 md:mx-auto md:mt-6 md:grid-cols-2 md:gap-2">
+        <div className="mt-4 flex flex-col gap-2 px-8 md:mx-auto md:mt-6 md:gap-4">
           {gridProjects.map((project) => (
             <EditorialProjectCard key={project.id} project={project} />
           ))}
