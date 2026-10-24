@@ -8,9 +8,12 @@ function TeamGrid() {
           The Team grid.
         </h2>
       </div>
-      <ul className="grid grid-cols-1 gap-x-4 gap-y-12 md:grid-cols-3 md:gap-x-6 lg:grid-cols-4 lg:gap-y-16">
-        {team.map((member, i) => (
-          <li key={member.name} className="group flex flex-col">
+      <ul className="-mx-6 flex snap-x snap-mandatory gap-x-4 overflow-x-auto px-6 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden md:mx-0 md:grid md:snap-none md:grid-cols-3 md:gap-x-6 md:gap-y-12 md:overflow-visible md:px-0 md:pb-0 lg:grid-cols-4 lg:gap-y-16">
+        {team.map((member) => (
+          <li
+            key={member.name}
+            className="group flex w-[70vw] shrink-0 snap-start flex-col sm:w-[45vw] md:w-auto md:shrink"
+          >
             <div className="aspect-[4/5] w-full overflow-hidden bg-neutral-200">
               <img
                 src={member.image}

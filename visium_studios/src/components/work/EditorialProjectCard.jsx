@@ -24,7 +24,7 @@ function EditorialProjectCard({ project }) {
             to={`/work/${project.slug}`}
             image={imageSrc}
             alt={project.title}
-            className="block relative aspect-[5/2] overflow-hidden rounded-lg bg-white/5"
+            className="block relative aspect-[16/12] md:aspect-[5/2] overflow-hidden rounded-lg bg-white/5"
           >
             <img
               src={imageSrc}

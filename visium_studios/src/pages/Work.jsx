@@ -2,6 +2,7 @@ import { motion as Motion } from "framer-motion";
 import WorkGrid from "../components/work/WorkGrid";
 import projects from "../data/projects";
 import TextScramble from "../shared/TextScramble";
+import Footer from "../components/work/Footer";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -32,6 +33,7 @@ function Work() {
       </Motion.div>
 
       <WorkGrid projects={projects} />
+      <Footer />
     </section>
   );
 }
