@@ -2,40 +2,45 @@ import wordmark from "/assets/logo/vs wordmark display.svg";
 import TextScramble from "../../../shared/TextScramble";
 import WordmarkReveal from "./WordmarkReveal";
 
-// Add your alternate wordmark renders here, in the order they should cycle.
-// Each image must have the SAME aspect ratio as the wordmark svg so the letters line up.
-// import inflated from "/assets/reveal/inflated.png";
-// import glossy from "/assets/reveal/glossy.png";
-// import chrome from "/assets/reveal/chrome.png";
-// const variants = [inflated, glossy, chrome];
-const variants = []; // empty = inverted wordmark fallback
+const variants = [];
 
 function VisiumText() {
   return (
     <div className="flex w-full flex-col gap-3">
-      <div className="flex items-center justify-between  font-mono text-[10px] uppercase tracking-widest sm:text-[1.5rem] font-[600]">
-        <span>
+      {/* Top label */}
+      <div className="flex flex-col gap-2 font-mono text-[10px] font-[600] uppercase tracking-widest sm:flex-row sm:items-center sm:justify-between">
+        <span className="whitespace-nowrap">
           <TextScramble>Brand &amp; Digital Studio</TextScramble>
         </span>
-        <span>
+
+        <span className="hidden sm:block">
           <TextScramble>Setting the visual standard</TextScramble>
         </span>
       </div>
 
-      <div className="flex justify-center items-center">
+      {/* Wordmark */}
+      <div className="flex items-center justify-center">
         <WordmarkReveal
           src={wordmark}
           variants={variants}
           blobColor="#0B0B0B"
-          className="w-[100vw]"
+          className="w-full"
         />
       </div>
 
-      <p className="text-right  text-[10px]">
-        <span className="font-mono uppercase tracking-widest text-xs md:text-[1.5rem] font-[600]">
-          <TextScramble>Available Worldwide</TextScramble>
-        </span>
-      </p>
+      {/* Bottom labels */}
+      <div className="flex flex-col gap-2">
+        <p className="text-right text-[10px]">
+          <span className="font-mono text-xs font-[600] uppercase tracking-widest">
+            <TextScramble>Available Worldwide</TextScramble>
+          </span>
+        </p>
+
+        {/* Mobile-only second label */}
+        <p className="text-left font-mono text-[10px] font-[600] uppercase tracking-widest sm:hidden">
+          <TextScramble>Setting the visual standard</TextScramble>
+        </p>
+      </div>
     </div>
   );
 }
