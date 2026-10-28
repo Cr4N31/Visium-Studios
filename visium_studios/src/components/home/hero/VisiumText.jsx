@@ -30,7 +30,7 @@ function VisiumText() {
 
       {/* Bottom labels */}
       <div className="flex flex-col gap-2">
-        <p className="text-right text-[10px]">
+        <p className="md:text-right text-left text-[10px]">
           <span className="font-mono text-xs font-[600] uppercase tracking-widest">
             <TextScramble>Available Worldwide</TextScramble>
           </span>
