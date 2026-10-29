@@ -16,7 +16,7 @@ function Work() {
       className="bg-black px-5 py-24 text-white sm:px-8 md:py-32"
     >
       <Motion.div
-        className="max-w-3xl mb-14 md:mb-20"
+        className="max-w-6xl mb-14 md:mb-20"
         initial="hidden"
         whileInView="show"
         viewport={{ once: true, amount: 0.4 }}

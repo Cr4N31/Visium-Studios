@@ -38,7 +38,7 @@ function CapabilitiesHero() {
   return (
     <section
       ref={ref}
-      className="relative flex min-h-[30vh] flex-col justify-center gap-6 px-5 pb-10 pt-28 sm:px-8 md:justify-between md:gap-0 md:pb-14 md:pt-32"
+      className="relative flex min-h-[30vh] flex-col justify-center gap-2 px-5 pb-10 pt-28 sm:px-8 md:justify-between md:gap-0 md:pb-14 md:pt-32"
     >
       <Motion.h1 style={{ y: headY, opacity: headOpacity }}>
         <span className="text-[clamp(2rem,8vw,5rem)] tracking-tight font-normal leading-[1] sm:text-[clamp(2.5rem,7vw,5rem)] sm:leading-[1.02] md:text-[clamp(3rem,5vw,5rem)] md:leading-[1]">
@@ -51,7 +51,7 @@ function CapabilitiesHero() {
         </span>
       </Motion.h1>
 
-      <div className="flex flex-col gap-12 md:flex-row md:items-end md:justify-between">
+      <div>
         <p className="text-sm leading-relaxed text-white/60 md:text-base">
           Visium brings brand, digital, product, motion and development together
           under one visual direction.

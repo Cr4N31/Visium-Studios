@@ -43,6 +43,7 @@ function SoundToggle({ muted, onToggle, className = "", ...rest }) {
 
 function VideoMotion() {
   const wrapRef = useRef(null);
+  const coverRef = useRef(null);
   const bigRef = useRef(null);
   const resume = useRef({ time: 0, playing: true });
 
@@ -131,6 +132,14 @@ function VideoMotion() {
     };
   }, [open]);
 
+  // Keep the cover video playing, but pause it while the full overlay is open
+  useEffect(() => {
+    const v = coverRef.current;
+    if (!v) return;
+    if (open) v.pause();
+    else v.play().catch(() => {});
+  }, [open]);
+
   const uiHover = {
     onPointerEnter: () => setOverUI(true),
     onPointerLeave: () => setOverUI(false),
@@ -155,14 +164,28 @@ function VideoMotion() {
             openOverlay();
           }
         }}
-        className="relative flex h-full w-full cursor-none items-center justify-center overflow-hidden rounded-lg bg-black [@media(hover:none)]:cursor-pointer"
+        className="relative flex h-full w-full cursor-none items-center justify-center overflow-hidden rounded-lg [@media(hover:none)]:cursor-pointer"
         data-aos="fade-up"
       >
+        <video
+          ref={coverRef}
+          autoPlay
+          muted
+          loop
+          playsInline
+          aria-hidden="true"
+          tabIndex={-1}
+          disablePictureInPicture
+          className="pointer-events-none absolute inset-0 h-full w-full object-cover"
+        >
+          <source src={SRC} type="video/mp4" />
+        </video>
+
         <img
           src="/assets/logo/fullWhite.png"
           alt=""
           aria-hidden="true"
-          className="pointer-events-none w-32 max-w-[45%] object-contain"
+          className="pointer-events-none relative z-10 w-32 max-w-[45%] object-contain drop-shadow-[0_2px_14px_rgba(0,0,0,0.45)]"
         />
       </div>
 
