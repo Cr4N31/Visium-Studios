@@ -109,25 +109,6 @@ function Studio() {
       </div>
 
       <div className="mt-10 md:mt-12">
-        <div className="mb-4 flex justify-end gap-2 px-5 sm:px-8 md:px-10">
-          <button
-            type="button"
-            aria-label="Scroll team carousel backward"
-            onClick={() => moveCarousel(-1)}
-            className="flex size-10 items-center justify-center rounded-full border border-white/20 text-lg transition-colors hover:bg-white hover:text-black"
-          >
-            ←
-          </button>
-          <button
-            type="button"
-            aria-label="Scroll team carousel forward"
-            onClick={() => moveCarousel(1)}
-            className="flex size-10 items-center justify-center rounded-full border border-white/20 text-lg transition-colors hover:bg-white hover:text-black"
-          >
-            →
-          </button>
-        </div>
-
         <div
           ref={carouselRef}
           className="studio-team-carousel flex gap-3 overflow-x-auto overscroll-x-contain px-5 pb-3 sm:gap-4 sm:px-8 md:gap-5 md:px-10"
