@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { sortedInsights } from "../../data/insights";
+import TextScramble from "../../shared/TextScramble";
 
 const MotionArticle = motion.article;
 
@@ -67,7 +68,7 @@ function StudioNotes() {
           <div className="flex items-start gap-2 md:gap-3">
             <sup className="mt-[0.5em] font-mono text-xs md:text-sm">(06)</sup>
             <h2 className="text-[clamp(2.5rem,6vw,5rem)] font-normal leading-[0.9] tracking-[-0.05em]">
-              Insights
+              <TextScramble>Insights</TextScramble>
             </h2>
           </div>
           <Link

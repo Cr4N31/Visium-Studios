@@ -3,7 +3,7 @@ import InsightsArchive from "../components/insights/InsightsArchive";
 
 function Insights() {
   return (
-    <section className="bg-black text-white">
+    <section className="bg-[#0B0B0B] text-white">
       <InsightHero />
       <InsightsArchive />
     </section>

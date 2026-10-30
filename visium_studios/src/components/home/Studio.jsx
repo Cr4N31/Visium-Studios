@@ -77,7 +77,7 @@ function Studio() {
   return (
     <section
       ref={sectionRef}
-      className="overflow-hidden bg-black py-10 text-white md:py-14"
+      className="overflow-hidden bg-[#0B0B0B] py-10 text-white md:py-14"
     >
       <div className="px-5 sm:px-8 md:px-10">
         <div className="flex items-start gap-2 md:gap-3">

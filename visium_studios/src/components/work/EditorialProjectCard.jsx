@@ -39,7 +39,7 @@ function EditorialProjectCard({ project }) {
             and ignores the pointer so clicks still reach the link underneath. */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-x-2 bottom-2 translate-y-[calc(100%_+_0.75rem)] rounded-md bg-black px-3.5 py-3 text-white ring-1 ring-white/10 transition-transform duration-[400ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-y-0 group-focus-within:translate-y-0 [@media(hover:none)]:translate-y-0"
+          className="pointer-events-none absolute inset-x-2 bottom-2 translate-y-[calc(100%_+_0.75rem)] rounded-md bg-[#0B0B0B] px-3.5 py-3 text-white ring-1 ring-white/10 transition-transform duration-[400ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-y-0 group-focus-within:translate-y-0 [@media(hover:none)]:translate-y-0"
         >
           <span className="block text-sm uppercase leading-none">
             {project.title}

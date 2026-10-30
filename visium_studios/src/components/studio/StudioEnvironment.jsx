@@ -107,7 +107,7 @@ function StudioEnvironment() {
             />
 
             <div
-              className="absolute overflow-hidden bg-black"
+              className="absolute overflow-hidden bg-[#0B0B0B]"
               style={{
                 left: `${SCREEN.left}%`,
                 top: `${SCREEN.top}%`,

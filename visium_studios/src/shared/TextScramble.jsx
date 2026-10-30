@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
-import { useReducedMotion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { useInView, useReducedMotion } from "framer-motion";
 
 const GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-const DURATION = 2000;
+const DURATION = 1000;
 const FRAME_INTERVAL = 45;
 
 function scramble(text, progress) {
@@ -20,14 +20,26 @@ function scramble(text, progress) {
 function TextScramble({ children, className = "", active = true }) {
   const text = String(children ?? "");
   const prefersReducedMotion = useReducedMotion();
+  const ref = useRef(null);
+
+  // Fires once, when ~40% of the element is visible
+  const isInView = useInView(ref, { once: true, amount: 0.4 });
+
   const [displayText, setDisplayText] = useState(text);
+  const [started, setStarted] = useState(false);
+
+  const shouldAnimate = active && !prefersReducedMotion;
 
   useEffect(() => {
-    if (!active || prefersReducedMotion) return undefined;
+    if (!shouldAnimate || !isInView) return undefined;
 
     const startedAt = performance.now();
     let timeoutId;
     let animationFrameId;
+
+    // Swap to the scrambled state immediately so the real text never flashes
+    setDisplayText(scramble(text, 0));
+    setStarted(true);
 
     const update = (now) => {
       const progress = Math.min((now - startedAt) / DURATION, 1);
@@ -45,13 +57,22 @@ function TextScramble({ children, className = "", active = true }) {
       window.clearTimeout(timeoutId);
       window.cancelAnimationFrame(animationFrameId);
     };
-  }, [active, prefersReducedMotion, text]);
+  }, [shouldAnimate, isInView, text]);
+
+  // Hide the text until the animation begins, so off-screen headers
+  // don't sit there fully revealed and then suddenly scramble on entry.
+  const hidden = shouldAnimate && !started;
 
   return (
     <>
       <span className="sr-only">{text}</span>
-      <span aria-hidden="true" className={className}>
-        {active && !prefersReducedMotion ? displayText : text}
+      <span
+        ref={ref}
+        aria-hidden="true"
+        className={className}
+        style={hidden ? { opacity: 0 } : undefined}
+      >
+        {shouldAnimate ? displayText : text}
       </span>
     </>
   );

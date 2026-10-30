@@ -51,7 +51,7 @@ function ProjectZoomLink({
           <AnimatePresence>
             {flight && (
               <Motion.div
-                className="fixed z-[999] overflow-hidden pointer-events-none bg-black"
+                className="fixed z-[999] overflow-hidden pointer-events-none bg-[#0B0B0B]"
                 initial={{
                   top: flight.top,
                   left: flight.left,

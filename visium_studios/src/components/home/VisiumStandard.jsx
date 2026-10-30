@@ -113,7 +113,7 @@ function VisiumStandard() {
   // scroll-triggered transitions — everything just renders in place.
   if (prefersReducedMotion) {
     return (
-      <section className="bg-black text-white">
+      <section className="bg-[#0B0B0B] text-white">
         {intro}
         <div className="px-8">
           {principles.map((p) => (
@@ -137,7 +137,7 @@ function VisiumStandard() {
   }
 
   return (
-    <section className="bg-black text-white">
+    <section className="bg-[#0B0B0B] text-white">
       {intro}
 
       <div className="px-8">

@@ -74,7 +74,7 @@ function InsightArticle() {
   const { prev, next } = getAdjacent(slug);
 
   return (
-    <article className="bg-black text-white">
+    <article className="bg-[#0B0B0B] text-white">
       {/* Opening */}
       <header className="px-8 pb-10 pt-32 md:pb-16 md:pt-44">
         <Motion.p

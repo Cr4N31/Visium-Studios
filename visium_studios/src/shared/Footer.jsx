@@ -6,7 +6,7 @@ import footer_img from "/assets/logo/fullWhite.png";
 function Footer() {
   const { pathname } = useLocation();
   const themeClasses = {
-    shell: "border-white/10 bg-black text-white",
+    shell: "border-white/10 bg-[#0B0B0B] text-white",
     muted: "text-white/40",
     soft: "text-white/60",
     primary: "text-white",

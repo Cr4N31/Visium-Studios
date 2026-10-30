@@ -2,6 +2,7 @@ import { motion as Motion, useScroll, useTransform } from "framer-motion";
 import { Link } from "react-router-dom";
 import { useRef } from "react";
 import { useMagnetic, useMorphPointer } from "../../shared/useCtaPointer";
+import TextScramble from "../../shared/TextScramble";
 
 const MotionLink = Motion(Link);
 
@@ -61,9 +62,11 @@ function FinalCTA({ eyebrow = "Start a Project" }) {
               id="final-cta-heading"
               className="font-mono text-[clamp(2.9rem,9vw,5rem)] tracking-[-0.07em] font-normal leading-[1.08] md:leading-[1.06] md:text-[clamp(3rem,5vw,5rem)]"
             >
-              Let&apos;s build something
-              <br />
-              worth looking at.
+              <TextScramble>
+                Let&apos;s build something
+                <br />
+                worth looking at.
+              </TextScramble>
             </span>
           </Motion.div>
         </div>

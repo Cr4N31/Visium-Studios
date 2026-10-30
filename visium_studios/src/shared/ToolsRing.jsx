@@ -90,7 +90,7 @@ function ToolsRing() {
       ref={sectionRef}
       role="img"
       aria-label={`Tools we use: ${toolLogos.map((l) => l.name).join(", ")}`}
-      className="relative mt-12 md:mt-24 select-none overflow-hidden bg-black"
+      className="relative mt-12 md:mt-24 select-none overflow-hidden bg-[#0B0B0B]"
       style={{
         maskImage: EDGE_MASK,
         WebkitMaskImage: EDGE_MASK,

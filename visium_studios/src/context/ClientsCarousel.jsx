@@ -134,7 +134,7 @@ function CursorCard({ item, x, y }) {
             exit={{ opacity: 0, scale: 0.85 }}
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
             style={{ transformOrigin: "top left", width: CARD_WIDTH }}
-            className="mt-4 flex flex-col gap-2 border border-white/20 bg-black p-4"
+            className="mt-4 flex flex-col gap-2 border border-white/20 bg-[#0B0B0B] p-4"
           >
             <p className="text-[10px] uppercase tracking-[0.2em] text-white/40">
               Case study

@@ -17,7 +17,7 @@ function HeroCTA({ variant = "default" }) {
           </p>
           <a
             href="/call-page"
-            className="mt-2 inline-flex min-h-8 items-center justify-center rounded-md border border-black px-4 text-xs transition-colors hover:bg-black hover:text-white"
+            className="mt-2 inline-flex min-h-8 items-center justify-center rounded-md border border-black px-4 text-xs transition-colors hover:bg-[#0B0B0B] hover:text-white"
           >
             Book Call
           </a>
@@ -42,7 +42,7 @@ function HeroCTA({ variant = "default" }) {
           </div>
           <a
             href="/call-page"
-            className="flex h-10  items-center justify-center rounded-md bg-[#fff] uppercase tracking-wide transition-colors hover:bg-black hover:text-white"
+            className="flex h-10  items-center justify-center rounded-md bg-[#fff] uppercase tracking-wide transition-colors hover:bg-[#0B0B0B] hover:text-white"
           >
             <span className="font-mono font-semibold text-base">Book call</span>
           </a>

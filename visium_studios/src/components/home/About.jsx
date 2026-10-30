@@ -1,13 +1,14 @@
 import { motion } from "framer-motion";
 import CapabilitiesMarquee from "../../shared/CapabilitiesMarquee";
 import { Link } from "react-router-dom";
+import TextScramble from "../../shared/TextScramble";
 
 const MotionSection = motion.section;
 
 function About() {
   return (
     <MotionSection
-      className="overflow-x-clip bg-black px-5 py-16 text-white sm:px-8 md:px-10"
+      className="overflow-x-clip bg-[#0B0B0B] px-5 py-16 text-white sm:px-8 md:px-10"
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
@@ -17,7 +18,7 @@ function About() {
       <div className="flex items-start gap-2 md:gap-3">
         <sup className="mt-[0.5em] font-mono text-xs md:text-sm">(02)</sup>
         <h2 className="text-[clamp(2.5rem,6vw,5rem)] font-normal leading-[0.9] tracking-[-0.05em]">
-          About
+          <TextScramble>About</TextScramble>
         </h2>
       </div>
 

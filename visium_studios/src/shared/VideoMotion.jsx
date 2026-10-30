@@ -28,7 +28,7 @@ function SoundToggle({ muted, onToggle, className = "", ...rest }) {
       }}
       aria-pressed={!muted}
       aria-label={muted ? "Turn sound on" : "Turn sound off"}
-      className={`video-sound-toggle flex items-center gap-2 rounded-full bg-black/70 px-4 py-2 text-xs font-medium uppercase tracking-[0.08em] text-white backdrop-blur-sm transition-colors hover:bg-black/85 ${className}`}
+      className={`video-sound-toggle flex items-center gap-2 rounded-full bg-[#0B0B0B]/70 px-4 py-2 text-xs font-medium uppercase tracking-[0.08em] text-white backdrop-blur-sm transition-colors hover:bg-[#0B0B0B]/85 ${className}`}
       {...rest}
     >
       <span
@@ -181,12 +181,24 @@ function VideoMotion() {
           <source src={SRC} type="video/mp4" />
         </video>
 
-        <img
-          src="/assets/logo/fullWhite.png"
-          alt=""
+        {/* Dark tint: video stays visible underneath, lightens on hover */}
+        <div
           aria-hidden="true"
-          className="pointer-events-none relative z-10 w-32 max-w-[45%] object-contain drop-shadow-[0_2px_14px_rgba(0,0,0,0.45)]"
+          className={`pointer-events-none absolute inset-0 z-10 bg-black transition-opacity duration-300 ${
+            hovering ? "opacity-35" : "opacity-55"
+          }`}
         />
+
+        {/* Round play element (fades out on desktop hover so it doesn't
+            clash with the "Show reel" cursor) */}
+        <div
+          aria-hidden="true"
+          className={`pointer-events-none relative z-20 flex h-20 w-20 items-center justify-center rounded-full border border-white/70 bg-[#F4F4F1] text-xs font-medium uppercase tracking-[0.12em] text-black backdrop-blur-sm transition-opacity duration-200 md:h-24 md:w-24 ${
+            hovering ? "opacity-0" : "opacity-100"
+          }`}
+        >
+          [Play]
+        </div>
       </div>
 
       {createPortal(
@@ -206,10 +218,10 @@ function VideoMotion() {
                 type="button"
                 aria-label="Close video"
                 onClick={closeOverlay}
-                className="absolute inset-0 cursor-none bg-black/55 backdrop-blur-md"
+                className="absolute inset-0 cursor-none bg-[#0B0B0B]/55 backdrop-blur-md"
               />
               <MotionDiv
-                className="relative z-10 max-h-[80dvh] max-w-[90vw] overflow-hidden rounded-lg bg-black shadow-2xl"
+                className="relative z-10 max-h-[80dvh] max-w-[90vw] overflow-hidden rounded-lg bg-[#0B0B0B] shadow-2xl"
                 initial={{ opacity: 0, scale: 0.94 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.94 }}
@@ -261,7 +273,7 @@ function VideoMotion() {
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={{ opacity: 1, scale: 1, transition: { delay: 0.2 } }}
                   exit={{ opacity: 0, transition: { duration: 0.15 } }}
-                  className="absolute right-3 top-3 flex h-10 w-10 cursor-none items-center justify-center rounded-full border border-white/40 bg-black/80 text-white"
+                  className="absolute right-3 top-3 flex h-10 w-10 cursor-none items-center justify-center rounded-full border border-white/40 bg-[#0B0B0B]/80 text-white"
                 >
                   <svg
                     width="16"

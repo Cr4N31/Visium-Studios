@@ -53,7 +53,7 @@ function Home({ onThemeChange }) {
   return (
     <main className="home-page">
       <Hero />
-      <div className="relative z-10 bg-black">
+      <div className="relative z-10 bg-[#0B0B0B]">
         <div className="flex flex-col gap-12 py-8">
           <About />
           <Services />

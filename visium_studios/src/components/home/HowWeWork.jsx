@@ -8,6 +8,7 @@ import {
   useSpring,
   useTransform,
 } from "framer-motion";
+import TextScramble from "../../shared/TextScramble";
 
 const steps = [
   {
@@ -157,7 +158,7 @@ function PencilSegment({ seg, headY }) {
     <Motion.g
       style={{ opacity: visible }}
       fill="none"
-      stroke="#f5f5f5"
+      stroke="#0B0B0B"
       strokeLinecap="round"
       strokeLinejoin="round"
     >
@@ -295,7 +296,7 @@ function HowWeWork() {
   }, [update, sync, headY]);
 
   return (
-    <section className="bg-neutral-900 px-6 py-10 text-white">
+    <section className="bg-[#F4F4F1] rounded-xl px-6 py-10 text-[#0B0B0B]">
       <div
         ref={wrapRef}
         className="relative mx-auto flex max-w-5xl flex-col gap-16 md:gap-24"
@@ -356,8 +357,8 @@ function HowWeWork() {
                 className="pointer-events-none absolute -inset-4 -z-10 rounded-2xl md:-inset-6"
                 style={{
                   boxShadow:
-                    "0 0 48px 4px rgba(255,255,255,0.14), inset 0 0 32px rgba(255,255,255,0.05)",
-                  border: "1px solid rgba(255,255,255,0.14)",
+                    "0 0 48px 4px rgba(0, 0, 0, 0.14), inset 0 0 32px rgba(0, 0, 0, 0.05)",
+                  border: "1px solid rgba(0, 0, 0, 0.14)",
                 }}
               />
 
@@ -371,20 +372,20 @@ function HowWeWork() {
                 }}
                 animate={{
                   textShadow: lit
-                    ? "0 0 22px rgba(255,255,255,0.35)"
-                    : "0 0 0px rgba(255,255,255,0)",
+                    ? "0 0 22px rgba(8, 8, 8, 0.35)"
+                    : "0 0 0px rgba(0, 0, 0, 0)",
                 }}
                 transition={{ duration: 1 }}
                 className="font-mono text-4xl font-bold uppercase leading-none md:text-7xl"
               >
-                {step.name}
+                <TextScramble>{step.name}</TextScramble>
               </Motion.h2>
 
-              <p className="max-w-[16rem] text-[10px] leading-relaxed text-neutral-300 md:max-w-md md:text-sm">
+              <p className="max-w-[16rem] text-[10px] text-[#0B0B0B]/80 leading-relaxed md:max-w-md md:text-sm">
                 {step.desc}
               </p>
 
-              <span className="font-mono text-[10px] font-bold uppercase tracking-widest md:text-xs">
+              <span className="font-mono text-[#0B0B0B]/80 text-[10px] font-bold uppercase tracking-widest md:text-xs">
                 {step.duration}
               </span>
             </article>
@@ -396,7 +397,7 @@ function HowWeWork() {
           ref={buttonRef}
           href="/contact"
           className={`relative z-10 mt-4 flex h-12 items-center justify-center rounded-md font-mono text-[10px] font-bold uppercase tracking-widest transition-colors duration-500 md:h-16 md:text-sm ${
-            done ? "bg-white text-black" : "bg-black text-white"
+            done ? "bg-[#0B0B0B] text-white" : "bg-[F4F4F1] text-[#0B0B0B]"
           }`}
         >
           Contact Manager

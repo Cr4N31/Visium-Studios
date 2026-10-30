@@ -402,7 +402,7 @@ function VisiumApproach() {
   const canvasShadowFilter = useMotionTemplate`drop-shadow(0px 30px 40px rgba(0, 0, 0, ${canvasShadowOpacity}))`;
 
   return (
-    <section id="visium-approach" className="bg-black text-white">
+    <section id="visium-approach" className="bg-[#0B0B0B] text-white">
       {/* ==========================================================
           INTRO
       ========================================================== */}
@@ -453,7 +453,7 @@ function VisiumApproach() {
             h-[100dvh]
             w-full
             overflow-hidden
-            bg-black
+            bg-[#0B0B0B]
           "
         >
           {/* ROOM (phase B backdrop). Sits under the canvas the whole
@@ -487,7 +487,7 @@ function VisiumApproach() {
           {/* LOADING */}
 
           {!isReady && (
-            <div className="absolute inset-0 z-30 flex items-center justify-center bg-black px-6 text-center text-sm text-white/40">
+            <div className="absolute inset-0 z-30 flex items-center justify-center bg-[#0B0B0B] px-6 text-center text-sm text-white/40">
               Loading... {Math.round((loadedCount / FRAME_COUNT) * 100)}%
             </div>
           )}
@@ -924,7 +924,7 @@ function VisiumPrinciples() {
   return (
     <section
       ref={sectionRef}
-      className="overflow-x-hidden bg-black px-8 py-6 text-white md:py-12"
+      className="overflow-x-hidden bg-[#0B0B0B] px-8 py-6 text-white md:py-12"
     >
       <motion.div
         className="mb-4 flex flex-col"

@@ -69,7 +69,7 @@ function BrandingPageLayout({
   const ctaMagnetic = useMagnetic();
 
   return (
-    <div className="bg-black text-white">
+    <div className="bg-[#0B0B0B] text-white">
       <section className="px-8 pb-16 pt-28 md:pt-40">
         <h1 className="text-[clamp(2.5rem,8vw,5rem)] font-normal leading-[1.05] text-white">
           <TextScramble>{title}</TextScramble>
@@ -208,7 +208,9 @@ function BrandingPageLayout({
               scale: ctaMorph.scale,
             }}
           />
-          <span className="relative z-[1] font-semibold tracking-tight">{ctaLabel}</span>
+          <span className="relative z-[1] font-semibold tracking-tight">
+            {ctaLabel}
+          </span>
         </Motion.a>
       </section>
     </div>

@@ -65,7 +65,7 @@ function App() {
 
   return (
     <CurtainNavigationProvider>
-      <div className="bg-black text-white">
+      <div className="bg-[#0B0B0B] text-white">
         <ScrollToTop />
         <SeoMetadata />
         <CustomCursor inverted={cursorInverted} />

@@ -78,7 +78,7 @@ function Footer() {
 
             <Link
               to={to}
-              className="group flex items-center justify-between rounded-full bg-black px-6 py-3 text-sm text-white transition-colors duration-300 hover:bg-neutral-800"
+              className="group flex items-center justify-between rounded-full bg-[#0B0B0B] px-6 py-3 text-sm text-white transition-colors duration-300 hover:bg-neutral-800"
             >
               Book Call
               <span

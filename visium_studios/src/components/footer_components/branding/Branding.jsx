@@ -131,7 +131,7 @@ function Branding() {
   const [openFaq, setOpenFaq] = useState(null);
 
   return (
-    <div className="bg-black text-white">
+    <div className="bg-[#0B0B0B] text-white">
       {/* Header */}
       <section className="px-8 pb-16 pt-28 md:pt-40">
         <h1 className="text-[clamp(2.5rem,8vw,5rem)] font-normal leading-[1.05] text-white">
@@ -285,7 +285,9 @@ function Branding() {
               scale: ctaMorph.scale,
             }}
           />
-          <span className="relative z-[1] font-semibold tracking-tight">Start a project →</span>
+          <span className="relative z-[1] font-semibold tracking-tight">
+            Start a project →
+          </span>
         </Motion.a>
       </section>
     </div>

@@ -13,7 +13,7 @@ function Work() {
   return (
     <section
       id="work"
-      className="bg-black px-5 py-24 text-white sm:px-8 md:py-32"
+      className="bg-[#0B0B0B] px-5 py-24 text-white sm:px-8 md:py-32"
     >
       <Motion.div
         className="max-w-6xl mb-14 md:mb-20"

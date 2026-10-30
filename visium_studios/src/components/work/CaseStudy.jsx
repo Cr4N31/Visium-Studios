@@ -114,9 +114,7 @@ const normalizeProject = (project) => {
 
 function ProjectMedia({ media, title, className }) {
   const src = media?.src || "";
-  const isVideo =
-    media?.type === "video" ||
-    /\.(mp4|webm|mov)$/i.test(src);
+  const isVideo = media?.type === "video" || /\.(mp4|webm|mov)$/i.test(src);
 
   if (isVideo) {
     return (
@@ -178,7 +176,7 @@ function CaseStudy() {
           />
           <Link
             to="/work"
-            className="absolute left-4 top-4 rounded-full border border-white/30 bg-black/45 px-3 py-2 text-[10px] uppercase tracking-[0.2em] text-white backdrop-blur-sm transition hover:bg-black/75"
+            className="absolute left-4 top-4 rounded-full border border-white/30 bg-[#0B0B0B]/45 px-3 py-2 text-[10px] uppercase tracking-[0.2em] text-white backdrop-blur-sm transition hover:bg-[#0B0B0B]/75"
           >
             ← Back to work
           </Link>
@@ -279,9 +277,7 @@ function CaseStudy() {
                     media={media}
                     title={`${project.title} — image ${index + 2}`}
                     className={`w-full object-cover ${
-                      wide
-                        ? "aspect-[2/1]"
-                        : "aspect-[4/3]"
+                      wide ? "aspect-[2/1]" : "aspect-[4/3]"
                     }`}
                   />
                 </div>

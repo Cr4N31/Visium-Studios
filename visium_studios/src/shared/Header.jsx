@@ -558,7 +558,7 @@ function MenuOverlay({
           initial="hidden"
           animate="visible"
           exit="exit"
-          className="fixed inset-0 z-[100] bg-black overflow-y-auto overscroll-contain"
+          className="fixed inset-0 z-[100] bg-[#0B0B0B] overflow-y-auto overscroll-contain"
         >
           <FallingLogos />
           <BlobCursor originRef={originRef} />

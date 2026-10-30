@@ -124,7 +124,7 @@ function ProjectCard({ project, summaryBelow = false, presentation = false }) {
         {/* Hover overlay */}
         <Motion.div
           variants={overlay}
-          className="absolute inset-0 z-10 flex flex-col justify-end bg-black/70 p-5"
+          className="absolute inset-0 z-10 flex flex-col justify-end bg-[#0B0B0B]/70 p-5"
         >
           <Motion.div variants={overlayContent}>
             <div className="mb-3 flex flex-wrap gap-2">

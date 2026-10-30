@@ -86,7 +86,7 @@ function CapabilityDetail() {
   const story = capabilityStories[item.id];
 
   return (
-    <main className="bg-black text-white">
+    <main className="bg-[#0B0B0B] text-white">
       <header className="px-8 pb-16 pt-32 md:pb-24 md:pt-44">
         <Link
           to="/capabilities"

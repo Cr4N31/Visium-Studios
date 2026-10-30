@@ -8,7 +8,7 @@ import FinalCTA from "../components/home/FinalCta";
 
 function Studio() {
   return (
-    <main className="bg-black text-white">
+    <main className="bg-[#0B0B0B] text-white">
       <StudioHeader />
       <StudioEnvironment />
       {/*
