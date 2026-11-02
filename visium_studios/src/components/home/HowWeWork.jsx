@@ -9,41 +9,59 @@ import {
   useTransform,
 } from "framer-motion";
 import TextScramble from "../../shared/TextScramble";
+const discover =
+  "https://images.unsplash.com/photo-1698705486918-9b463adaaae4?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D";
+const define =
+  "https://images.unsplash.com/photo-1635322966219-b75ed372eb01?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D";
+const design =
+  "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D";
+const build =
+  "https://images.unsplash.com/photo-1762146828422-50a8bd416d3c?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D";
+const launch =
+  "https://images.unsplash.com/photo-1699541948287-9c8ce85624ce?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D";
+const improve =
+  "https://images.unsplash.com/photo-1759378060310-05aa140ad202?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D";
 
 const steps = [
   {
     id: 1,
     name: "Discover",
+    image: discover,
     duration: "3-5 days",
     desc: "We align on goals, audience, and constraints. We review analytics and current assets, run stakeholder interviews, and map risks and assumptions. The outcome is shared clarity on what success looks like.",
   },
   {
     id: 2,
     name: "Define",
+    image: define,
     duration: "3-5 days",
     desc: "We translate goals into scope, timeline, and KPIs. We draft the roadmap, responsibilities, and the measurement plan so every step is testable. Trade-offs are explicit and documented.",
   },
   {
     id: 3,
     name: "Design",
+    image: design,
     duration: "1-3 weeks",
     desc: "We explore concepts, then systematize into a modular UI and brand toolkit. Content structure, accessibility, and motion are specified so the build phase is predictable. Iterations are time-boxed with weekly reviews.",
   },
   {
     id: 4,
     name: "Build",
+    image: build,
     duration: "1-4 weeks",
     desc: "We implement production-ready components, CMS schemas, and integrations. Performance budgets guide choices; QA runs continuously across devices. Analytics and events are instrumented from day one.",
   },
   {
     id: 5,
     name: "Launch",
+    image: launch,
     duration: "3-5 days",
     desc: "We ship behind a checklist: QA, Core Web Vitals, redirects, tracking, and security. We monitor the first 72 hours and fix issues fast. Your team gets a short handover and edit training.",
   },
   {
     id: 6,
     name: "Improve",
+    image: improve,
     duration: "Ongoing",
     desc: "We run experiments against KPIs and maintain in focused sprints. Insights feed the backlog; releases are small and frequent to keep momentum.",
   },
@@ -297,6 +315,12 @@ function HowWeWork() {
 
   return (
     <section className="bg-[#F4F4F1] rounded-xl px-6 py-10 text-[#0B0B0B]">
+      <div className="mb-24 flex items-start gap-2 ">
+        <sup className="mt-[0.5em] font-mono text-xs md:text-sm">(05)</sup>
+        <h2 className="text-[clamp(2.5rem,6vw,5rem)] font-normal leading-[0.9] tracking-[-0.05em]">
+          <TextScramble>How We Work</TextScramble>
+        </h2>
+      </div>
       <div
         ref={wrapRef}
         className="relative mx-auto flex max-w-5xl flex-col gap-16 md:gap-24"
@@ -381,6 +405,22 @@ function HowWeWork() {
                 <TextScramble>{step.name}</TextScramble>
               </Motion.h2>
 
+              {/* fixed aspect ratio reserves space so lazy loading never shifts the layout */}
+              <Motion.div
+                animate={{ filter: lit ? "grayscale(0)" : "grayscale(1)" }}
+                transition={{ duration: 1 }}
+                className="aspect-[4/3] w-[16rem] overflow-hidden rounded-md bg-[#0B0B0B]/10 md:w-[28rem]"
+              >
+                <img
+                  src={step.image}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  draggable="false"
+                  className="h-full w-full object-cover"
+                />
+              </Motion.div>
+
               <p className="max-w-[16rem] text-[10px] text-[#0B0B0B]/80 leading-relaxed md:max-w-md md:text-sm">
                 {step.desc}
               </p>
@@ -397,7 +437,7 @@ function HowWeWork() {
           ref={buttonRef}
           href="/contact"
           className={`relative z-10 mt-4 flex h-12 items-center justify-center rounded-md font-mono text-[10px] font-bold uppercase tracking-widest transition-colors duration-500 md:h-16 md:text-sm ${
-            done ? "bg-[#0B0B0B] text-white" : "bg-[F4F4F1] text-[#0B0B0B]"
+            done ? "bg-[#0B0B0B] text-white" : "bg-[#F4F4F1] text-[#0B0B0B]"
           }`}
         >
           Contact Manager

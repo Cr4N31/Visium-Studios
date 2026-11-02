@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import capabilities from "../data/capabilities";
+import ScrollIndicator from "./ScrollIndicator"; // adjust path
 
 const SPEED = 60; // px per second
 const MAX_COPIES = 6;
@@ -37,6 +38,8 @@ export default function CapabilitiesMarquee() {
   const rootRef = useRef(null);
   const trackRef = useRef(null);
   const groupRef = useRef(null);
+  const indicatorRef = useRef(null);
+  const seekRef = useRef(null);
   const [copies, setCopies] = useState(2);
 
   useEffect(() => {
@@ -62,8 +65,15 @@ export default function CapabilitiesMarquee() {
       if (width) {
         x %= width;
         if (x > 0) x -= width; // keep x in (-width, 0]
+        indicatorRef.current?.update(-x / width); // 0 to 1
       }
       track.style.transform = `translate3d(${x}px,0,0)`;
+    };
+
+    seekRef.current = (t) => {
+      if (!width) return;
+      x = -t * width;
+      render();
     };
 
     const measure = () => {
@@ -129,6 +139,7 @@ export default function CapabilitiesMarquee() {
       cancelAnimationFrame(raf);
       resizeObserver.disconnect();
       io.disconnect();
+      seekRef.current = null;
       root.removeEventListener("pointerdown", onDown);
       root.removeEventListener("pointermove", onMove);
       root.removeEventListener("pointerup", onEnd);
@@ -138,28 +149,36 @@ export default function CapabilitiesMarquee() {
   }, []);
 
   return (
-    <div
-      className="w-full min-w-0 max-w-full overflow-hidden"
-      style={{ maskImage: EDGE_MASK, WebkitMaskImage: EDGE_MASK }}
-    >
-      <section
-        ref={rootRef}
-        aria-label="Capabilities"
-        className="w-full max-w-full touch-pan-y select-none overflow-hidden py-10 text-5xl font-medium leading-none tracking-tight text-white active:cursor-grabbing md:py-14 md:text-7xl"
+    <div className="w-full min-w-0 max-w-full">
+      <div
+        className="w-full min-w-0 max-w-full overflow-hidden"
+        style={{ maskImage: EDGE_MASK, WebkitMaskImage: EDGE_MASK }}
       >
-        <div
-          ref={trackRef}
-          className="flex w-max items-center will-change-transform"
+        <section
+          ref={rootRef}
+          aria-label="Capabilities"
+          className="w-full max-w-full touch-pan-y select-none overflow-hidden py-10 text-5xl font-medium leading-none tracking-tight text-white active:cursor-grabbing md:py-14 md:text-7xl"
         >
-          {Array.from({ length: copies }, (_, i) => (
-            <Group
-              key={i}
-              hidden={i > 0}
-              groupRef={i === 0 ? groupRef : undefined}
-            />
-          ))}
-        </div>
-      </section>
+          <div
+            ref={trackRef}
+            className="flex w-max items-center will-change-transform"
+          >
+            {Array.from({ length: copies }, (_, i) => (
+              <Group
+                key={i}
+                hidden={i > 0}
+                groupRef={i === 0 ? groupRef : undefined}
+              />
+            ))}
+          </div>
+        </section>
+      </div>
+
+      <ScrollIndicator
+        indicatorRef={indicatorRef}
+        onSeek={(t) => seekRef.current?.(t)}
+        className="mx-auto mb-6 md:mb-10"
+      />
     </div>
   );
 }

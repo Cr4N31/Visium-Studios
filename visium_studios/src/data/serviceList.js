@@ -15,7 +15,8 @@ export const serviceList = [
     description:
       "We shape distinctive identities through strategy, marks, typography, color, and voice—giving your brand a clear point of view.",
     note: "Marks, type, color, voice.",
-    image: "/assets/portfolio_images/Rallow/E - P5.png",
+    image:
+      "https://images.unsplash.com/photo-1493612276216-ee3925520721?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D",
     offset: "20%",
     noteSide: "left",
   },
@@ -25,7 +26,8 @@ export const serviceList = [
     description:
       "We design purposeful digital experiences, turning your brand and product into intuitive interfaces built around real user needs.",
     note: "Interfaces, prototypes, systems.",
-    image: "/assets/portfolio_images/Horizona/E - 25.png",
+    image:
+      "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D",
     offset: "38%",
     noteSide: "left",
   },
@@ -35,7 +37,8 @@ export const serviceList = [
     description:
       "We bring considered designs to life with responsive, high-performing websites and flexible systems built to support what comes next.",
     note: "React, CMS, performance.",
-    image: "/assets/portfolio_images/Rallow/F - P36.png",
+    image:
+      "https://images.unsplash.com/photo-1618477388954-7852f32655ec?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D",
     offset: "20%",
     noteSide: "left",
   },
@@ -55,7 +58,8 @@ export const serviceList = [
     description:
       "We turn early ideas into useful digital products, shaping clear user journeys, thoughtful interfaces, and focused MVPs.",
     note: "Flows, UX, early-stage MVPs.",
-    image: "/assets/portfolio_images/Rallow/A - P11.png",
+    image:
+      "https://images.unsplash.com/photo-1629973700222-4da8780086d0?w=400&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D",
     offset: "40%",
     noteSide: "left",
   },

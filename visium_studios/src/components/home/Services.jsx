@@ -30,21 +30,25 @@ const Note = ({ children, className = "" }) => (
   </span>
 );
 
-function Chevron({ open, reduce }) {
+/* Straight arrow. Points right by default, flipped to point left when
+   pointLeft is true. When the row opens it rotates to point down. */
+function Arrow({ open, pointLeft, reduce }) {
   return (
     <motion.svg
       aria-hidden
-      viewBox="0 0 24 24"
+      viewBox="0 0 120 24"
       fill="none"
       stroke="currentColor"
       strokeWidth="1.5"
       strokeLinecap="square"
-      className="h-[clamp(1rem,2vw,1.75rem)] w-[clamp(1rem,2vw,1.75rem)] shrink-0 self-start mt-[clamp(0.5rem,1.6vw,1.5rem)]"
+      className="h-auto w-[clamp(3rem,8vw,6rem)] shrink-0"
+      style={{ scaleX: pointLeft ? -1 : 1 }}
       initial={false}
-      animate={{ rotate: open ? 180 : 0 }}
+      animate={{ rotate: open ? 90 : 0 }}
       transition={{ duration: reduce ? 0 : 0.45, ease: EASE }}
     >
-      <path d="M5 9l7 7 7-7" />
+      <path d="M0 12H118" />
+      <path d="M106 2l12 10-12 10" />
     </motion.svg>
   );
 }
@@ -52,7 +56,7 @@ function Chevron({ open, reduce }) {
 /* One row = two stacked copies.
    bottom: white bg, black text (revealed on hover or when open)
    top:    black bg, white text, clip-path closes to the center line
-   When open, the whole row grows to fill the viewport (100svh). */
+   When open, the whole row grows to 90svh. */
 function Row({
   s,
   index,
@@ -81,8 +85,26 @@ function Row({
     return () => clearTimeout(t);
   }, [open, reduce]);
 
+  // Title alignment: a positive offset means the title sits to the right,
+  // so the arrow goes on the left and points left. Otherwise the title is
+  // left aligned and the arrow goes on the right. When open, the title
+  // snaps left, so the arrow sits right and points down.
+  const offsetPx = parseFloat(s.offset || "0");
+  const titleRight = !open && offsetPx > 0;
+
   const content = (scramble = true) => (
-    <div className="flex h-full flex-col px-5 py-3 md:px-10 md:py-4">
+    <div className="relative flex h-full flex-col px-5 py-3 md:px-10 md:py-4">
+      {/* arrow: opposite side of the title, vertically centered on it */}
+      <div
+        aria-hidden
+        className={`pointer-events-none absolute top-3 flex items-center md:top-4 ${
+          titleRight ? "left-5 md:left-10" : "right-5 md:right-10"
+        }`}
+        style={{ height: "clamp(2rem,7.5vw,6.5rem)" }}
+      >
+        <Arrow open={open} pointLeft={titleRight} reduce={reduce} />
+      </div>
+
       {/* title row */}
       <div
         className="md:ml-[var(--o)]"
@@ -95,7 +117,6 @@ function Row({
             <span className="shrink-0 whitespace-nowrap font-mono uppercase leading-none text-[clamp(2rem,7.5vw,6.5rem)]">
               {scramble ? <TextScramble>{s.title}</TextScramble> : s.title}
             </span>
-            <Chevron open={open} reduce={reduce} />
           </div>
 
           {!open && s.noteSide !== "left" && <Note>{s.note}</Note>}
@@ -159,7 +180,7 @@ function Row({
         aria-expanded={open}
         className="relative flex cursor-pointer flex-col overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-white"
         initial={false}
-        animate={{ minHeight: open ? "100svh" : "0svh" }}
+        animate={{ minHeight: open ? "90svh" : "0svh" }}
         transition={{ duration: reduce ? 0 : 0.6, ease: EASE }}
         onClick={() => onToggle(s.slug)}
         onKeyDown={(e) => {
@@ -195,14 +216,17 @@ function Row({
 export default function Services() {
   const reduce = useReducedMotion();
   const [active, setActive] = useState(null);
-  const [openSlug, setOpenSlug] = useState(null);
+  const [openSlugs, setOpenSlugs] = useState([]);
 
   const x = useMotionValue(0);
   const y = useMotionValue(0);
   const sx = useSpring(x, { stiffness: 220, damping: 24, mass: 0.6 });
   const sy = useSpring(y, { stiffness: 220, damping: 24, mass: 0.6 });
 
-  const toggle = (slug) => setOpenSlug((cur) => (cur === slug ? null : slug));
+  const toggle = (slug) =>
+    setOpenSlugs((cur) =>
+      cur.includes(slug) ? cur.filter((x) => x !== slug) : [...cur, slug],
+    );
 
   return (
     <section
@@ -213,8 +237,8 @@ export default function Services() {
         y.set(e.clientY - 90);
       }}
     >
-      <div className="mb-24 flex items-start gap-2 px-9 md:gap-3 md:px-10">
-        <sup className="mt-[0.5em] font-mono text-xs md:text-sm">(03)</sup>
+      <div className="mb-24 flex items-start gap-2 px-8 md:gap-3 md:px-10">
+        <sup className="mt-[0.5em] font-mono text-xs md:text-sm">(02)</sup>
         <h2 className="text-[clamp(2.5rem,6vw,5rem)] font-normal leading-[0.9] tracking-[-0.05em]">
           <TextScramble>Service</TextScramble>
         </h2>
@@ -228,7 +252,7 @@ export default function Services() {
             index={index}
             reduce={reduce}
             hovered={active?.slug === s.slug}
-            open={openSlug === s.slug}
+            open={openSlugs.includes(s.slug)}
             onToggle={toggle}
             onActivate={setActive}
             onDeactivate={() => setActive(null)}
@@ -242,8 +266,8 @@ export default function Services() {
         className="pointer-events-none fixed left-0 top-0 z-50 hidden h-[180px] w-[110px] overflow-hidden rounded-[2px] bg-neutral-800 md:block"
         style={{ x: sx, y: sy }}
         animate={{
-          opacity: active && openSlug !== active.slug ? 1 : 0,
-          scale: active && openSlug !== active.slug ? 1 : 0.85,
+          opacity: active && !openSlugs.includes(active.slug) ? 1 : 0,
+          scale: active && !openSlugs.includes(active.slug) ? 1 : 0.85,
         }}
         transition={{ duration: reduce ? 0 : 0.25 }}
       >

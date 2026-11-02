@@ -20,7 +20,7 @@ function FeaturedWork() {
     >
       <div className="px-8 py-4 md:py-12">
         <div className="flex items-start gap-2 md:gap-3">
-          <sup className="mt-[0.5em] font-mono text-xs md:text-sm">(04)</sup>
+          <sup className="mt-[0.5em] font-mono text-xs md:text-sm">(03)</sup>
           <h2 className="text-[clamp(2.5rem,6vw,5rem)] font-normal leading-[0.9] tracking-[-0.05em]">
             <TextScramble>Selected Work</TextScramble>
           </h2>

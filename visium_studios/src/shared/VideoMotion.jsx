@@ -193,11 +193,11 @@ function VideoMotion() {
             clash with the "Show reel" cursor) */}
         <div
           aria-hidden="true"
-          className={`pointer-events-none relative z-20 flex h-20 w-20 items-center justify-center rounded-full border border-white/70 bg-[#F4F4F1] text-xs font-medium uppercase tracking-[0.12em] text-black backdrop-blur-sm transition-opacity duration-200 md:h-24 md:w-24 ${
+          className={`pointer-events-none relative z-20 flex  items-center justify-center  border border-white/70 bg-[#F4F4F1] text-xs font-medium uppercase tracking-[0.12em] text-black backdrop-blur-sm transition-opacity duration-200 h-10 w-26 ${
             hovering ? "opacity-0" : "opacity-100"
           }`}
         >
-          [Play]
+          [Play Reel]
         </div>
       </div>
 

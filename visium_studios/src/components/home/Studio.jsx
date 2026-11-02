@@ -8,6 +8,7 @@ import {
 import { Link } from "react-router-dom";
 import team from "../../data/team";
 import TextScramble from "../../shared/TextScramble";
+import ScrollIndicator from "../../shared/ScrollIndicator"; // adjust path
 
 const AUTO_SPEED = 36;
 const LOOP_COPIES = 2;
@@ -15,6 +16,7 @@ const LOOP_COPIES = 2;
 function Studio() {
   const sectionRef = useRef(null);
   const carouselRef = useRef(null);
+  const indicatorRef = useRef(null);
   const directionRef = useRef(1);
   const isMobileRef = useRef(false);
   const isPointerDownRef = useRef(false);
@@ -63,6 +65,25 @@ function Studio() {
     }
   });
 
+  const getLoopWidth = () => {
+    const c = carouselRef.current;
+    return c ? c.scrollWidth / LOOP_COPIES : 0;
+  };
+
+  const updateIndicator = () => {
+    const c = carouselRef.current;
+    const loopWidth = getLoopWidth();
+    if (!c || !loopWidth) return;
+    const pos = ((c.scrollLeft % loopWidth) + loopWidth) % loopWidth;
+    indicatorRef.current?.update(pos / loopWidth);
+  };
+
+  const seekCarousel = (t) => {
+    const c = carouselRef.current;
+    const loopWidth = getLoopWidth();
+    if (c && loopWidth) c.scrollLeft = t * loopWidth;
+  };
+
   const moveCarousel = (direction) => {
     const carousel = carouselRef.current;
     if (!carousel) return;
@@ -81,7 +102,7 @@ function Studio() {
     >
       <div className="px-5 sm:px-8 md:px-10">
         <div className="flex items-start gap-2 md:gap-3">
-          <sup className="mt-[0.5em] font-mono text-xs md:text-sm">(05)</sup>
+          <sup className="mt-[0.5em] font-mono text-xs md:text-sm">(04)</sup>
           <h2 className="text-[clamp(2.5rem,6vw,5rem)] font-normal leading-[0.9] tracking-[-0.05em]">
             <TextScramble>Studio</TextScramble>
           </h2>
@@ -111,6 +132,7 @@ function Studio() {
       <div className="mt-10 md:mt-12">
         <div
           ref={carouselRef}
+          onScroll={updateIndicator}
           className="studio-team-carousel flex gap-3 overflow-x-auto overscroll-x-contain px-5 pb-3 sm:gap-4 sm:px-8 md:gap-5 md:px-10"
           onPointerDown={() => {
             isPointerDownRef.current = true;
@@ -130,11 +152,10 @@ function Studio() {
               key={`${copy}-${person.name}`}
               aria-hidden={copy > 0}
               initial={false}
-              whileHover={reduce ? undefined : { scale: 0.97 }}
               whileTap={reduce ? undefined : { scale: 0.97 }}
-              className="group w-[68vw] max-w-[18rem] shrink-0 sm:w-[42vw] md:w-[28vw] md:max-w-[22rem] lg:w-[23vw]"
+              className="w-[68vw] max-w-[18rem] shrink-0 sm:w-[42vw] md:w-[28vw] md:max-w-[22rem] lg:w-[23vw]"
             >
-              <div className="aspect-[4/5] overflow-hidden bg-white/10 p-0 transition-[padding] duration-500 ease-out group-hover:p-2">
+              <div className="aspect-[4/5] overflow-hidden bg-white/10">
                 <img
                   src={person.image}
                   alt={copy > 0 ? "" : person.name}
@@ -151,6 +172,10 @@ function Studio() {
               </div>
             </Motion.article>
           ))}
+        </div>
+
+        <div className="mt-6 px-5 flex justify-center items-center sm:px-8 md:px-10">
+          <ScrollIndicator indicatorRef={indicatorRef} onSeek={seekCarousel} />
         </div>
       </div>
     </section>
