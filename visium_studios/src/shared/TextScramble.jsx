@@ -1,9 +1,28 @@
-import { useEffect, useRef, useState } from "react";
+import {
+  Children,
+  Fragment,
+  isValidElement,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useInView, useReducedMotion } from "framer-motion";
 
 const GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 const DURATION = 1000;
 const FRAME_INTERVAL = 45;
+
+// Flattens children into a string. <br /> becomes "\n".
+function childrenToText(children) {
+  return Children.toArray(children)
+    .map((child) => {
+      if (typeof child === "string" || typeof child === "number")
+        return String(child);
+      if (isValidElement(child) && child.type === "br") return "\n";
+      return "";
+    })
+    .join("");
+}
 
 function scramble(text, progress) {
   const characters = Array.from(text);
@@ -17,8 +36,18 @@ function scramble(text, progress) {
     .join("");
 }
 
+// Turns "line one\nline two" back into line one<br />line two
+function renderLines(text) {
+  return text.split("\n").map((line, i, lines) => (
+    <Fragment key={i}>
+      {line}
+      {i < lines.length - 1 && <br />}
+    </Fragment>
+  ));
+}
+
 function TextScramble({ children, className = "", active = true }) {
-  const text = String(children ?? "");
+  const text = childrenToText(children);
   const prefersReducedMotion = useReducedMotion();
   const ref = useRef(null);
 
@@ -37,7 +66,6 @@ function TextScramble({ children, className = "", active = true }) {
     let timeoutId;
     let animationFrameId;
 
-    // Swap to the scrambled state immediately so the real text never flashes
     setDisplayText(scramble(text, 0));
     setStarted(true);
 
@@ -59,20 +87,18 @@ function TextScramble({ children, className = "", active = true }) {
     };
   }, [shouldAnimate, isInView, text]);
 
-  // Hide the text until the animation begins, so off-screen headers
-  // don't sit there fully revealed and then suddenly scramble on entry.
   const hidden = shouldAnimate && !started;
 
   return (
     <>
-      <span className="sr-only">{text}</span>
+      <span className="sr-only">{text.replace(/\n/g, " ")}</span>
       <span
         ref={ref}
         aria-hidden="true"
         className={className}
         style={hidden ? { opacity: 0 } : undefined}
       >
-        {shouldAnimate ? displayText : text}
+        {renderLines(shouldAnimate ? displayText : text)}
       </span>
     </>
   );

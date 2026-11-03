@@ -63,7 +63,9 @@ function FinalCTA({ eyebrow = "Start a Project" }) {
               className="font-mono text-[clamp(2.9rem,9vw,5rem)] tracking-[-0.07em] font-normal leading-[1.08] md:leading-[1.06] md:text-[clamp(3rem,5vw,5rem)]"
             >
               <TextScramble>
-                Let&apos;s build something worth looking at.
+                Let&apos;s build something
+                <br />
+                worth looking at.
               </TextScramble>
             </span>
           </Motion.div>
