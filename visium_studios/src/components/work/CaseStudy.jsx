@@ -252,7 +252,7 @@ function CaseStudy() {
                   <h3 className="font-mono text-[10px] uppercase tracking-[0.14em] text-white/85">
                     {section.label}
                   </h3>
-                  <p className="text-xs leading-relaxed text-white/65">
+                  <p className="text-sm leading-relaxed text-white/65">
                     {section.copy}
                   </p>
                 </article>
