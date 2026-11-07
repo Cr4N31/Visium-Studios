@@ -2,10 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import {
   motion,
   AnimatePresence,
+  LayoutGroup,
   useMotionValue,
   useSpring,
   useReducedMotion,
-  useInView,
 } from "framer-motion";
 import { serviceList } from "../../data/serviceList";
 import ToolsRing from "../../shared/ToolsRing";
@@ -22,41 +22,34 @@ const rowFadeUp = {
   }),
 };
 
+/* Zigzag, measured from the reference (container width = 100%).
+   Each closed row is a box that hugs its content (w-fit) and is pushed
+   in from the left by `ml`. "auto" pins the box to the right edge.
+   `note` is which side of the title the small caption sits on. */
+const LAYOUT = [
+  { ml: "0%", note: "right" },
+  { ml: "5%", note: "left" },
+  { ml: "auto", note: "left" },
+  { ml: "4.6%", note: "left" },
+  { ml: "0%", note: "right" },
+  { ml: "12.8%", note: "left" },
+];
+
 const Note = ({ children, className = "" }) => (
   <span
-    className={`max-w-[40ch] shrink-0 font-mono text-[11px] uppercase tracking-wide opacity-70 md:text-xs ${className}`}
+    className={`shrink-0 font-mono text-[11px] uppercase tracking-wide md:text-[13px] ${className}`}
   >
     {children}
   </span>
 );
 
-/* Straight arrow. Points right by default, flipped to point left when
-   pointLeft is true. When the row opens it rotates to point down. */
-function Arrow({ open, pointLeft, reduce }) {
-  return (
-    <motion.svg
-      aria-hidden
-      viewBox="0 0 120 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.5"
-      strokeLinecap="square"
-      className="h-auto w-[clamp(3rem,8vw,6rem)] shrink-0"
-      style={{ scaleX: pointLeft ? -1 : 1 }}
-      initial={false}
-      animate={{ rotate: open ? 90 : 0 }}
-      transition={{ duration: reduce ? 0 : 0.45, ease: EASE }}
-    >
-      <path d="M0 12H118" />
-      <path d="M106 2l12 10-12 10" />
-    </motion.svg>
-  );
-}
-
-/* One row = two stacked copies.
-   bottom: white bg, black text (revealed on hover or when open)
-   top:    black bg, white text, clip-path closes to the center line
-   When open, the whole row grows to 90svh. */
+/* One row = a box with two stacked copies of the same content.
+   top:    your rest colors (dark box, white text). Its clip-path closes
+           to the center line on hover / open, wiping to the layer below.
+   bottom: your hover colors (white box, black text).
+   Closed: box hugs its content and sits at its zigzag offset.
+   Open:   box grows to the full width and height fits the content.
+   There is no arrow in the reference, so none is rendered. */
 function Row({
   s,
   index,
@@ -68,7 +61,8 @@ function Row({
   onToggle,
 }) {
   const ref = useRef(null);
-  useInView(ref, { amount: 0.15 });
+  const L = LAYOUT[index % LAYOUT.length];
+  const noteLeft = L.note === "left";
   const revealed = hovered || open;
 
   // bring the expanded row to the top of the screen
@@ -85,103 +79,72 @@ function Row({
     return () => clearTimeout(t);
   }, [open, reduce]);
 
-  // Title alignment: a positive offset means the title sits to the right,
-  // so the arrow goes on the left and points left. Otherwise the title is
-  // left aligned and the arrow goes on the right. When open, the title
-  // snaps left, so the arrow sits right and points down.
-  const offsetPx = parseFloat(s.offset || "0");
-  const titleRight = !open && offsetPx > 0;
+  const layoutTransition = { duration: reduce ? 0 : 0.6, ease: EASE };
 
   const content = (scramble = true) => (
-    <div className="relative flex h-full flex-col px-5 py-3 md:px-10 md:py-4">
-      {/* arrow: opposite side of the title, vertically centered on it */}
+    <motion.div
+      layout="position"
+      transition={layoutTransition}
+      className="px-5 py-6 md:px-12 md:py-9"
+    >
       <div
-        aria-hidden
-        className={`pointer-events-none absolute top-3 flex items-center md:top-4 ${
-          titleRight ? "left-5 md:left-10" : "right-5 md:right-10"
-        }`}
-        style={{ height: "clamp(2rem,7.5vw,6.5rem)" }}
-      >
-        <Arrow open={open} pointLeft={titleRight} reduce={reduce} />
-      </div>
-
-      {/* title row */}
-      <div
-        className="md:ml-[var(--o)]"
-        style={{ "--o": open ? "0px" : s.offset || "0px" }}
-      >
-        <div className="flex min-w-0 flex-wrap items-center gap-x-6 gap-y-1">
-          {!open && s.noteSide === "left" && <Note>{s.note}</Note>}
-
-          <div className="flex items-start gap-3 md:gap-5">
-            <span className="shrink-0 whitespace-nowrap font-mono uppercase leading-none text-[clamp(2rem,7.5vw,6.5rem)]">
-              {scramble ? <TextScramble>{s.title}</TextScramble> : s.title}
-            </span>
-          </div>
-
-          {!open && s.noteSide !== "left" && <Note>{s.note}</Note>}
-        </div>
-
-        {/* subtitle sits under the title when expanded */}
-        <motion.div
-          initial={false}
-          animate={{ height: open ? "auto" : 0, opacity: open ? 1 : 0 }}
-          transition={{ duration: reduce ? 0 : 0.45, ease: EASE }}
-          className="overflow-hidden"
-        >
-          <Note className="block pt-5">{s.note}</Note>
-        </motion.div>
-      </div>
-
-      {/* expanded body: fills remaining height, content pinned to bottom */}
-      <motion.div
-        initial={false}
-        animate={{ opacity: open ? 1 : 0 }}
-        transition={{
-          duration: reduce ? 0 : 0.4,
-          ease: EASE,
-          delay: open && !reduce ? 0.2 : 0,
-        }}
         className={
-          open ? "flex flex-1 flex-col justify-end" : "h-0 overflow-hidden"
+          open
+            ? "flex flex-col"
+            : "flex flex-col gap-2 md:flex-row md:items-center md:gap-12"
         }
       >
-        <div className="flex flex-col-reverse items-start justify-between gap-8 pb-6 pt-16 md:flex-row md:items-end md:gap-12 md:pb-10">
-          <p className="max-w-[56ch] text-base leading-relaxed md:text-lg">
+        <span className="shrink-0 whitespace-nowrap font-mono uppercase leading-none text-[clamp(2rem,6.2vw,5.5rem)]">
+          {scramble ? <TextScramble>{s.title}</TextScramble> : s.title}
+        </span>
+
+        {/* closed: caption beside the title, left or right (zigzag) */}
+        {!open && (
+          <Note className={noteLeft ? "md:order-first" : ""}>{s.note}</Note>
+        )}
+      </div>
+
+      {/* open: caption under the title, then the description */}
+      {open && (
+        <motion.div
+          initial={reduce ? false : { opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: reduce ? 0 : 0.4, delay: reduce ? 0 : 0.25 }}
+        >
+          <Note className="block pt-7">{s.note}</Note>
+          <p className="max-w-[56ch] pb-2 pt-10 text-base leading-relaxed md:text-lg">
             {s.description}
           </p>
-
-          {s.image && (
-            <div className="h-[260px] w-[170px] shrink-0 overflow-hidden rounded-2xl bg-neutral-800 md:h-[360px] md:w-[225px]">
-              <img
-                src={s.image}
-                alt=""
-                className="h-full w-full object-cover"
-              />
-            </div>
-          )}
-        </div>
-      </motion.div>
-    </div>
+        </motion.div>
+      )}
+    </motion.div>
   );
 
   return (
     <motion.div
-      ref={ref}
+      layout
+      transition={layoutTransition}
       initial={reduce ? false : "hidden"}
       whileInView={reduce ? undefined : "show"}
       viewport={{ once: false, amount: 0.15 }}
       variants={rowFadeUp}
       custom={index * 0.08}
+      className="pb-0.5"
     >
       <motion.div
+        ref={ref}
+        layout
+        transition={layoutTransition}
         role="button"
         tabIndex={0}
         aria-expanded={open}
-        className="relative flex cursor-pointer flex-col overflow-hidden focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-white"
-        initial={false}
-        animate={{ minHeight: open ? "90svh" : "0svh" }}
-        transition={{ duration: reduce ? 0 : 0.6, ease: EASE }}
+        style={{
+          "--ml": open ? "0%" : L.ml,
+          borderRadius: 8,
+        }}
+        className={`relative scroll-mt-24 cursor-pointer overflow-hidden  md:ml-[var(--ml)] ${
+          open ? "w-full" : "w-full md:w-fit"
+        }`}
         onClick={() => onToggle(s.slug)}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
@@ -194,17 +157,28 @@ function Row({
         onFocus={() => onActivate(s)}
         onBlur={onDeactivate}
       >
-        <div aria-hidden className="absolute inset-0 bg-white text-black">
-          {content(false)}
-        </div>
-
+        {/* revealed layer: your hover colors */}
         <motion.div
-          className="relative flex-1 bg-[#0B0B0B] text-white"
+          layout
+          transition={layoutTransition}
+          aria-hidden
+          className="absolute inset-0 bg-white text-black"
+        >
+          {content(false)}
+        </motion.div>
+
+        {/* rest layer: your rest colors, wipes to the center line */}
+        <motion.div
+          layout
+          className="relative bg-[#0B0B0B] text-white"
           initial={false}
           animate={{
             clipPath: revealed ? "inset(50% 0% 50% 0%)" : "inset(0% 0% 0% 0%)",
           }}
-          transition={{ duration: reduce ? 0 : 0.38, ease: EASE }}
+          transition={{
+            layout: layoutTransition,
+            clipPath: { duration: reduce ? 0 : 0.38, ease: EASE },
+          }}
         >
           {content()}
         </motion.div>
@@ -233,8 +207,9 @@ export default function Services() {
       id="services"
       className="relative bg-[#0B0B0B] py-8 text-white md:py-12"
       onPointerMove={(e) => {
-        x.set(e.clientX - 55);
-        y.set(e.clientY - 90);
+        // card sits just right of the cursor, vertically centered on it
+        x.set(e.clientX + 28);
+        y.set(e.clientY - 137);
       }}
     >
       <div className="mb-24 flex items-start gap-2 px-8 md:gap-3 md:px-10">
@@ -244,30 +219,32 @@ export default function Services() {
         </h2>
       </div>
 
-      <div>
-        {serviceList.map((s, index) => (
-          <Row
-            key={s.slug}
-            s={s}
-            index={index}
-            reduce={reduce}
-            hovered={active?.slug === s.slug}
-            open={openSlugs.includes(s.slug)}
-            onToggle={toggle}
-            onActivate={setActive}
-            onDeactivate={() => setActive(null)}
-          />
-        ))}
-      </div>
+      <LayoutGroup>
+        <div className="px-5 md:px-10">
+          {serviceList.map((s, index) => (
+            <Row
+              key={s.slug}
+              s={s}
+              index={index}
+              reduce={reduce}
+              hovered={active?.slug === s.slug}
+              open={openSlugs.includes(s.slug)}
+              onToggle={toggle}
+              onActivate={setActive}
+              onDeactivate={() => setActive(null)}
+            />
+          ))}
+        </div>
+      </LayoutGroup>
 
-      {/* cursor-following image card (hidden while a row is open, since the image is now inline) */}
+      {/* cursor-following image card: stays visible over open rows too */}
       <motion.div
         aria-hidden
-        className="pointer-events-none fixed left-0 top-0 z-50 hidden h-[180px] w-[110px] overflow-hidden rounded-[2px] bg-neutral-800 md:block"
+        className="pointer-events-none fixed left-0 top-0 z-50 hidden h-[275px] w-[170px] overflow-hidden rounded-xl bg-neutral-800 md:block"
         style={{ x: sx, y: sy }}
         animate={{
-          opacity: active && !openSlugs.includes(active.slug) ? 1 : 0,
-          scale: active && !openSlugs.includes(active.slug) ? 1 : 0.85,
+          opacity: active ? 1 : 0,
+          scale: active ? 1 : 0.85,
         }}
         transition={{ duration: reduce ? 0 : 0.25 }}
       >
