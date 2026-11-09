@@ -207,6 +207,7 @@ function HowWeWork() {
 
   const [geo, setGeo] = useState(null);
   const [active, setActive] = useState(-1);
+  const [reached, setReached] = useState(-1); // last card the line has arrived at
   const [done, setDone] = useState(false);
 
   const { scrollY } = useScroll();
@@ -223,22 +224,22 @@ function HowWeWork() {
   }, [headRaw, reduce]);
   useMotionValueEvent(scrollY, "change", update);
 
-  // which card is glowing, and whether the line has reached the button
+  // which card is glowing, which cards the line has reached, and whether it hit the button
   const sync = useCallback((y) => {
     const g = geoRef.current;
     if (!g) return;
     const last = g.segs.length - 1;
     let next = -1;
+    let r = -1;
     for (let i = 0; i < g.segs.length; i++) {
       const arrive = i === 0 ? g.segs[0].startY : g.segs[i - 1].endY;
       const leave =
         g.segs[i].startY + (g.segs[i].endY - g.segs[i].startY) * 0.4;
-      if (y >= arrive && y < leave) {
-        next = i;
-        break;
-      }
+      if (y >= arrive) r = i; // line has touched this card
+      if (next === -1 && y >= arrive && y < leave) next = i;
     }
     setActive(next);
+    setReached(r);
     setDone(y >= g.segs[last].endY);
   }, []);
   useMotionValueEvent(headY, "change", sync);
@@ -353,6 +354,7 @@ function HowWeWork() {
         {steps.map((step, i) => {
           const isRight = step.id % 2 === 0;
           const lit = active === i;
+          const colored = i <= reached; // stays colored once the line has reached it
           return (
             <article
               key={step.id}
@@ -407,7 +409,7 @@ function HowWeWork() {
 
               {/* fixed aspect ratio reserves space so lazy loading never shifts the layout */}
               <Motion.div
-                animate={{ filter: lit ? "grayscale(0)" : "grayscale(1)" }}
+                animate={{ filter: colored ? "grayscale(0)" : "grayscale(1)" }}
                 transition={{ duration: 1 }}
                 className="aspect-[4/3] w-[16rem] overflow-hidden rounded-md bg-[#0B0B0B]/10 md:w-[28rem]"
               >
