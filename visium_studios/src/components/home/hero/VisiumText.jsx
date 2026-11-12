@@ -8,12 +8,12 @@ function VisiumText() {
   return (
     <div className="flex w-full flex-col gap-3">
       {/* Top label */}
-      <div className="flex flex-col gap-2 font-mono text-[10px] md:text-[20px] font-[600] uppercase tracking-widest sm:flex-row sm:items-center sm:justify-between">
-        <span className="whitespace-nowrap">
+      <div className="flex flex-col gap-2 font-mono text-[10px] md:text-[20px]  uppercase tracking-widest sm:flex-row sm:items-center sm:justify-between">
+        <span className="whitespace-nowrap md:font-[600] font-[800]">
           <TextScramble>Brand &amp; Digital Studio</TextScramble>
         </span>
 
-        <span className="hidden sm:block">
+        <span className="hidden sm:block font-[600]">
           <TextScramble>Setting the visual standard</TextScramble>
         </span>
       </div>
@@ -31,17 +31,17 @@ function VisiumText() {
       {/* Bottom labels */}
       <div className="flex flex-col gap-2">
         <p className="md:text-right text-left text-[20px]">
-          <span className="font-mono text-[10px] md:text-[20px] font-[600] uppercase tracking-widest">
+          <span className="font-mono text-[10px] md:text-[20px] md:font-[600] font-[800] uppercase tracking-widest">
             <TextScramble>Available Worldwide</TextScramble>
           </span>
         </p>
 
         {/* Mobile-only second label */}
-        <p className="text-left font-mono uppercase text-[10px] md:text-[20px] tracking-widest sm:hidden">
-          <span className="font-[600] text-[9px] md:text-[20px]">
+        <div className="text-left font-mono uppercase text-[10px] md:text-[20px] tracking-widest sm:hidden">
+          <span className="font-[600] text-[10px] md:text-[20px]">
             <TextScramble>Setting the visual standard</TextScramble>
           </span>
-        </p>
+        </div>
       </div>
     </div>
   );
