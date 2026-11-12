@@ -43,13 +43,33 @@ const Note = ({ children, className = "" }) => (
   </span>
 );
 
+/* Subtle chevron (>) beside every title. Uses currentColor so it flips
+   with the hover wipe, and is sized in em so it scales with the title.
+   Points right when closed and rotates to point down when the row is open. */
+const Arrow = ({ open, reduce }) => (
+  <motion.svg
+    aria-hidden
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="1.25"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className="h-[0.4em] w-[0.4em] shrink-0 opacity-70"
+    initial={false}
+    animate={{ rotate: open ? 90 : 0 }}
+    transition={{ duration: reduce ? 0 : 0.5, ease: EASE }}
+  >
+    <path d="M8 3l9 9-9 9" />
+  </motion.svg>
+);
+
 /* One row = a box with two stacked copies of the same content.
    top:    your rest colors (dark box, white text). Its clip-path closes
            to the center line on hover / open, wiping to the layer below.
    bottom: your hover colors (white box, black text).
    Closed: box hugs its content and sits at its zigzag offset.
-   Open:   box grows to the full width and height fits the content.
-   There is no arrow in the reference, so none is rendered. */
+   Open:   box grows to the full width and height fits the content. */
 function Row({
   s,
   index,
@@ -94,8 +114,9 @@ function Row({
             : "flex flex-col gap-2 md:flex-row md:items-center md:gap-12"
         }
       >
-        <span className="shrink-0 whitespace-nowrap font-mono uppercase leading-none text-[clamp(2rem,6.2vw,5.5rem)]">
+        <span className="flex shrink-0 items-center gap-[0.3em] whitespace-nowrap font-mono uppercase leading-none text-[clamp(2rem,6.2vw,5.5rem)]">
           {scramble ? <TextScramble>{s.title}</TextScramble> : s.title}
+          <Arrow open={open} reduce={reduce} />
         </span>
 
         {/* closed: caption beside the title, left or right (zigzag) */}
