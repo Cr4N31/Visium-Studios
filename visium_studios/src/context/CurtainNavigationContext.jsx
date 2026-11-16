@@ -12,6 +12,7 @@ import {
 import { useNavigate, useLocation } from "react-router-dom";
 
 import Loader from "../shared/Loader";
+import VisualAssetLoader from "../shared/VisualAssetLoader";
 
 const CurtainNavigationContext = createContext(null);
 
@@ -141,6 +142,7 @@ export function CurtainNavigationProvider({ children }) {
     <CurtainNavigationContext.Provider value={navigateWithCurtain}>
       {children}
 
+      <VisualAssetLoader />
       <Loader visible={visible} onCoverComplete={handleCoverComplete} />
     </CurtainNavigationContext.Provider>
   );

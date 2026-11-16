@@ -6,12 +6,6 @@ const team = [
     image: "/assets/team/Jace Kayode.png",
   },
   {
-    name: "Fawaz Madelewi",
-    role: "Growth & Client partnerships lead",
-    roleShort: "Growth & CPL",
-    image: "/assets/team/Fawaz Madelewi.png",
-  },
-  {
     name: "Kenechukwu Godswill",
     role: "Studio operations lead",
     roleShort: "Studio Lead",
@@ -54,11 +48,6 @@ const team = [
     name: "Chike Emmanuel",
     role: "Backend & App Developer",
     image: "/assets/team/Chike Emmanuel.png",
-  },
-  {
-    name: "Emmanuel Babalola",
-    role: "Motion & Animation artist",
-    image: "/assets/team/Emmanuel Babalola.png",
   },
   {
     name: "Nathan Araujo",

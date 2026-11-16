@@ -25,10 +25,13 @@ function About() {
       {/* Body: paragraph on the left, capabilities carousel beside it */}
       <div className="mt-8 flex flex-col items-stretch gap-10 md:mt-10 md:flex-row md:items-start md:gap-10 lg:gap-16">
         <p className="indent-8 text-[30px] leading-[1.12] tracking-[-0.02em] mt-1 md:w-[30%] md:min-w-[16rem] md:shrink-0">
-          Visium is a visual systems studio for early-stage tech founders. We
-          design identities, interfaces, and the systems that hold them
-          together, so a young company looks as credible as the product it is
-          building.
+          Most businesses are better than they look. There's real work happening
+          behind the scenes, good products being built, and ambitious people
+          pushing things forward. Yet their brand and digital presence rarely
+          reflect any of it. Our team of strategists, designers, developers and
+          creative specialists closes that gap through thoughtful strategy,
+          design, technology and execution, bringing businesses closer to the
+          standard their ambition demands.
         </p>
 
         <div className="w-full min-w-0 md:flex-1">
