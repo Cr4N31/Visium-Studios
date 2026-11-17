@@ -9,13 +9,12 @@ const team = [
     name: "Kenechukwu Godswill",
     role: "Studio operations lead",
     roleShort: "Studio Lead",
-    image: "/assets/team/Ken Godswill.png",
+    image: "/assets/team/Kenechukwu Godswill.png",
   },
   {
-    name: "Chioma Okoye",
-    role: "Social & Client experience manager",
-    roleShort: "Social & CEM",
-    image: "/assets/team/Chioma Okoye.png",
+    name: "Blessed Peter",
+    role: "Growth & Client Partnership lead",
+    image: "/assets/team/Blessed Peter.png",
   },
   {
     name: "Gold Wuraola",
@@ -23,7 +22,12 @@ const team = [
     roleShort: "Brand Strategist",
     image: "/assets/team/Gold Wuraola.png",
   },
-
+  {
+    name: "Chioma Okoye",
+    role: "Social & Client experience manager",
+    roleShort: "Social & CEM",
+    image: "/assets/team/Chioma Okoye.png",
+  },
   {
     name: "Wisdom Chukwu",
     role: "Brand & Visual designer",
@@ -40,6 +44,11 @@ const team = [
     image: "/assets/team/Victor Abongaby.png",
   },
   {
+    name: "Justina Igbani",
+    role: "Product Designer",
+    image: "/assets/team/Justina Igbani.png",
+  },
+  {
     name: "Bitrus Duniya",
     role: "Web & Product Developer",
     image: "/assets/team/Bitrus Duniya.png",
@@ -48,6 +57,11 @@ const team = [
     name: "Chike Emmanuel",
     role: "Backend & App Developer",
     image: "/assets/team/Chike Emmanuel.png",
+  },
+  {
+    name: "Victor George",
+    role: "Motion & Animation Artist",
+    image: "/assets/team/Victor George.png",
   },
   {
     name: "Nathan Araujo",

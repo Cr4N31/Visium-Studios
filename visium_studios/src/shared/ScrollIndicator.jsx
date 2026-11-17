@@ -1,31 +1,28 @@
 import { useEffect, useRef } from "react";
 
-const BAR_COUNT = 20;
-const MIN_HEIGHT = 8; // px, the "dot" state
-const MAX_HEIGHT = 44; // px, the active bar
-const SPREAD = 1.1; // how many bars the wave reaches (smaller = sharper)
-const MIN_OPACITY = 0.35;
-
 export default function ScrollIndicator({
   indicatorRef,
   onSeek,
   className = "",
 }) {
   const rootRef = useRef(null);
-  const barsRef = useRef([]);
+  const thumbRef = useRef(null);
+  const fillRef = useRef(null);
 
   useEffect(() => {
-    const update = (t) => {
-      for (let i = 0; i < BAR_COUNT; i++) {
-        const bar = barsRef.current[i];
-        if (!bar) continue;
-        // circular distance so the wave wraps with the infinite loop
-        let d = Math.abs((i + 0.5) / BAR_COUNT - t);
-        d = Math.min(d, 1 - d) * BAR_COUNT;
-        const k = Math.exp(-(d * d) / (2 * SPREAD * SPREAD));
-        bar.style.height = `${MIN_HEIGHT + (MAX_HEIGHT - MIN_HEIGHT) * k}px`;
-        bar.style.opacity = `${MIN_OPACITY + (1 - MIN_OPACITY) * k}`;
+    const update = (value) => {
+      const progress = Math.min(Math.max(value, 0), 1);
+      if (thumbRef.current) {
+        thumbRef.current.style.left = `${progress * 100}%`;
+        thumbRef.current.style.transform = `translate(-${progress * 100}%, -50%)`;
       }
+      if (fillRef.current) {
+        fillRef.current.style.width = `${progress * 100}%`;
+      }
+      rootRef.current?.setAttribute(
+        "aria-valuenow",
+        String(Math.round(progress * 100)),
+      );
     };
 
     if (indicatorRef) indicatorRef.current = { update };
@@ -35,24 +32,25 @@ export default function ScrollIndicator({
     };
   }, [indicatorRef]);
 
-  // Click / drag to seek
   useEffect(() => {
     const root = rootRef.current;
     if (!root || !onSeek) return;
     let active = false;
 
-    const seek = (e) => {
+    const seek = (event) => {
       const rect = root.getBoundingClientRect();
-      const t = (e.clientX - rect.left) / rect.width;
-      onSeek(Math.min(Math.max(t, 0), 0.999));
+      const progress = (event.clientX - rect.left) / rect.width;
+      onSeek(Math.min(Math.max(progress, 0), 0.999));
     };
-    const down = (e) => {
+    const down = (event) => {
       active = true;
-      root.setPointerCapture(e.pointerId);
-      seek(e);
+      root.setPointerCapture(event.pointerId);
+      seek(event);
     };
-    const move = (e) => active && seek(e);
-    const up = () => (active = false);
+    const move = (event) => active && seek(event);
+    const up = () => {
+      active = false;
+    };
 
     root.addEventListener("pointerdown", down);
     root.addEventListener("pointermove", move);
@@ -66,23 +64,67 @@ export default function ScrollIndicator({
     };
   }, [onSeek]);
 
+  const handleKeyDown = (event) => {
+    if (!onSeek) return;
+    const current = Number(rootRef.current?.getAttribute("aria-valuenow") ?? 0);
+    if (event.key === "ArrowRight" || event.key === "ArrowUp") {
+      event.preventDefault();
+      onSeek(Math.min((current + 5) / 100, 0.999));
+    } else if (event.key === "ArrowLeft" || event.key === "ArrowDown") {
+      event.preventDefault();
+      onSeek(Math.max((current - 5) / 100, 0));
+    } else if (event.key === "Home") {
+      event.preventDefault();
+      onSeek(0);
+    } else if (event.key === "End") {
+      event.preventDefault();
+      onSeek(0.999);
+    }
+  };
+
   return (
     <div
-      ref={rootRef}
-      aria-hidden="true"
-      className={`flex w-[14rem] max-w-full touch-none select-none items-center justify-between ${
-        onSeek ? "cursor-pointer" : ""
-      } ${className}`}
-      style={{ height: MAX_HEIGHT }}
+      className={`flex w-[14rem] max-w-full flex-col items-center gap-1 ${className}`}
     >
-      {Array.from({ length: BAR_COUNT }, (_, i) => (
-        <span
-          key={i}
-          ref={(el) => (barsRef.current[i] = el)}
-          className="w-[5px] rounded-full bg-white will-change-[height,opacity]"
-          style={{ height: MIN_HEIGHT, opacity: MIN_OPACITY }}
-        />
-      ))}
+      <div className="flex w-full items-center gap-2 text-white/55">
+        <span aria-hidden="true" className="text-sm leading-none">
+          ←
+        </span>
+        <div
+          ref={rootRef}
+          role="slider"
+          tabIndex={onSeek ? 0 : undefined}
+          aria-label="Slide through images"
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-valuenow={0}
+          onKeyDown={handleKeyDown}
+          className={`relative h-8 flex-1 touch-none select-none ${
+            onSeek ? "cursor-ew-resize" : ""
+          }`}
+        >
+          <span className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-white/25" />
+          <span
+            ref={fillRef}
+            className="absolute left-0 top-1/2 h-px -translate-y-1/2 bg-white/80"
+            style={{ width: "0%" }}
+          />
+          <span
+            ref={thumbRef}
+            className="absolute left-0 top-1/2 flex h-5 w-9 items-center justify-center gap-1 rounded-full border border-white/60 bg-[#0B0B0B] text-[10px] leading-none text-white shadow-sm"
+          >
+            <span aria-hidden="true">‹</span>
+            <span className="h-2 w-px bg-white/35" />
+            <span aria-hidden="true">›</span>
+          </span>
+        </div>
+        <span aria-hidden="true" className="text-sm leading-none">
+          →
+        </span>
+      </div>
+      <span className="text-[9px] uppercase tracking-[0.18em] text-white/45">
+        Drag to slide
+      </span>
     </div>
   );
 }
