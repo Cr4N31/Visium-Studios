@@ -4,16 +4,21 @@ import WordmarkReveal from "./WordmarkReveal";
 
 const variants = [];
 
+// One source of truth for every label so mobile styling stays consistent
+const labelClass =
+  "font-mono text-[10px] md:text-[20px] font-[800] md:font-[600] uppercase tracking-widest";
+
 function VisiumText() {
   return (
     <div className="flex w-full flex-col gap-3">
       {/* Top label */}
-      <div className="flex flex-col gap-2 font-mono text-[10px] md:text-[20px]  uppercase tracking-widest sm:flex-row sm:items-center sm:justify-between">
-        <span className="whitespace-nowrap md:font-[600] font-[800]">
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <span className={`${labelClass} whitespace-nowrap`}>
           <TextScramble>Brand &amp; Digital Studio</TextScramble>
         </span>
 
-        <span className="hidden sm:block font-[600]">
+        {/* Desktop/tablet only */}
+        <span className={`${labelClass} hidden sm:block`}>
           <TextScramble>Setting the visual standard</TextScramble>
         </span>
       </div>
@@ -29,19 +34,15 @@ function VisiumText() {
       </div>
 
       {/* Bottom labels */}
-      <div className="flex flex-col gap-2">
-        <p className="md:text-right text-left text-[20px]">
-          <span className="font-mono text-[10px] md:text-[20px] md:font-[600] font-[800] uppercase tracking-widest">
-            <TextScramble>Available Worldwide</TextScramble>
-          </span>
-        </p>
+      <div className="flex flex-col gap-2 md:items-end">
+        {/* Mobile only: sits above "Available Worldwide" */}
+        <span className={`${labelClass} text-left sm:hidden`}>
+          <TextScramble>Setting the visual standard</TextScramble>
+        </span>
 
-        {/* Mobile-only second label */}
-        <div className="text-left font-mono uppercase text-[10px] md:text-[20px] tracking-widest sm:hidden">
-          <span className="font-[600] text-[10px] md:text-[20px]">
-            <TextScramble>Setting the visual standard</TextScramble>
-          </span>
-        </div>
+        <span className={`${labelClass} text-left md:text-right`}>
+          <TextScramble>Available Worldwide</TextScramble>
+        </span>
       </div>
     </div>
   );

@@ -6,6 +6,7 @@ function VisualAssetLoader() {
   useEffect(() => {
     const assets = new Map();
     let frameId = 0;
+    let nextAssetId = 0;
     const inViewport = (element) => {
       const bounds = element.getBoundingClientRect();
       return bounds.bottom > 0 && bounds.top < window.innerHeight;
@@ -20,6 +21,7 @@ function VisualAssetLoader() {
         } else if (inViewport(element)) {
           asset.active = true;
         }
+        asset.loaded ||= isLoaded(element) || Boolean(element.error);
       });
 
       const visibleAssets = [...assets.entries()].filter(
@@ -39,10 +41,10 @@ function VisualAssetLoader() {
       setOverlays(
         visibleAssets
           .filter(([, asset]) => !asset.loaded)
-          .map(([element]) => {
+          .map(([element, asset]) => {
             const { top, left, width, height } = element.getBoundingClientRect();
             return {
-              element,
+              id: asset.id,
               top,
               left,
               width,
@@ -70,6 +72,7 @@ function VisualAssetLoader() {
     const observeAsset = (element) => {
       if (assets.has(element)) return;
       assets.set(element, {
+        id: nextAssetId++,
         active: inViewport(element),
         loaded: isLoaded(element) || Boolean(element.error),
       });
@@ -140,9 +143,9 @@ function VisualAssetLoader() {
 
   return (
     <>
-      {overlays.map(({ element, top, left, width, height, progress }) => (
+      {overlays.map(({ id, top, left, width, height, progress }) => (
         <div
-          key={element}
+          key={id}
           className="pointer-events-none fixed z-[190] flex items-center justify-center overflow-hidden bg-[#0B0B0B] text-white"
           style={{ top, left, width, height }}
           role="status"
