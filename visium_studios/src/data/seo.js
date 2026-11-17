@@ -1,7 +1,7 @@
 export const SITE_URL = "https://www.visiumstudios.co";
 
 export const DEFAULT_SEO = {
-  title: "Visium Studios | Brand Strategy, Identity & Digital Design",
+  title: "Visium Studios | Full-Service Brand & Digital Agency",
   description:
     "Visium Studios builds distinctive brand systems through strategy, visual identity, digital design and motion for ambitious businesses.",
 };
