@@ -1,3 +1,4 @@
+import { createPortal } from "react-dom";
 import { useEffect, useState } from "react";
 
 function VisualAssetLoader() {
@@ -5,6 +6,7 @@ function VisualAssetLoader() {
 
   useEffect(() => {
     const assets = new Map();
+    const positionedParents = new Map();
     let frameId = 0;
     let nextAssetId = 0;
     const inViewport = (element) => {
@@ -38,22 +40,41 @@ function VisualAssetLoader() {
           ? 100
           : Math.max(1, Math.floor((loaded / visibleAssets.length) * 100));
 
-      setOverlays(
-        visibleAssets
-          .filter(([, asset]) => !asset.loaded)
-          .map(([element, asset]) => {
-            const { top, left, width, height } = element.getBoundingClientRect();
-            return {
-              id: asset.id,
-              top,
-              left,
-              width,
-              height,
-              progress,
-            };
-          })
-          .filter((overlay) => overlay.width > 0 && overlay.height > 0),
-      );
+      const nextOverlays = visibleAssets
+        .filter(([, asset]) => !asset.loaded)
+        .map(([element, asset]) => {
+          const parent = element.parentElement;
+          if (!parent) return null;
+
+          if (
+            !positionedParents.has(parent) &&
+            window.getComputedStyle(parent).position === "static"
+          ) {
+            positionedParents.set(parent, parent.style.position);
+            parent.style.position = "relative";
+          }
+
+          return {
+            id: asset.id,
+            parent,
+            top: element.offsetTop,
+            left: element.offsetLeft,
+            width: element.offsetWidth,
+            height: element.offsetHeight,
+            radius: window.getComputedStyle(element).borderRadius,
+            progress,
+          };
+        })
+        .filter((overlay) => overlay && overlay.width > 0 && overlay.height > 0);
+      const activeParents = new Set(nextOverlays.map((overlay) => overlay.parent));
+
+      positionedParents.forEach((originalPosition, parent) => {
+        if (activeParents.has(parent)) return;
+        parent.style.position = originalPosition;
+        positionedParents.delete(parent);
+      });
+
+      setOverlays(nextOverlays);
     };
 
     const scheduleUpdate = () => {
@@ -133,6 +154,9 @@ function VisualAssetLoader() {
       observer?.disconnect();
       resizeObserver?.disconnect();
       mutationObserver.disconnect();
+      positionedParents.forEach((originalPosition, parent) => {
+        parent.style.position = originalPosition;
+      });
       document.removeEventListener("load", handleAssetEvent, true);
       document.removeEventListener("loadeddata", handleAssetEvent, true);
       document.removeEventListener("error", handleAssetEvent, true);
@@ -143,18 +167,22 @@ function VisualAssetLoader() {
 
   return (
     <>
-      {overlays.map(({ id, top, left, width, height, progress }) => (
-        <div
-          key={id}
-          className="pointer-events-none fixed z-[190] flex items-center justify-center overflow-hidden bg-[#0B0B0B] text-white"
-          style={{ top, left, width, height }}
-          role="status"
-          aria-live="polite"
-          aria-label={`Loading visual asset: ${progress}%`}
-        >
-          <span className="font-mono text-sm">{progress}%</span>
-        </div>
-      ))}
+      {overlays.map(
+        ({ id, parent, top, left, width, height, radius, progress }) =>
+          createPortal(
+            <div
+              className="pointer-events-none absolute z-[190] flex items-center justify-center overflow-hidden bg-[#0B0B0B] text-white"
+              style={{ top, left, width, height, borderRadius: radius }}
+              role="status"
+              aria-live="polite"
+              aria-label={`Loading visual asset: ${progress}%`}
+            >
+              <span className="font-mono text-sm">{progress}%</span>
+            </div>,
+            parent,
+            String(id),
+          ),
+      )}
     </>
   );
 }
