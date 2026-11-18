@@ -415,8 +415,21 @@ const projects = [
       ],
       animationNote:
         "Horizona's logo animation is a visual representation of precision, assembly, and innovation, core principles that define the brand. The sequence begins with a single triangle appearing in its normal form, symbolizing the foundation of aerial technology. One by one, the remaining triangles slide into place, each adjusting the others, reflecting the meticulous engineering and calibration that go into every Horizona drone. Then, in a seamless transformation, the triangles flip and rotate, aligning into the final logo shape while still apart. This moment captures the essence of drone movement: agility, balance, and adaptability. As they begin to shrink and interlock, the animation conveys a sense of refinement and completion. Finally, the brand name Horizona emerges letter by letter, reinforcing a smooth, calculated reveal. The animation as a whole embodies Horizona's vision, merging technology and creativity to redefine perspectives from above.",
-      showcase: null,
-      construction: [],
+      showcase: media(
+        asset("Horizona", "D - P4.png"),
+        "image",
+        "Rallow logo on dark",
+      ),
+      construction: [
+        media(
+          asset("Horizona", "G - P7.png"),
+          "image",
+          "Logo mark and chamfer detail",
+        ),
+        media(asset("Horizona", "H - P8.png"), "image", "Logo grid"),
+      ],
+      // TODO: verify against the final brand guide. Deep Crimson and Fiery Red
+      // were not legible in the Figma screenshot.
       palette: null,
       lockup: null,
     },
@@ -442,7 +455,6 @@ const projects = [
         {
           label: "Collateral",
           images: files("Horizona", [
-            "D - P4.png",
             "D - P14.png",
             "D - P24.png",
             "E - P5.png",
@@ -455,7 +467,6 @@ const projects = [
         {
           label: "Application",
           images: files("Horizona", [
-            "G - P7.png",
             "G - P27.png",
             "G - PAGE 17.png",
             "H - P8.png",
