@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
-import { motion as Motion } from "framer-motion";
+import { motion as Motion, useReducedMotion } from "framer-motion";
 import { getProjectBySlug, getOtherWorks } from "../../data/projects";
 import projects from "../../data/projects";
 import TextScramble from "../../shared/TextScramble";
@@ -46,6 +46,7 @@ const pad = (n) => String(n).padStart(2, "0");
 /** Renders image, gif or video. Renders nothing without a src, and a quiet block if the file fails to load. */
 function ProjectMedia({ media, alt = "", className = "" }) {
   const [failed, setFailed] = useState(false);
+  const reduceMotion = useReducedMotion();
   const m = toMedia(media, alt);
 
   if (!m?.src) return null;
@@ -79,12 +80,16 @@ function ProjectMedia({ media, alt = "", className = "" }) {
   }
 
   return (
-    <img
+    <Motion.img
       src={encodeURI(m.src)}
       alt={m.alt}
       loading="lazy"
       className={className}
       onError={() => setFailed(true)}
+      initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.15 }}
+      transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
     />
   );
 }
@@ -307,6 +312,15 @@ function CaseStudy() {
   const brandGroups = (brand?.groups ?? []).filter(
     (group) => group.images?.length,
   );
+  const hasLogoContent = Boolean(
+    logo?.video?.src ||
+      logo?.description?.length ||
+      logo?.animationNote ||
+      logo?.showcase?.src ||
+      logo?.construction?.length ||
+      logo?.palette ||
+      logo?.lockup?.src,
+  );
 
   // Other works: use the project's picks, fall back to the first three other projects.
   const picked = getOtherWorks(project);
@@ -322,7 +336,7 @@ function CaseStudy() {
     numbers[key] = pad(++count);
   };
   story.forEach((_, i) => take(`story-${i}`));
-  if (logo) take("logo");
+  if (hasLogoContent) take("logo");
   if (brandGroups.length) take("brand");
   if (motion?.banner) take("motion");
   if (credits.length) take("credits");
@@ -440,7 +454,7 @@ function CaseStudy() {
         ))}
 
         {/* ------------------------------ The Logo ---------------------------- */}
-        {logo && (
+        {hasLogoContent && (
           <section className="mb-16" data-aos="fade-up">
             <SectionHeading number={numbers.logo}>{logo.label}</SectionHeading>
 
@@ -454,8 +468,8 @@ function CaseStudy() {
               </div>
             )}
 
-            <div className="space-y-4">
-              <Paragraphs items={logo.description} />
+            <div className="space-y-4 flex flex-col justify-center items-center">
+              <Paragraphs className="" items={logo.description} />
               {logo.animationNote && (
                 <p className="max-w-3xl text-sm leading-relaxed text-white/70">
                   {logo.animationNote}

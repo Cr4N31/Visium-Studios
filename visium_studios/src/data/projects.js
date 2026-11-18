@@ -15,8 +15,9 @@
 // Section numbers (01, 02 ...) are NOT stored. The frontend computes them from
 // order, so adding or removing a section never needs renumbering.
 //
-// Every optional block can be omitted or set to null. The frontend should
-// simply skip any block that is missing.
+// Rallow is the reference shape. Every project goes through the same helpers
+// below, so every block always has the same keys. A block that does not apply
+// is null (or an empty array), and the frontend should skip it.
 // ============================================================================
 
 const ASSETS = "/assets/portfolio_images";
@@ -39,43 +40,94 @@ const DEFAULT_CREDITS = [
   { role: "Development", name: "Visium Studios" },
 ];
 
+/** One numbered story section. callout is the optional banner under the text. */
+const defineSection = (s) => ({
+  label: "",
+  body: [],
+  callout: null,
+  ...s,
+});
+
+/** The logo block. Every key is always present. */
+const defineLogo = (l) => ({
+  label: "The Logo",
+  video: null,
+  description: [],
+  animationNote: "",
+  showcase: null,
+  construction: [],
+  palette: null,
+  lockup: null,
+  ...l,
+});
+
+/** The brand galleries block. */
+const defineBrand = (b) => ({
+  label: "The Brand",
+  groups: [],
+  ...b,
+});
+
+/** The motion block. */
+const defineMotion = (m) => ({
+  label: "Identity in Motion",
+  banner: null,
+  extra: [],
+  caption: "",
+  ...m,
+});
+
 /**
  * Fills in every field with a safe default so all projects share one shape.
- * Anything you pass in overrides the default.
+ * Anything you pass in overrides the default. Nested objects (meta, card,
+ * headerLogo, cta) are merged, so you can pass only the keys you have.
  */
-const defineProject = (p) => ({
-  // identity
-  id: "",
-  slug: "",
-  title: "",
-  subtitle: "", // shown after the title, e.g. "Rallow™" + "Streetwear"
-  featured: false,
-  category: "Brand Identity", // small label above the title
-  tagline: "",
-  tags: [],
-  year: "",
+const defineProject = (p) => {
+  const defaults = {
+    // identity
+    id: "",
+    slug: "",
+    title: "",
+    subtitle: "", // shown after the title, e.g. "Rallow™" + "Streetwear"
+    featured: false,
+    category: "Brand Identity", // small label above the title
+    tagline: "",
+    tags: [],
+    year: "",
 
-  // listing / cards
-  thumbnail: "", // work grid card
-  card: { logo: "", background: "#E8E8E8" }, // "Other works" card
+    // listing / cards
+    thumbnail: "", // work grid card
+    card: { logo: "", background: "#E8E8E8" }, // "Other works" card
 
-  // header
-  headerLogo: { src: "", background: "#F4F4F4" }, // logo on the light banner
-  hero: null, // media(...)
-  meta: { client: "", services: "", duration: "", location: "" },
-  externalUrl: "",
+    // header
+    headerLogo: { src: "", background: "#F4F4F4" }, // logo on the light banner
+    hero: null, // media(...)
+    meta: { client: "", services: "", duration: "", location: "" },
+    externalUrl: "",
 
-  // body
-  story: [],
-  logo: null,
-  brand: null,
-  motion: null,
-  credits: DEFAULT_CREDITS,
-  cta: { label: "Start a project", href: "/contact" },
-  otherWorks: [],
+    // body
+    story: [],
+    logo: null,
+    brand: null,
+    motion: null,
+    credits: DEFAULT_CREDITS,
+    cta: { label: "Start a project", href: "/contact" },
+    otherWorks: [],
+  };
 
-  ...p,
-});
+  return {
+    ...defaults,
+    ...p,
+    card: { ...defaults.card, ...p.card },
+    headerLogo: { ...defaults.headerLogo, ...p.headerLogo },
+    meta: { ...defaults.meta, ...p.meta },
+    cta: { ...defaults.cta, ...p.cta },
+    story: (p.story ?? []).map(defineSection),
+    logo: defineLogo(p.logo ?? {}),
+    brand: p.brand ? defineBrand(p.brand) : null,
+    motion: p.motion ? defineMotion(p.motion) : null,
+  };
+};
 
 // ============================================================================
 // PROJECTS
@@ -83,7 +135,7 @@ const defineProject = (p) => ({
 
 const projects = [
   // --------------------------------------------------------------------------
-  // 01 RALLOW  (reference case study, built from the Figma wireframe)
+  // 01 RALLOW (reference case study)
   // --------------------------------------------------------------------------
   defineProject({
     id: "01",
@@ -109,12 +161,15 @@ const projects = [
       "image",
       "Rallow campaign",
     ),
+    // TODO: confirm client and location. "North Current Logistics" and
+    // "Rotterdam, NL" look like leftovers from another project.
     meta: {
       client: "North Current Logistics",
       services: "Branding & visual system",
       duration: "3 months",
       location: "Rotterdam, NL",
     },
+    externalUrl: "",
 
     // Sections 01 to 03. Each body is an array of paragraphs.
     story: [
@@ -161,28 +216,23 @@ const projects = [
         "The connection of the squares represents unity and strength, reflecting the Rallow community, individuals who come together through shared ideals of boldness and nonconformity. The linear alignment of the squares showcases order amidst rebellion, with an underlying structure that supports creativity and expression. The use of sharp, clean lines adds a modern and edgy feel to the logo, aligning perfectly with Rallow's streetwear aesthetics.",
         "This minimalist yet striking design creates a memorable brand mark that stands out in the fashion landscape, echoing Rallow's commitment to making bold statements through simplicity and impact.",
       ],
-      // Optional: the old "Result" copy about the animation
       animationNote:
         "Rallow's logo animation captures the brand's bold essence through fluid, intentional movement. The disconnected outlines of the geometric marks appear first, one by one, symbolizing individual expression. As they unite and fill with color, the animation reflects the brand's rebellious journey toward unity and strength.",
       showcase: media(
-        asset("Rallow", "Logo Showcase.png"),
+        asset("Rallow", "F - P6.png"),
         "image",
         "Rallow logo on dark",
       ),
       construction: [
         media(
-          asset("Rallow", "Logo Construction 01.png"),
+          asset("Rallow", "B - P2.png"),
           "image",
           "Logo mark and chamfer detail",
         ),
-        media(
-          asset("Rallow", "Logo Construction 02.png"),
-          "image",
-          "Logo grid",
-        ),
+        media(asset("Rallow", "C - P3.png"), "image", "Logo grid"),
       ],
-      // VERIFY these values against the final brand guide. Deep Crimson and
-      // Fiery Red were not legible in the Figma screenshot.
+      // TODO: verify against the final brand guide. Deep Crimson and Fiery Red
+      // were not legible in the Figma screenshot.
       palette: {
         primary: [
           { name: "Deep Crimson", hex: "#B71C1C" },
@@ -209,16 +259,12 @@ const projects = [
           },
         ],
       },
-      lockup: media(
-        asset("Rallow", "Logo Lockup Red.png"),
-        "image",
-        "Logo on crimson",
-      ),
+      lockup: null,
     },
 
     // Section 05. Each group renders under its own small uppercase label.
-    // NOTE: the 38 existing files were split by letter prefix as a placeholder.
-    // Move them into the group they actually belong to.
+    // TODO: the 38 files were split by letter prefix as a placeholder. Move
+    // them into the group they actually belong to.
     brand: {
       label: "The Brand",
       groups: [
@@ -286,7 +332,9 @@ const projects = [
         "gif",
         "Rallow identity in motion",
       ),
-      extra: [media(asset("Rallow", "VIDEO 03.gif"), "gif")],
+      extra: [
+        media(asset("Rallow", "VIDEO 03.gif"), "gif", "Rallow motion detail"),
+      ],
       caption:
         "From logos to lifestyle, Rallow's identity comes alive across apparel, tags, and experiences.",
     },
@@ -297,7 +345,10 @@ const projects = [
   }),
 
   // --------------------------------------------------------------------------
-  // 02 HORIZONA  (migrated from the old file, fill in the gaps as assets exist)
+  // 02 HORIZONA
+  // The old Context text is about the logo itself, so it now lives in
+  // logo.description. The old animation text lives in logo.animationNote.
+  // Problem and Approach became The Challenge and The Solution.
   // --------------------------------------------------------------------------
   defineProject({
     id: "02",
@@ -328,19 +379,11 @@ const projects = [
       duration: "",
       location: "Germany",
     },
-    externalUrl: "https://example.com",
+    externalUrl: "",
 
     story: [
       {
-        label: "Context",
-        body: [
-          "The Horizona™ Logo: A Symbol of Flight, Innovation and Progress.",
-          "The Horizona logo rebrand represents a bold evolution from its previous design, aligning more closely with the brand's core values of precision, exploration, and cutting-edge drone technology. The original logo, a hexagon with two internal lines and a heavy solid font, conveyed stability but lacked the dynamic motion and innovation that define Horizona's mission.",
-          "The new logo, composed of four interconnected triangles in an X formation, is inspired by the spinning blades of a drone in flight. This design captures the essence of movement, agility, and limitless aerial perspectives. The refined geometric structure reflects engineering excellence, while its open, balanced form represents adaptability and forward-thinking design. Paired with a more modern and sleek typography, the rebranded identity enhances brand recognition and positions Horizona as a leader in aerial imaging.",
-        ],
-      },
-      {
-        label: "Problem",
+        label: "The Challenge",
         body: [
           "The Need for Precision and Innovation in Aerial Imaging.",
           "In a rapidly evolving world of drone technology, finding a brand that truly prioritizes precision, innovation, and creative freedom is a challenge. Many existing drone camera brands focus solely on functionality, often neglecting the importance of intuitive design, cutting-edge imaging, and seamless user experience. As a result, professionals and creators struggle to find a solution that balances high performance with ease of use.",
@@ -348,13 +391,14 @@ const projects = [
         ],
       },
       {
-        label: "Approach",
+        label: "The Solution",
         body: [
           "Defining a Bold and Innovative Identity for Horizona.",
           "To establish Horizona as a leader in aerial imaging, the brand's visual identity is built around precision, innovation, and movement. The redesigned logo, inspired by the spinning blades of a drone, embodies agility and cutting-edge technology, while the modern typography reflects clarity and professionalism. A sleek, high-tech color palette reinforces the brand's futuristic vision.",
           "By combining geometric precision with fluid motion, Horizona's identity captures the essence of exploration and limitless perspectives. This cohesive visual language positions Horizona as more than just a drone brand; it represents a revolution in how we capture and experience the world from above.",
         ],
       },
+      // No "Our Impact" section yet. Add one here when there is copy for it.
     ],
 
     logo: {
@@ -365,18 +409,19 @@ const projects = [
         "Horizona logo animation",
       ),
       description: [
-        "Horizona's logo animation is a visual representation of precision, assembly, and innovation, core principles that define the brand. The sequence begins with a single triangle appearing in its normal form, symbolizing the foundation of aerial technology. One by one, the remaining triangles slide into place, each adjusting the others, reflecting the meticulous engineering and calibration that go into every Horizona drone.",
-        "Then, in a seamless transformation, the triangles flip and rotate, aligning into the final logo shape while still apart. This moment captures the essence of drone movement: agility, balance, and adaptability. As they begin to shrink and interlock, the animation conveys a sense of refinement and completion.",
-        "Finally, the brand name Horizona emerges letter by letter, reinforcing a smooth, calculated reveal. The animation as a whole embodies Horizona's vision, merging technology and creativity to redefine perspectives from above.",
+        "The Horizona™ Logo: A Symbol of Flight, Innovation and Progress.",
+        "The Horizona logo rebrand represents a bold evolution from its previous design, aligning more closely with the brand's core values of precision, exploration, and cutting-edge drone technology. The original logo, a hexagon with two internal lines and a heavy solid font, conveyed stability but lacked the dynamic motion and innovation that define Horizona's mission.",
+        "The new logo, composed of four interconnected triangles in an X formation, is inspired by the spinning blades of a drone in flight. This design captures the essence of movement, agility, and limitless aerial perspectives. The refined geometric structure reflects engineering excellence, while its open, balanced form represents adaptability and forward-thinking design. Paired with a more modern and sleek typography, the rebranded identity enhances brand recognition and positions Horizona as a leader in aerial imaging.",
       ],
-      animationNote: "",
+      animationNote:
+        "Horizona's logo animation is a visual representation of precision, assembly, and innovation, core principles that define the brand. The sequence begins with a single triangle appearing in its normal form, symbolizing the foundation of aerial technology. One by one, the remaining triangles slide into place, each adjusting the others, reflecting the meticulous engineering and calibration that go into every Horizona drone. Then, in a seamless transformation, the triangles flip and rotate, aligning into the final logo shape while still apart. This moment captures the essence of drone movement: agility, balance, and adaptability. As they begin to shrink and interlock, the animation conveys a sense of refinement and completion. Finally, the brand name Horizona emerges letter by letter, reinforcing a smooth, calculated reveal. The animation as a whole embodies Horizona's vision, merging technology and creativity to redefine perspectives from above.",
       showcase: null,
       construction: [],
       palette: null,
       lockup: null,
     },
 
-    // Existing 26 files, grouped as a placeholder. Re-sort when ready.
+    // TODO: the 26 files were grouped as a placeholder. Re-sort when ready.
     brand: {
       label: "The Brand",
       groups: [
@@ -431,205 +476,17 @@ const projects = [
         "gif",
         "Horizona in motion",
       ),
-      extra: [media(asset("Horizona", "Video 03.gif"), "gif")],
+      extra: [
+        media(
+          asset("Horizona", "Video 03.gif"),
+          "gif",
+          "Horizona motion detail",
+        ),
+      ],
       caption: "",
     },
 
     otherWorks: ["rallow", "atrium-realty", "meridian-labs"],
-  }),
-
-  // --------------------------------------------------------------------------
-  // PLACEHOLDER PROJECTS
-  // Only the basics are filled in. Anything missing falls back to the defaults
-  // from defineProject(), so the case study page still renders safely.
-  // --------------------------------------------------------------------------
-  defineProject({
-    id: "03",
-    slug: "harbor-clinic",
-    title: "Harbor Clinic",
-    category: "Website",
-    tagline: "A calm, clear digital experience for a modern medical practice.",
-    tags: ["Website", "UI/UX Design", "Development"],
-    year: "2025",
-    thumbnail: "/placeholders/project-02.jpg",
-    hero: media("/placeholders/project-02-hero.mp4", "video"),
-    meta: {
-      client: "Harbor Clinic Group",
-      services: "",
-      duration: "",
-      location: "Lisbon, PT",
-    },
-    externalUrl: "https://example.com",
-    story: [
-      {
-        label: "Context",
-        body: ["Lorem ipsum dolor sit amet consectetur adipiscing elit."],
-      },
-      {
-        label: "Problem",
-        body: ["Sed do eiusmod tempor incididunt ut labore et dolore magna."],
-      },
-      {
-        label: "Approach",
-        body: ["Ut enim ad minim veniam quis nostrud exercitation ullamco."],
-      },
-    ],
-    brand: {
-      label: "The Work",
-      groups: [
-        {
-          label: "Gallery",
-          images: [
-            "/placeholders/project-02-g1.jpg",
-            "/placeholders/project-02-g2.jpg",
-          ],
-        },
-      ],
-    },
-    otherWorks: ["rallow", "horizona", "atrium-realty"],
-  }),
-
-  defineProject({
-    id: "04",
-    slug: "foundry-supply",
-    title: "Foundry Supply Co.",
-    featured: true,
-    category: "Brand Identity",
-    tagline:
-      "Building a distribution brand that feels engineered, not generic.",
-    tags: ["Branding"],
-    year: "2024",
-    thumbnail: "/placeholders/project-03.jpg",
-    hero: media("/placeholders/project-03-hero.mp4", "video"),
-    meta: {
-      client: "Foundry Supply Co.",
-      services: "",
-      duration: "",
-      location: "Detroit, US",
-    },
-    externalUrl: "https://example.com",
-    story: [
-      {
-        label: "Context",
-        body: ["Lorem ipsum dolor sit amet consectetur adipiscing elit."],
-      },
-      {
-        label: "Problem",
-        body: ["Ut labore et dolore magna aliqua ut enim ad minim veniam."],
-      },
-      {
-        label: "Approach",
-        body: ["Quis nostrud exercitation ullamco laboris nisi ut aliquip."],
-      },
-    ],
-    brand: {
-      label: "The Brand",
-      groups: [
-        {
-          label: "Identity",
-          images: [
-            "/placeholders/project-03-g1.jpg",
-            "/placeholders/project-03-g2.jpg",
-            "/placeholders/project-03-g3.jpg",
-          ],
-        },
-      ],
-    },
-    otherWorks: ["rallow", "horizona", "meridian-labs"],
-  }),
-
-  defineProject({
-    id: "05",
-    slug: "atrium-realty",
-    title: "Atrium Realty",
-    category: "Brand Identity",
-    tagline: "Positioning premium real estate through restraint, not excess.",
-    tags: ["Branding", "Website", "SEO Optimization"],
-    year: "2024",
-    thumbnail: "/placeholders/project-04.jpg",
-    card: { logo: "/placeholders/atrium-logo.png", background: "#E8E8E8" },
-    hero: media("/placeholders/project-04-hero.mp4", "video"),
-    meta: {
-      client: "Atrium Realty Group",
-      services: "",
-      duration: "",
-      location: "Austin, US",
-    },
-    externalUrl: "https://example.com",
-    story: [
-      {
-        label: "Context",
-        body: ["Lorem ipsum dolor sit amet consectetur adipiscing elit."],
-      },
-      {
-        label: "Problem",
-        body: ["Ut enim ad minim veniam quis nostrud exercitation ullamco."],
-      },
-      {
-        label: "Approach",
-        body: ["Laboris nisi ut aliquip ex ea commodo consequat duis aute."],
-      },
-    ],
-    brand: {
-      label: "The Brand",
-      groups: [
-        {
-          label: "Identity",
-          images: [
-            "/placeholders/project-04-g1.jpg",
-            "/placeholders/project-04-g2.jpg",
-          ],
-        },
-      ],
-    },
-    otherWorks: ["rallow", "horizona", "meridian-labs"],
-  }),
-
-  defineProject({
-    id: "06",
-    slug: "meridian-labs",
-    title: "Meridian Labs",
-    category: "Brand Identity",
-    tagline: "A visual system for a biotech startup entering public trials.",
-    tags: ["Branding", "Website", "UI/UX Design", "Development"],
-    year: "2023",
-    thumbnail: "/placeholders/project-05.jpg",
-    card: { logo: "/placeholders/meridian-logo.png", background: "#E8E8E8" },
-    hero: media("/placeholders/project-05-hero.mp4", "video"),
-    meta: {
-      client: "Meridian Labs",
-      services: "",
-      duration: "",
-      location: "Basel, CH",
-    },
-    externalUrl: "https://example.com",
-    story: [
-      {
-        label: "Context",
-        body: ["Lorem ipsum dolor sit amet consectetur adipiscing elit."],
-      },
-      {
-        label: "Problem",
-        body: ["Sed do eiusmod tempor incididunt ut labore et dolore magna."],
-      },
-      {
-        label: "Approach",
-        body: ["Aliqua ut enim ad minim veniam quis nostrud exercitation."],
-      },
-    ],
-    brand: {
-      label: "The Brand",
-      groups: [
-        {
-          label: "Identity",
-          images: [
-            "/placeholders/project-05-g1.jpg",
-            "/placeholders/project-05-g2.jpg",
-          ],
-        },
-      ],
-    },
-    otherWorks: ["rallow", "horizona", "atrium-realty"],
   }),
 ];
 
@@ -656,5 +513,14 @@ export const getAdjacentProjects = (slug) => {
   };
 };
 
-export { defineProject, media, asset, files };
+export {
+  defineProject,
+  defineSection,
+  defineLogo,
+  defineBrand,
+  defineMotion,
+  media,
+  asset,
+  files,
+};
 export default projects;
