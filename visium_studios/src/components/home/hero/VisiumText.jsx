@@ -6,11 +6,11 @@ const variants = [];
 
 // One source of truth for every label so mobile styling stays consistent
 const labelClass =
-  "font-mono text-[10px] md:text-[20px] font-[800] md:font-[600] uppercase tracking-widest";
+  "font-mono text-[10px] font-[800] uppercase tracking-widest md:text-[20px] md:font-[600] lg:text-[22px] 2xl:text-[24px]";
 
 function VisiumText() {
   return (
-    <div className="flex w-full flex-col gap-3">
+    <div className="mx-auto flex w-full max-w-[1600px] flex-col gap-3 2xl:max-w-[1700px]">
       {/* Top label */}
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <span className={`${labelClass} whitespace-nowrap`}>
@@ -24,7 +24,7 @@ function VisiumText() {
       </div>
 
       {/* Wordmark */}
-      <div className="flex items-center justify-center">
+      <div className="flex w-full items-center justify-center">
         <WordmarkReveal
           src={wordmark}
           variants={variants}

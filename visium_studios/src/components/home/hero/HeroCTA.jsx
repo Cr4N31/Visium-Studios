@@ -13,7 +13,7 @@ function HeroCTA({ variant = "default" }) {
         </div>
         <div className="min-w-0 flex-1">
           <p className="text-xs leading-relaxed sm:text-sm">
-            Let&apos;s talk with our manager Jace K.
+            Let&apos;s talk with our director Jace K.
           </p>
           <a
             href="/call-page"
@@ -37,7 +37,7 @@ function HeroCTA({ variant = "default" }) {
               </span>
             </h2>
             <p className="mt-2 text-sm leading-tight text-black/65 sm:text-base">
-              Let&apos;s book &amp; talk with our manager.
+              Let&apos;s book &amp; talk with our director.
             </p>
           </div>
           <a

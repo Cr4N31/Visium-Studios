@@ -442,7 +442,7 @@ function HowWeWork() {
             done ? "bg-[#0B0B0B] text-white" : "bg-[#F4F4F1] text-[#0B0B0B]"
           }`}
         >
-          Contact Manager
+          Contact Director
         </a>
       </div>
     </section>

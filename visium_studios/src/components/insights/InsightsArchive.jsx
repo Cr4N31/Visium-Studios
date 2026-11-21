@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion as Motion } from "framer-motion";
 import { sortedInsights, categories, formatDate } from "../../data/insights";
 
 const filters = ["All", ...categories];
@@ -8,8 +8,8 @@ const ease = [0.22, 1, 0.36, 1];
 
 function InsightRow({ article }) {
   return (
-    <motion.li
-      className="border-t border-white/20 last:border-b"
+    <Motion.li
+      className="border-t border-black/20 last:border-b"
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.2 }}
@@ -19,7 +19,7 @@ function InsightRow({ article }) {
         to={`/insights/${article.slug}`}
         className="group flex flex-col md:flex-row items-start justify-between gap-5 py-6 md:gap-12 md:py-10"
       >
-        <div className="aspect-[4/3] md:w-24 w-full shrink-0 overflow-hidden bg-white/5 sm:w-40 md:w-72">
+        <div className="aspect-[4/3] md:w-24 w-full shrink-0 overflow-hidden bg-black/5 sm:w-40 md:w-72">
           <img
             src={article.image}
             alt={article.title}
@@ -38,14 +38,14 @@ function InsightRow({ article }) {
             {article.title}
           </h2>
 
-          <p className="line-clamp-3 max-w-xl text-sm leading-relaxed text-white/55">
+          <p className="line-clamp-3 max-w-xl text-sm leading-relaxed text-white/60">
             {article.excerpt}
           </p>
 
           <span className="mt-2 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-white">
             <span className="relative">
               Read
-              <span className="absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-white transition-transform duration-500 ease-out group-hover:scale-x-100" />
+              <span className="absolute -bottom-1 left-0 h-px w-full origin-left scale-x-0 bg-[#0B0B0B] transition-transform duration-500 ease-out group-hover:scale-x-100" />
             </span>
             <span
               aria-hidden="true"
@@ -56,7 +56,7 @@ function InsightRow({ article }) {
           </span>
         </div>
       </Link>
-    </motion.li>
+    </Motion.li>
   );
 }
 
@@ -71,7 +71,7 @@ function InsightsArchive() {
   return (
     <section className="px-8 pb-24 md:pb-40">
       <div className="mb-10 flex flex-col gap-6 md:mb-16 md:flex-row md:items-end md:justify-between">
-        <p className="text-[11px] uppercase tracking-[0.2em] text-white/40">
+        <p className="text-[11px] uppercase tracking-[0.2em] text-black/45">
           Archive (0{list.length})
         </p>
 
@@ -88,7 +88,7 @@ function InsightsArchive() {
               onClick={() => setActive(f)}
               className={`border px-3 py-1.5 text-[10px] rounded-lg uppercase tracking-[0.2em] transition-colors duration-300 ${
                 active === f
-                  ? "border-white bg-white text-black"
+                  ? "border-[#0B0B0B] bg-[#F4F4F1] text-black"
                   : "border-white/30 text-white/60 hover:border-white hover:text-white"
               }`}
             >
@@ -98,7 +98,7 @@ function InsightsArchive() {
         </div>
       </div>
 
-      <motion.ul
+      <Motion.ul
         key={active}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -107,7 +107,7 @@ function InsightsArchive() {
         {list.map((article) => (
           <InsightRow key={article.id} article={article} />
         ))}
-      </motion.ul>
+      </Motion.ul>
     </section>
   );
 }

@@ -7,6 +7,7 @@ const FLIGHT_MS = 620;
 
 function ProjectZoomLink({
   to,
+  state,
   image,
   alt,
   children,
@@ -30,7 +31,7 @@ function ProjectZoomLink({
       height: rect.height,
     });
 
-    window.setTimeout(() => navigate(to), FLIGHT_MS);
+    window.setTimeout(() => navigate(to, state ? { state } : undefined), FLIGHT_MS);
   };
 
   return (

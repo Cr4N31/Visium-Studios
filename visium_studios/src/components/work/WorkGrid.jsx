@@ -85,7 +85,11 @@ function WorkGrid({ projects }) {
       {filteredProjects.length > 0 ? (
         <div className="mt-8 flex flex-col gap-3 md:gap-4">
           {filteredProjects.map((project) => (
-            <EditorialProjectCard key={project.id} project={project} />
+            <EditorialProjectCard
+              key={project.id}
+              project={project}
+              linkState={{ from: "/work" }}
+            />
           ))}
         </div>
       ) : (

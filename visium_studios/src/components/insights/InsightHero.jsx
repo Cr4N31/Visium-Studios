@@ -30,29 +30,19 @@ function InsightHero() {
   return (
     <section
       ref={ref}
-      className="relative flex min-h-[70vh] flex-col justify-center px-5 text-white sm:px-7 md:px-6"
+      className="relative flex min-h-[60vh] flex-col justify-center bg-[#0B0B0B] px-5 pb-12 pt-28 text-[#F4F4F1] sm:px-7 md:px-[2vw] md:pb-16 md:pt-36"
     >
       {/* Headline */}
-      <Motion.h1 style={{ y: headY, opacity: headOpacity }}>
-        <span className="text-[clamp(2rem,8vw,5rem)] font-normal leading-[1] sm:text-[clamp(2.5rem,7vw,5rem)] sm:leading-[1.02] md:text-[clamp(3rem,5vw,5rem)] md:leading-[1.06]">
-          <Line delay={0.1}>
-            <TextScramble>Our thoughts on building</TextScramble>
-          </Line>
-          <Line delay={0.25}>
-            <span className="underline">
-              <TextScramble>brands</TextScramble>
-            </span>
-            ,{" "}
-            <span className="underline">
-              <TextScramble>products</TextScramble>
-            </span>{" "}
-            and{" "}
-            <span className="underline">
-              <TextScramble>visual systems</TextScramble>
-            </span>
-            .
-          </Line>
-        </span>
+      <Motion.h1
+        className="max-w-[72rem] font-serif text-[clamp(2.25rem,5.3vw,4.25rem)] font-normal leading-[1.15] tracking-[-0.045em]"
+        style={{ y: headY, opacity: headOpacity }}
+      >
+        <Line delay={0.1}>
+          <TextScramble>
+            Our thoughts on building brands, products and visual systems and
+            creating meaningful experiences
+          </TextScramble>
+        </Line>
       </Motion.h1>
     </section>
   );

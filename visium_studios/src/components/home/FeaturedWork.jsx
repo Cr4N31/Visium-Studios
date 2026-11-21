@@ -14,7 +14,7 @@ const gridProjects = projects.filter((p) => p.featured).slice(0, 4);
 function FeaturedWork() {
   return (
     <section
-      id="work-preview"
+      id="featured"
       className="bg-[#0B0B0B] text-white py-6 md:py-12"
       data-aos="fade-up"
     >
@@ -30,7 +30,11 @@ function FeaturedWork() {
       {gridProjects.length > 0 && (
         <div className="mt-4 flex flex-col gap-2 px-8 md:mx-auto md:mt-6 md:gap-4">
           {gridProjects.map((project) => (
-            <EditorialProjectCard key={project.id} project={project} />
+            <EditorialProjectCard
+              key={project.id}
+              project={project}
+              linkState={{ from: "/", hash: "#featured" }}
+            />
           ))}
         </div>
       )}

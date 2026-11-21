@@ -7,7 +7,7 @@ const fadeUp = {
   show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } },
 };
 
-function EditorialProjectCard({ project }) {
+function EditorialProjectCard({ project, linkState }) {
   const imageSrc = project.coverImage ?? project.thumbnail;
 
   return (
@@ -22,6 +22,7 @@ function EditorialProjectCard({ project }) {
         <CursorWarpField intensity={26} className="block">
           <ProjectZoomLink
             to={`/work/${project.slug}`}
+            state={linkState}
             image={imageSrc}
             alt={project.title}
             className="block relative aspect-[16/12] md:aspect-[5/2] overflow-hidden rounded-lg bg-white/5"

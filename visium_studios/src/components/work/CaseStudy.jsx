@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, Navigate, useParams } from "react-router-dom";
+import { Link, Navigate, useLocation, useParams } from "react-router-dom";
 import { motion as Motion, useReducedMotion } from "framer-motion";
 import { getProjectBySlug, getOtherWorks } from "../../data/projects";
 import projects from "../../data/projects";
@@ -285,11 +285,16 @@ function OtherWorkCard({ item }) {
 
 function CaseStudy() {
   const { slug } = useParams();
+  const location = useLocation();
   const project = getProjectBySlug(slug);
 
   if (!project) {
     return <Navigate to="/work" replace />;
   }
+
+  const backPathname = location.state?.from || "/work";
+  const backHash = location.state?.hash || "";
+  const backLabel = backPathname === "/" ? "Back to Home" : "Back to Work";
 
   const {
     story = [],
@@ -358,10 +363,10 @@ function CaseStudy() {
       <div className="mx-auto max-w-[1200px] px-4 pb-24 pt-24 sm:px-6 md:px-10">
         {/* ------------------------------ Header ------------------------------ */}
         <Link
-          to="/work"
+          to={{ pathname: backPathname, hash: backHash }}
           className="mb-5 inline-block text-[10px] uppercase tracking-[0.2em] text-white/60 transition hover:text-white"
         >
-          Back to work
+          {backLabel}
         </Link>
 
         {headerLogo?.src && (

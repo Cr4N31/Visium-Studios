@@ -30,11 +30,27 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 
 function ScrollToTop() {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
 
   useEffect(() => {
+    if (hash) return;
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
-  }, [pathname]);
+  }, [pathname, hash]);
+
+  return null;
+}
+
+function ScrollToHash() {
+  const { hash } = useLocation();
+
+  useEffect(() => {
+    if (!hash) return;
+    const id = hash.replace("#", "");
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [hash]);
 
   return null;
 }
@@ -54,22 +70,32 @@ function App() {
   }, []);
 
   const isBrandingPage = location.pathname === "/branding";
+  const isInsightArticlePage = /^\/insights\/[^/]+\/?$/.test(location.pathname);
   const isCaseStudyPage = /^\/work\/[^/]+$/.test(location.pathname);
   {
     /*const showFloatingProjectCta = !/^\/(contact|startaproject)\/?$/.test(
     location.pathname,
   ) */
   }
-  const cursorInverted = isBrandingPage ? false : homeInverted;
-  const headerInverted = isBrandingPage ? false : homeInverted;
+  const cursorInverted = isBrandingPage
+    ? false
+    : isInsightArticlePage
+      ? true
+      : homeInverted;
+  const headerInverted = isBrandingPage
+    ? false
+    : isInsightArticlePage
+      ? true
+      : homeInverted;
 
   return (
     <CurtainNavigationProvider>
       <div className="bg-[#0B0B0B] text-white">
         <ScrollToTop />
+        <ScrollToHash />
         <SeoMetadata />
         <CustomCursor inverted={cursorInverted} />
-        <Header inverted={headerInverted} />
+        {!isInsightArticlePage && <Header inverted={headerInverted} />}
         {/* {showFloatingProjectCta && <FloatingProjectCta />}*/}
         <Routes>
           <Route path="/" element={<Home onThemeChange={setHomeInverted} />} />
@@ -98,7 +124,9 @@ function App() {
           <Route path="/branding/art-direction" element={<ArtDirection />} />
           <Route path="/branding/positioning" element={<Positioning />} />
         </Routes>
-        {!isCaseStudyPage && <Footer inverted={false} />}
+        {!isCaseStudyPage && !isInsightArticlePage && (
+          <Footer inverted={false} />
+        )}
       </div>
     </CurtainNavigationProvider>
   );
