@@ -9,17 +9,23 @@ const labelClass =
   "font-mono text-[10px] font-[800] uppercase tracking-widest md:text-[20px] md:font-[600] lg:text-[22px] 2xl:text-[24px]";
 
 function VisiumText() {
+  const heroLabelScrambleDuration = 3200;
+
   return (
     <div className="mx-auto flex w-full max-w-[1600px] flex-col gap-3 2xl:max-w-[1700px]">
       {/* Top label */}
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <span className={`${labelClass} whitespace-nowrap`}>
-          <TextScramble>Brand &amp; Digital Studio</TextScramble>
+          <TextScramble duration={heroLabelScrambleDuration}>
+            Brand &amp; Digital Studio
+          </TextScramble>
         </span>
 
         {/* Desktop/tablet only */}
         <span className={`${labelClass} hidden sm:block`}>
-          <TextScramble>Setting the visual standard</TextScramble>
+          <TextScramble duration={heroLabelScrambleDuration}>
+            Setting the visual standard
+          </TextScramble>
         </span>
       </div>
 
@@ -37,11 +43,15 @@ function VisiumText() {
       <div className="flex flex-col gap-2 md:items-end">
         {/* Mobile only: sits above "Available Worldwide" */}
         <span className={`${labelClass} text-left sm:hidden`}>
-          <TextScramble>Setting the visual standard</TextScramble>
+          <TextScramble duration={heroLabelScrambleDuration}>
+            Setting the visual standard
+          </TextScramble>
         </span>
 
         <span className={`${labelClass} text-left md:text-right`}>
-          <TextScramble>Available Worldwide</TextScramble>
+          <TextScramble duration={heroLabelScrambleDuration}>
+            Available Worldwide
+          </TextScramble>
         </span>
       </div>
     </div>

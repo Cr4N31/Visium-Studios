@@ -12,6 +12,7 @@ import CapabilityDetail from "./pages/CapabilityDetail";
 import Studio from "./pages/Studio";
 import Insights from "./pages/Insights";
 import InsightArticle from "./pages/InsightArticle";
+import ServiceDetail from "./pages/ServiceDetail";
 import CaseStudy from "./components/work/CaseStudy";
 import CustomCursor from "./context/CustomCursor";
 import Branding from "./components/footer_components/branding/Branding";
@@ -72,6 +73,7 @@ function App() {
   const isBrandingPage = location.pathname === "/branding";
   const isInsightArticlePage = /^\/insights\/[^/]+\/?$/.test(location.pathname);
   const isCaseStudyPage = /^\/work\/[^/]+$/.test(location.pathname);
+  const isServiceDetailPage = /^\/services\/[^/]+\/?$/.test(location.pathname);
   {
     /*const showFloatingProjectCta = !/^\/(contact|startaproject)\/?$/.test(
     location.pathname,
@@ -95,7 +97,9 @@ function App() {
         <ScrollToHash />
         <SeoMetadata />
         <CustomCursor inverted={cursorInverted} />
-        {!isInsightArticlePage && <Header inverted={headerInverted} />}
+        {!isInsightArticlePage && !isServiceDetailPage && (
+          <Header inverted={headerInverted} />
+        )}
         {/* {showFloatingProjectCta && <FloatingProjectCta />}*/}
         <Routes>
           <Route path="/" element={<Home onThemeChange={setHomeInverted} />} />
@@ -103,6 +107,7 @@ function App() {
           <Route path="/studio" element={<Studio />} />
           <Route path="/capabilities" element={<Capabilities />} />
           <Route path="/capabilities/:slug" element={<CapabilityDetail />} />
+          <Route path="/services/:slug" element={<ServiceDetail />} />
           <Route path="/insights" element={<Insights />} />
           <Route path="/insights/:slug" element={<InsightArticle />} />
           <Route path="/contact" element={<ContactSection />} />
@@ -124,7 +129,7 @@ function App() {
           <Route path="/branding/art-direction" element={<ArtDirection />} />
           <Route path="/branding/positioning" element={<Positioning />} />
         </Routes>
-        {!isCaseStudyPage && !isInsightArticlePage && (
+        {!isCaseStudyPage && !isInsightArticlePage && !isServiceDetailPage && (
           <Footer inverted={false} />
         )}
       </div>

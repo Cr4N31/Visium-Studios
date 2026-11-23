@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { Link } from "react-router-dom";
 import {
   motion,
   AnimatePresence,
@@ -136,6 +137,13 @@ function Row({
           <p className="max-w-[56ch] pb-2 pt-10 text-base leading-relaxed md:text-lg">
             {s.description}
           </p>
+          <Link
+            to={`/services/${s.slug}`}
+            onClick={(e) => e.stopPropagation()}
+            className="mt-6 inline-flex items-center text-[11px] uppercase tracking-[0.16em] underline decoration-current/40 underline-offset-4 transition hover:decoration-current"
+          >
+            Read more
+          </Link>
         </motion.div>
       )}
     </motion.div>

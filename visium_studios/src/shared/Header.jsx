@@ -11,18 +11,18 @@ const falling_logo = "/assets/logo/Logo Icon - White.png";
 const navLinks = [
   { name: "Home", href: "/" },
   { name: "Work", href: "/work" },
-  { name: "Capabilities", href: "/capabilities" },
+  { name: "Services", href: "/capabilities" },
   { name: "Studio", href: "/studio" },
-  { name: "Insights", href: "/insights" },
+  { name: "Blog", href: "/insights" },
   { name: "Contact", href: "/contact" },
 ];
 
 // Desktop nav intentionally drops "Home" — the logo already anchors home.
 const desktopNavLinks = [
   { name: "Work", href: "/work" },
-  { name: "Capabilities", href: "/capabilities" },
+  { name: "Services", href: "/capabilities" },
   { name: "Studio", href: "/studio" },
-  { name: "Insights", href: "/insights" },
+  { name: "Blog", href: "/insights" },
   { name: "Contact", href: "/contact" },
 ];
 

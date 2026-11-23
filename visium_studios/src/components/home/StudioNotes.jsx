@@ -50,7 +50,7 @@ function InsightRow({ article, index }) {
       <Link
         to={`/insights/${article.slug}`}
         aria-label={`Read more: ${article.title}`}
-        className="group col-start-2 row-start-1 flex items-center justify-center border border-gray-500/20 bg-[#0B0B0B] transition-colors hover:bg-white hover:text-black"
+        className="group col-start-2 row-start-1 text-black flex items-center justify-center border border-gray-500/20 bg-[#F4F4F1] transition-colors hover:bg-[#0B0B0B] hover:text-white"
       >
         <span className="font-mono text-[9px] font-semibold uppercase tracking-[0.14em] [writing-mode:vertical-rl] rotate-180">
           Read more

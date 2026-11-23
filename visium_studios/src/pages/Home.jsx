@@ -9,6 +9,7 @@ import FinalCta from "../components/home/FinalCta";
 import Services from "../components/home/Services";
 import About from "../components/home/About";
 import HowWeWork from "../components/home/HowWeWork";
+import HeroText from "../components/home/hero/HeroText";
 
 function Home({ onThemeChange }) {
   const themeRef = useRef(null);
@@ -55,6 +56,7 @@ function Home({ onThemeChange }) {
       <Hero />
       <div className="relative z-10 bg-[#0B0B0B]">
         <div className="flex flex-col gap-12 py-8">
+          <HeroText />
           <About />
           <Services />
           <div id="work-preview">

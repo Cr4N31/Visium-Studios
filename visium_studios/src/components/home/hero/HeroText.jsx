@@ -1,108 +1,87 @@
-import { motion as Motion } from "framer-motion";
-import { Link } from "react-router-dom";
-import { useMagnetic, useMorphPointer } from "../../../shared/useCtaPointer";
+import { useRef } from "react";
+import { motion as Motion, useInView, useReducedMotion } from "framer-motion";
 
-const container = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.15, delayChildren: 0.1 } },
-};
+// Slightly wobbly, overshooting ellipse so it reads as a pencil circle
+const SCRIBBLE_PATH =
+  "M 22 42 C 18 14, 90 4, 130 6 C 176 8, 197 26, 192 44 C 187 64, 130 77, 85 75 C 38 73, 6 58, 11 36 C 14 22, 42 11, 74 9";
 
-const revealUp = {
-  hidden: { y: "100%" },
-  show: { y: "0%", transition: { duration: 1, ease: [0.65, 0, 0.35, 1] } },
-};
+function Scribble({ children, delay = 0, color = "#ffffff", duration = 3.6 }) {
+  const ref = useRef(null);
+  const inView = useInView(ref, { amount: 0.6 });
+  const reduceMotion = useReducedMotion();
 
-import VideoMotion from "../../../shared/VideoMotion";
+  return (
+    <span ref={ref} className="relative inline-block whitespace-nowrap">
+      <span className="relative z-10">{children}</span>
 
-const MotionLink = Motion(Link);
+      <svg
+        aria-hidden="true"
+        viewBox="0 0 200 80"
+        preserveAspectRatio="none"
+        className="pointer-events-none absolute -inset-x-[6%] -inset-y-[14%] z-0 h-[128%] w-[112%] overflow-visible"
+      >
+        <Motion.path
+          d={SCRIBBLE_PATH}
+          fill="none"
+          stroke={color}
+          strokeWidth={2.5}
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          vectorEffect="non-scaling-stroke"
+          initial={{ pathLength: 0, opacity: 0 }}
+          animate={
+            reduceMotion
+              ? { pathLength: 1, opacity: 1 }
+              : inView
+                ? {
+                    pathLength: [0, 1, 1, 0],
+                    opacity: [1, 1, 1, 1],
+                  }
+                : { pathLength: 0, opacity: 0 }
+          }
+          transition={
+            reduceMotion
+              ? { duration: 0 }
+              : inView
+                ? {
+                    duration,
+                    delay,
+                    times: [0, 0.4, 0.75, 1], // draw, hold, undraw
+                    ease: "easeInOut",
+                    repeat: Infinity,
+                  }
+                : { duration: 0.3 }
+          }
+        />
+      </svg>
+    </span>
+  );
+}
 
 function HeroText() {
-  const headlineMorph = useMorphPointer();
-  const ctaMorph = useMorphPointer();
-  const ctaMagnetic = useMagnetic();
-
   return (
     <Motion.div
       className="relative flex flex-col items-center justify-start pt-24 pb-10 gap-12 text-white sm:pt-28 sm:gap-10 md:min-h-[100vh] md:justify-center md:pt-0 md:pb-0 md:gap-12"
-      variants={container}
       initial="hidden"
       animate="show"
     >
       <Motion.div className="hero-copy relative z-20 flex w-full flex-col items-center justify-center gap-6">
-        <p
-          className="hero-copy__headline relative w-full text-center text-[clamp(2rem,8vw,5rem)] font-normal leading-[1] sm:text-[clamp(2.5rem,7vw,5rem)] sm:leading-[1.02] md:mt-24 md:text-[clamp(3rem,5vw,5rem)] md:leading-[1.06] lg:mt-20"
-          onPointerEnter={headlineMorph.onPointerEnter}
-          onPointerLeave={headlineMorph.onPointerLeave}
-          onPointerMove={headlineMorph.onPointerMove}
-        >
-          <Motion.div
-            aria-hidden="true"
-            className="hero-copy__morph"
-            style={{
-              left: headlineMorph.left,
-              top: headlineMorph.top,
-              scale: headlineMorph.scale,
-            }}
-          />
-
+        <p className="hero-copy__headline relative w-full text-center text-[clamp(2rem,8vw,5rem)] font-normal leading-[1] sm:text-[clamp(2.5rem,7vw,5rem)] sm:leading-[1.02] md:mt-24 md:text-[clamp(3rem,5vw,5rem)] md:leading-[1.06] lg:mt-20">
           <span className="block font-[400] leading-[0.95]">
-            <Motion.span className="block" variants={revealUp}>
-              <span className="hero-copy__accent">Ambition</span> should
+            <Motion.span className="block">
+              <Scribble>
+                <span className="hero-copy__accent">Ambition</span>
+              </Scribble>{" "}
+              should
             </Motion.span>
           </span>
           <span className="block leading-[0.95] font-[400]">
-            <Motion.span className="block" variants={revealUp}>
-              have a{" "}
-              <span className="hero-copy__accent whitespace-nowrap">
-                visual
-              </span>
-              <br className="md:hidden" />
-              <span className="hero-copy__accent whitespace-nowrap">
-                &nbsp;language
-              </span>
+            <Motion.span className="block">
+              have a <Scribble delay={0.8}>visual language</Scribble>
             </Motion.span>
           </span>
         </p>
-        <p className="max-w-lg text-center text-base text-white/90 sm:text-xl">
-          We build the visual systems that set ambitions brands apart
-        </p>
-        <MotionLink
-          to="/startaproject"
-          data-blob
-          className="hero-cta group relative isolate inline-flex items-center gap-5 overflow-hidden rounded-sm border-2 border-white bg-white px-5 py-3 text-xs font-semibold uppercase tracking-tight text-black transition-colors hover:bg-transparent hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white motion-reduce:transition-none"
-          style={{ x: ctaMagnetic.x, y: ctaMagnetic.y }}
-          onPointerEnter={ctaMorph.onPointerEnter}
-          onPointerLeave={(event) => {
-            ctaMorph.onPointerLeave(event);
-            ctaMagnetic.onPointerLeave(event);
-          }}
-          onPointerMove={(event) => {
-            ctaMorph.onPointerMove(event);
-            ctaMagnetic.onPointerMove(event);
-          }}
-        >
-          <Motion.span
-            aria-hidden="true"
-            className="cta-morph"
-            style={{
-              left: ctaMorph.left,
-              top: ctaMorph.top,
-              scale: ctaMorph.scale,
-            }}
-          />
-          <span className="relative z-[1] font-semibold tracking-tight">Start a project</span>
-          <span
-            aria-hidden="true"
-            className="relative z-[1] text-lg leading-none transition-transform duration-300 group-hover:translate-x-1"
-          >
-            →
-          </span>
-        </MotionLink>
       </Motion.div>
-
-      <div className="w-full aspect-[4/5] sm:aspect-[3/4] md:mt-10 md:aspect-video md:h-[100vh]">
-        <VideoMotion />
-      </div>
     </Motion.div>
   );
 }

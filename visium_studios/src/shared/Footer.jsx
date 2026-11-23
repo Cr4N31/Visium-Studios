@@ -18,9 +18,9 @@ function Footer() {
   const siteMap = [
     { name: "Home", href: "/" },
     { name: "Work", href: "/work" },
-    { name: "Capabilities", href: "/capabilities" },
+    { name: "Services", href: "/capabilities" },
     { name: "Studio", href: "/studio" },
-    { name: "Insights", href: "/insights" },
+    { name: "Blog", href: "/insights" },
     { name: "Contact", href: "/contact" },
   ];
 

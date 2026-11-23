@@ -197,7 +197,7 @@ function VideoMotion() {
             hovering ? "opacity-0" : "opacity-100"
           }`}
         >
-          [Play Reel]
+          [Expand]
         </div>
       </div>
 

@@ -9,7 +9,7 @@ import {
 import { useInView, useReducedMotion } from "framer-motion";
 
 const GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-const DURATION = 1000;
+const DEFAULT_DURATION = 1000;
 const FRAME_INTERVAL = 45;
 
 // Flattens children into a string. <br /> becomes "\n".
@@ -46,7 +46,12 @@ function renderLines(text) {
   ));
 }
 
-function TextScramble({ children, className = "", active = true }) {
+function TextScramble({
+  children,
+  className = "",
+  active = true,
+  duration = DEFAULT_DURATION,
+}) {
   const text = childrenToText(children);
   const prefersReducedMotion = useReducedMotion();
   const ref = useRef(null);
@@ -70,7 +75,7 @@ function TextScramble({ children, className = "", active = true }) {
     setStarted(true);
 
     const update = (now) => {
-      const progress = Math.min((now - startedAt) / DURATION, 1);
+      const progress = Math.min((now - startedAt) / duration, 1);
       setDisplayText(progress === 1 ? text : scramble(text, progress));
       if (progress < 1) {
         timeoutId = window.setTimeout(() => {
@@ -85,7 +90,7 @@ function TextScramble({ children, className = "", active = true }) {
       window.clearTimeout(timeoutId);
       window.cancelAnimationFrame(animationFrameId);
     };
-  }, [shouldAnimate, isInView, text]);
+  }, [shouldAnimate, isInView, text, duration]);
 
   const hidden = shouldAnimate && !started;
 
