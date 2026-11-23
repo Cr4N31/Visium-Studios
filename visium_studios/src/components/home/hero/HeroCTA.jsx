@@ -37,7 +37,7 @@ function HeroCTA({ variant = "default" }) {
               </span>
             </h2>
             <p className="mt-2 text-sm leading-tight text-black/65 sm:text-base">
-              Let&apos;s book &amp; talk with our director.
+              Let&apos;s talk with our director.
             </p>
           </div>
           <a
