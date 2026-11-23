@@ -140,7 +140,7 @@ function Row({
           <Link
             to={`/services/${s.slug}`}
             onClick={(e) => e.stopPropagation()}
-            className="mt-6 inline-flex items-center text-[11px] uppercase tracking-[0.16em] underline decoration-current/40 underline-offset-4 transition hover:decoration-current"
+            className="mt-6 inline-flex border items-center rounded-full bg-[#0B0B0B] text-white text-[11px] p-3 uppercase tracking-[-0.001em] hover:bg-[#F4F4F1] hover:text-black  transition"
           >
             Read more
           </Link>
