@@ -1,6 +1,8 @@
 import { createPortal } from "react-dom";
 import { useEffect, useState } from "react";
 
+const LOADER_DURATION = 450;
+
 function VisualAssetLoader() {
   const [overlays, setOverlays] = useState([]);
 
@@ -9,9 +11,24 @@ function VisualAssetLoader() {
     const positionedParents = new Map();
     let frameId = 0;
     let nextAssetId = 0;
+
     const inViewport = (element) => {
       const bounds = element.getBoundingClientRect();
       return bounds.bottom > 0 && bounds.top < window.innerHeight;
+    };
+
+    const ensureStarted = (asset) => {
+      if (asset.startedAt) return;
+      asset.startedAt = performance.now();
+    };
+
+    const assetProgress = (asset) => {
+      if (asset.loaded) return 100;
+      if (!asset.startedAt) return 1;
+      return Math.min(
+        100,
+        Math.max(1, Math.floor(((performance.now() - asset.startedAt) / LOADER_DURATION) * 100)),
+      );
     };
 
     const updateProgress = () => {
@@ -20,10 +37,17 @@ function VisualAssetLoader() {
           observer?.unobserve(element);
           resizeObserver?.unobserve(element);
           assets.delete(element);
-        } else if (inViewport(element)) {
-          asset.active = true;
+          return;
         }
-        asset.loaded ||= isLoaded(element) || Boolean(element.error);
+
+        if (inViewport(element)) {
+          asset.active = true;
+          ensureStarted(asset);
+        }
+
+        if (!asset.loaded && asset.startedAt && performance.now() - asset.startedAt >= LOADER_DURATION) {
+          asset.loaded = true;
+        }
       });
 
       const visibleAssets = [...assets.entries()].filter(
@@ -34,15 +58,14 @@ function VisualAssetLoader() {
         return;
       }
 
-      const loaded = visibleAssets.filter(([, asset]) => asset.loaded).length;
-      const progress =
-        loaded === visibleAssets.length
-          ? 100
-          : Math.max(1, Math.floor((loaded / visibleAssets.length) * 100));
-
       const nextOverlays = visibleAssets
-        .filter(([, asset]) => !asset.loaded)
         .map(([element, asset]) => {
+          const progress = assetProgress(asset);
+          if (progress >= 100) {
+            asset.loaded = true;
+            return null;
+          }
+
           const parent = element.parentElement;
           if (!parent) return null;
 
@@ -66,8 +89,8 @@ function VisualAssetLoader() {
           };
         })
         .filter((overlay) => overlay && overlay.width > 0 && overlay.height > 0);
-      const activeParents = new Set(nextOverlays.map((overlay) => overlay.parent));
 
+      const activeParents = new Set(nextOverlays.map((overlay) => overlay.parent));
       positionedParents.forEach((originalPosition, parent) => {
         if (activeParents.has(parent)) return;
         parent.style.position = originalPosition;
@@ -75,6 +98,13 @@ function VisualAssetLoader() {
       });
 
       setOverlays(nextOverlays);
+
+      const hasPending = [...assets.values()].some(
+        (asset) => asset.active && !asset.loaded,
+      );
+      if (hasPending) {
+        scheduleUpdate();
+      }
     };
 
     const scheduleUpdate = () => {
@@ -85,17 +115,14 @@ function VisualAssetLoader() {
       });
     };
 
-    const isLoaded = (element) =>
-      element instanceof HTMLImageElement
-        ? element.complete
-        : element.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA;
-
     const observeAsset = (element) => {
       if (assets.has(element)) return;
+      const active = inViewport(element);
       assets.set(element, {
         id: nextAssetId++,
-        active: inViewport(element),
-        loaded: isLoaded(element) || Boolean(element.error),
+        active,
+        loaded: false,
+        startedAt: active ? performance.now() : 0,
       });
       observer?.observe(element);
       resizeObserver?.observe(element);
@@ -115,23 +142,16 @@ function VisualAssetLoader() {
             entries.forEach(({ target, isIntersecting }) => {
               if (!isIntersecting) return;
               const asset = assets.get(target);
-              if (asset) asset.active = true;
+              if (!asset) return;
+              asset.active = true;
+              ensureStarted(asset);
             });
             updateProgress();
           })
         : null;
 
     const resizeObserver =
-      "ResizeObserver" in window
-        ? new ResizeObserver(scheduleUpdate)
-        : null;
-
-    const handleAssetEvent = (event) => {
-      const asset = assets.get(event.target);
-      if (!asset) return;
-      asset.loaded = true;
-      updateProgress();
-    };
+      "ResizeObserver" in window ? new ResizeObserver(scheduleUpdate) : null;
 
     const mutationObserver = new MutationObserver((records) => {
       records.forEach((record) =>
@@ -142,9 +162,6 @@ function VisualAssetLoader() {
     });
 
     mutationObserver.observe(document.body, { childList: true, subtree: true });
-    document.addEventListener("load", handleAssetEvent, true);
-    document.addEventListener("loadeddata", handleAssetEvent, true);
-    document.addEventListener("error", handleAssetEvent, true);
     document.addEventListener("scroll", scheduleUpdate, true);
     window.addEventListener("resize", scheduleUpdate);
     scan(document);
@@ -157,9 +174,6 @@ function VisualAssetLoader() {
       positionedParents.forEach((originalPosition, parent) => {
         parent.style.position = originalPosition;
       });
-      document.removeEventListener("load", handleAssetEvent, true);
-      document.removeEventListener("loadeddata", handleAssetEvent, true);
-      document.removeEventListener("error", handleAssetEvent, true);
       document.removeEventListener("scroll", scheduleUpdate, true);
       window.removeEventListener("resize", scheduleUpdate);
     };

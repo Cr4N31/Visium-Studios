@@ -187,20 +187,6 @@ const projects = [
           "By embracing clean, modern design choices paired with disruptive messaging, Rallow establishes a distinct presence in the streetwear landscape. This cohesive identity not only connects with its audience on a personal level but also reinforces its core values of rebellion, independence, and authenticity. Through this powerful visual language, Rallow positions itself as more than just a brand. It's a movement for those who refuse to conform.",
         ],
       },
-      {
-        label: "Our Impact",
-        body: [
-          "More than a brand, it's a movement. Rallow is more than what you wear. It is a statement of confidence, individuality and self-expression. We exist to inspire a generation to embrace their uniqueness, challenge the ordinary and express themselves without limitations. Through fashion, creativity and culture, we are building a community where boldness is celebrated, individuality is valued and every style tells a story. Rallow. Wear your Bold Side.",
-        ],
-        // Optional banner that sits under the text (red banner in the Figma)
-        callout: {
-          eyebrow: "Our Impact.",
-          headline: "More than a brand. It's a movement.",
-          text: "Rallow continues to inspire creativity, confidence and culture.",
-          cta: { label: "Let's Build Together", href: "/contact" },
-          background: asset("Rallow", "Impact Banner.png"),
-        },
-      },
     ],
 
     // Section 04

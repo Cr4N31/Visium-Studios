@@ -97,7 +97,7 @@ function ProjectMedia({ media, alt = "", className = "" }) {
 /** "— 01  THE CHALLENGE." */
 function SectionHeading({ number, children }) {
   return (
-    <h2 className="mb-6 flex items-center gap-3 text-[clamp(1.1rem,2.2vw,1.75rem)] font-semibold uppercase leading-none tracking-tight text-white">
+    <h2 className="mb-6 flex items-center gap-3 text-[clamp(1.6rem,3vw,5rem)] font-semibold uppercase leading-none tracking-tight text-white">
       <span aria-hidden="true" className="h-px w-5 bg-white/70" />
       <span>{number}</span>
       <span>{children}.</span>
@@ -107,10 +107,7 @@ function SectionHeading({ number, children }) {
 
 function Paragraphs({ items = [], className = "" }) {
   return items.map((text, i) => (
-    <p
-      key={i}
-      className={`max-w-3xl text-sm leading-relaxed text-white/70 ${className}`}
-    >
+    <p key={i} className={`text-lg leading-relaxed text-white/80 ${className}`}>
       {text}
     </p>
   ));
@@ -254,6 +251,53 @@ function Palette({ palette }) {
   );
 }
 
+/**
+ * Identity in Motion grid.
+ * Every tile gets the same aspect ratio and the media fills it, so assets of
+ * different heights always line up. An odd last item spans the full row.
+ *
+ * Optional per-asset fields in the project data:
+ *   fit: "contain"      shows the whole asset instead of cropping it
+ *   background: "#hex"  fills the space behind a contained asset
+ */
+function MotionGrid({ items, title }) {
+  const isOdd = items.length % 2 === 1;
+
+  return (
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      {items.map((item, i) => {
+        const isLoneLast = isOdd && i === items.length - 1 && items.length > 1;
+        const fit = item.fit === "contain" ? "object-contain" : "object-cover";
+
+        return (
+          <div
+            key={i}
+            className={`relative overflow-hidden rounded-md bg-[#111111] ${
+              isLoneLast
+                ? "aspect-[4/3] sm:col-span-2 sm:aspect-[21/9]"
+                : "aspect-[4/3]"
+            }`}
+            style={
+              item.background ? { backgroundColor: item.background } : undefined
+            }
+          >
+            <ProjectMedia
+              media={item}
+              alt={
+                item.alt ||
+                (i === 0
+                  ? `${title} identity in motion`
+                  : `${title} motion ${i + 1}`)
+              }
+              className={`absolute inset-0 h-full w-full ${fit}`}
+            />
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 function OtherWorkCard({ item }) {
   const logo = item.card?.logo;
 
@@ -319,13 +363,18 @@ function CaseStudy() {
   );
   const hasLogoContent = Boolean(
     logo?.video?.src ||
-      logo?.description?.length ||
-      logo?.animationNote ||
-      logo?.showcase?.src ||
-      logo?.construction?.length ||
-      logo?.palette ||
-      logo?.lockup?.src,
+    logo?.description?.length ||
+    logo?.animationNote ||
+    logo?.showcase?.src ||
+    logo?.construction?.length ||
+    logo?.palette ||
+    logo?.lockup?.src,
   );
+
+  // Motion items: banner first, then any extras.
+  const motionItems = motion?.banner?.src
+    ? [motion.banner, ...(motion.extra || [])]
+    : [];
 
   // Other works: use the project's picks, fall back to the first three other projects.
   const picked = getOtherWorks(project);
@@ -343,7 +392,7 @@ function CaseStudy() {
   story.forEach((_, i) => take(`story-${i}`));
   if (hasLogoContent) take("logo");
   if (brandGroups.length) take("brand");
-  if (motion?.banner) take("motion");
+  if (motionItems.length) take("motion");
   if (credits.length) take("credits");
   if (otherWorks.length) take("others");
 
@@ -473,10 +522,10 @@ function CaseStudy() {
               </div>
             )}
 
-            <div className="space-y-4 flex flex-col justify-center items-center">
+            <div className="space-y-4 flex flex-col">
               <Paragraphs className="" items={logo.description} />
               {logo.animationNote && (
-                <p className="max-w-3xl text-sm leading-relaxed text-white/70">
+                <p className="text-lg leading-relaxed text-white/70">
                   {logo.animationNote}
                 </p>
               )}
@@ -558,51 +607,21 @@ function CaseStudy() {
         )}
 
         {/* -------------------------- Identity in Motion ---------------------- */}
-        {motion?.banner?.src && (
+        {motionItems.length > 0 && (
           <section className="mb-16" data-aos="fade-up">
             <SectionHeading number={numbers.motion}>
               {motion.label}
             </SectionHeading>
 
-            <div
-              className={`grid items-center gap-6 ${
-                motion.caption ? "md:grid-cols-[2fr_1fr]" : ""
-              }`}
-            >
-              <div className="overflow-hidden rounded-md bg-[#111111]">
-                <ProjectMedia
-                  media={motion.banner}
-                  alt={
-                    motion.banner.alt || `${project.title} identity in motion`
-                  }
-                  className="w-full object-cover"
-                />
-              </div>
-              {motion.caption && (
-                <p
-                  className="border-l-2 pl-4 text-xs leading-relaxed text-white/80"
-                  style={{ borderColor: accent }}
-                >
-                  {motion.caption}
-                </p>
-              )}
-            </div>
+            <MotionGrid items={motionItems} title={project.title} />
 
-            {motion.extra?.length > 0 && (
-              <div className="mt-4 grid gap-4 sm:grid-cols-2">
-                {motion.extra.map((item, i) => (
-                  <div
-                    key={i}
-                    className="overflow-hidden rounded-md bg-[#111111]"
-                  >
-                    <ProjectMedia
-                      media={item}
-                      alt={`${project.title} motion ${i + 2}`}
-                      className="w-full object-cover"
-                    />
-                  </div>
-                ))}
-              </div>
+            {motion.caption && (
+              <p
+                className="mt-6 max-w-3xl border-l-2 pl-4 text-lg leading-relaxed text-white/80"
+                style={{ borderColor: accent }}
+              >
+                {motion.caption}
+              </p>
             )}
           </section>
         )}

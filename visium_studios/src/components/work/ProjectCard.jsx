@@ -98,7 +98,7 @@ function ProjectCard({ project, summaryBelow = false, presentation = false }) {
 
   return (
     <Motion.div
-      className="group relative overflow-hidden bg-white/5"
+      className="group relative h-full w-full overflow-hidden bg-white/5"
       initial="rest"
       whileHover="hover"
       animate="rest"
