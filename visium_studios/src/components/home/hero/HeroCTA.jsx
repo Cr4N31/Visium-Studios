@@ -42,9 +42,15 @@ function HeroCTA({ variant = "default" }) {
           </div>
           <a
             href="/call-page"
-            className="flex h-10 items-center justify-center rounded-md bg-[#F4F4F1] uppercase tracking-wide transition-colors hover:bg-[#0B0B0B] hover:text-[#F4F4F1]"
+            className="hero-curtain-cta group relative isolate flex h-10 items-center justify-center overflow-hidden rounded-md bg-[#F4F4F1] uppercase tracking-wide text-[#0B0B0B]"
           >
-            <span className="font-mono font-semibold text-base">Book call</span>
+            <span
+              aria-hidden="true"
+              className="hero-curtain-cta__panel pointer-events-none absolute inset-0 -translate-y-full bg-[#0B0B0B] transition-transform duration-500 ease-[cubic-bezier(0.7,0,0.2,1)] group-hover:translate-y-0 group-focus-visible:translate-y-0"
+            />
+            <span className="relative z-10 font-mono font-semibold text-base transition-colors duration-200 group-hover:text-[#F4F4F1] group-focus-visible:text-[#F4F4F1]">
+              Book call
+            </span>
           </a>
         </div>
         <div className="relative w-[38%] shrink-0 overflow-hidden border-l border-l-[#F4F4F1] bg-neutral-200 sm:w-[34%] md:w-[38%]">

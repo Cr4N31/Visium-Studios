@@ -8,7 +8,8 @@ import {
 } from "framer-motion";
 
 const SRC = "/assets/video/final_motion.mp4";
-const CURSOR_SIZE = 96;
+const CURSOR_WIDTH = 160;
+const CURSOR_HEIGHT = 48;
 const EASE = [0.76, 0, 0.24, 1];
 const MotionDiv = motion.div;
 const MotionButton = motion.button;
@@ -59,15 +60,15 @@ function VideoMotion() {
   const sy = useSpring(my, { stiffness: 600, damping: 40, mass: 0.4 });
 
   const moveCursor = (e) => {
-    mx.set(e.clientX - CURSOR_SIZE / 2);
-    my.set(e.clientY - CURSOR_SIZE / 2);
+    mx.set(e.clientX - CURSOR_WIDTH / 2);
+    my.set(e.clientY - CURSOR_HEIGHT / 2);
   };
 
   // Hovering over the cover only drives the cursor; clicking opens the video.
   const handleEnter = (e) => {
     if (e.pointerType !== "mouse") return;
-    const x = e.clientX - CURSOR_SIZE / 2;
-    const y = e.clientY - CURSOR_SIZE / 2;
+    const x = e.clientX - CURSOR_WIDTH / 2;
+    const y = e.clientY - CURSOR_HEIGHT / 2;
     mx.jump(x);
     my.jump(y);
     sx.jump(x);
@@ -190,15 +191,16 @@ function VideoMotion() {
           }`}
         />
 
-        {/* Round play element (fades out on desktop hover so it doesn't
-            clash with the "Show reel" cursor) */}
         <div
           aria-hidden="true"
-          className={`pointer-events-none relative z-20 flex h-10 w-26 items-center justify-center border border-[#F4F4F1]/70 bg-[#F4F4F1] text-xs font-medium uppercase tracking-[0.12em] text-[#0B0B0B] backdrop-blur-sm transition-opacity duration-200 ${
-            hovering ? "opacity-0" : "opacity-100"
-          }`}
+          className="pointer-events-none absolute inset-x-3 bottom-3 z-20 flex items-end justify-between gap-2 sm:inset-x-5 sm:bottom-5"
         >
-          [Expand]
+          <span className="max-w-[65%] text-[8px] font-medium uppercase leading-tight tracking-[0.12em] text-white sm:text-[10px] sm:tracking-[0.16em]">
+            [ REEL - BRAND WORK IN MOTION ]
+          </span>
+          <span className="flex h-8 shrink-0 items-center justify-center border border-[#F4F4F1]/70 bg-[#F4F4F1] px-3 text-[9px] font-medium uppercase tracking-[0.1em] text-[#0B0B0B] backdrop-blur-sm sm:h-10 sm:px-4 sm:text-xs">
+            [Expand]
+          </span>
         </div>
       </div>
 
@@ -299,15 +301,20 @@ function VideoMotion() {
             <MotionDiv
               key="cursor"
               aria-hidden
-              className="pointer-events-none fixed left-0 top-0 z-[210] flex items-center justify-center whitespace-nowrap rounded-full bg-white text-[11px] font-medium uppercase tracking-[0.12em] text-black [@media(hover:none)]:hidden"
-              style={{ x: sx, y: sy, width: CURSOR_SIZE, height: CURSOR_SIZE }}
+              className="pointer-events-none fixed left-0 top-0 z-[210] flex items-center justify-center whitespace-nowrap rounded-full bg-white px-4 text-[10px] font-medium uppercase tracking-[0.1em] text-black [@media(hover:none)]:hidden"
+              style={{
+                x: sx,
+                y: sy,
+                width: CURSOR_WIDTH,
+                height: CURSOR_HEIGHT,
+              }}
               initial={{ scale: 0 }}
               animate={{ scale: overUI ? 0.14 : 1 }}
               exit={{ scale: 0 }}
               transition={{ duration: 0.25, ease: "easeOut" }}
             >
               <MotionSpan animate={{ opacity: overUI ? 0 : 1 }}>
-                {open ? labelFor(playing) : "Show reel"}
+                {open ? labelFor(playing) : "Click to expand"}
               </MotionSpan>
             </MotionDiv>
           )}
