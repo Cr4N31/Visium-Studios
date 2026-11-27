@@ -32,9 +32,9 @@ const toMedia = (entry, alt = "") => {
 /** Picks black or white text for a given background hex. */
 const readableOn = (hex = "") => {
   const h = hex.replace("#", "");
-  if (h.length !== 6) return "#ffffff";
+  if (h.length !== 6) return "#F4F4F1";
   const [r, g, b] = [0, 2, 4].map((i) => parseInt(h.slice(i, i + 2), 16));
-  return (r * 299 + g * 587 + b * 114) / 1000 > 150 ? "#111111" : "#ffffff";
+  return (r * 299 + g * 587 + b * 114) / 1000 > 150 ? "#0B0B0B" : "#F4F4F1";
 };
 
 const pad = (n) => String(n).padStart(2, "0");
@@ -272,7 +272,7 @@ function MotionGrid({ items, title }) {
         return (
           <div
             key={i}
-            className={`relative overflow-hidden rounded-md bg-[#111111] ${
+            className={`relative overflow-hidden rounded-md bg-[#0B0B0B] ${
               isLoneLast
                 ? "aspect-[4/3] sm:col-span-2 sm:aspect-[21/9]"
                 : "aspect-[4/3]"
@@ -356,7 +356,7 @@ function CaseStudy() {
   const accent =
     logo?.palette?.primary?.[1]?.hex ||
     logo?.palette?.primary?.[0]?.hex ||
-    "#ffffff";
+    "#F4F4F1";
 
   const brandGroups = (brand?.groups ?? []).filter(
     (group) => group.images?.length,
@@ -408,7 +408,7 @@ function CaseStudy() {
   }
 
   return (
-    <main className="bg-[#050505] text-white" data-aos="fade-up">
+    <main className="bg-[#0B0B0B] text-[#F4F4F1]" data-aos="fade-up">
       <div className="mx-auto max-w-[1200px] px-4 pb-24 pt-24 sm:px-6 md:px-10">
         {/* ------------------------------ Header ------------------------------ */}
         <Link
@@ -438,7 +438,7 @@ function CaseStudy() {
                 {project.category}
               </p>
             )}
-            <h1 className="text-[clamp(2.75rem,8vw,6.5rem)] font-light leading-[0.9] tracking-[-0.05em] text-[#f1efe9]">
+            <h1 className="text-[clamp(2.75rem,8vw,6.5rem)] font-light leading-[0.9] tracking-[-0.05em] text-[#F4F4F1]">
               <TextScramble>{project.title}</TextScramble>
               {project.subtitle && (
                 <>
@@ -479,7 +479,7 @@ function CaseStudy() {
         )}
 
         {hero?.src && (
-          <div className="mb-16 overflow-hidden rounded-md bg-[#111111]">
+          <div className="mb-16 overflow-hidden rounded-md bg-[#0B0B0B]">
             <ProjectMedia
               media={hero}
               alt={hero.alt || project.title}
@@ -513,7 +513,7 @@ function CaseStudy() {
             <SectionHeading number={numbers.logo}>{logo.label}</SectionHeading>
 
             {logo.video?.src && (
-              <div className="mb-8 overflow-hidden rounded-md bg-[#111111]">
+              <div className="mb-8 overflow-hidden rounded-md bg-[#0B0B0B]">
                 <ProjectMedia
                   media={logo.video}
                   alt={logo.video.alt || `${project.title} logo animation`}
@@ -532,7 +532,7 @@ function CaseStudy() {
             </div>
 
             {logo.showcase?.src && (
-              <div className="mt-8 overflow-hidden rounded-md bg-[#111111]">
+              <div className="mt-8 overflow-hidden rounded-md bg-[#0B0B0B]">
                 <ProjectMedia
                   media={logo.showcase}
                   alt={logo.showcase.alt || `${project.title} logo`}
@@ -546,7 +546,7 @@ function CaseStudy() {
                 {logo.construction.map((item, i) => (
                   <div
                     key={i}
-                    className="overflow-hidden rounded-md bg-[#111111]"
+                    className="overflow-hidden rounded-md bg-[#0B0B0B]"
                   >
                     <ProjectMedia
                       media={item}
@@ -590,7 +590,7 @@ function CaseStudy() {
                     {group.images.map((image, i) => (
                       <div
                         key={`${group.label}-${i}`}
-                        className="mb-3 break-inside-avoid overflow-hidden rounded-md bg-[#111111]"
+                        className="mb-3 break-inside-avoid overflow-hidden rounded-md bg-[#0B0B0B]"
                       >
                         <ProjectMedia
                           media={image}

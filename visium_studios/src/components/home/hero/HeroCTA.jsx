@@ -28,8 +28,8 @@ function HeroCTA({ variant = "default" }) {
 
   return (
     <section className="w-full shrink-0 overflow-hidden rounded-xl text-black md:w-[340px]">
-      <div className="flex h-60 overflow-hidden rounded-xl border border-2 border-[#ffff] md:h-full">
-        <div className="flex min-w-0 flex-1 flex-col justify-between bg-white p-5 sm:p-7">
+      <div className="flex h-48 overflow-hidden rounded-xl border-2 border-[#F4F4F1] sm:h-52 md:h-full">
+        <div className="flex min-w-0 flex-1 flex-col justify-between bg-[#F4F4F1] p-4 sm:p-6">
           <div>
             <h2 className="text-xl uppercase leading-[1.05] tracking-wide sm:text-2xl">
               <span className="font-bold">
@@ -42,12 +42,12 @@ function HeroCTA({ variant = "default" }) {
           </div>
           <a
             href="/call-page"
-            className="flex h-10  items-center justify-center rounded-md bg-[#fff] uppercase tracking-wide transition-colors hover:bg-[#0B0B0B] hover:text-white"
+            className="flex h-10 items-center justify-center rounded-md bg-[#F4F4F1] uppercase tracking-wide transition-colors hover:bg-[#0B0B0B] hover:text-[#F4F4F1]"
           >
             <span className="font-mono font-semibold text-base">Book call</span>
           </a>
         </div>
-        <div className="relative w-[30%] shrink-0 overflow-hidden border-l border-l-[#fff] bg-neutral-200">
+        <div className="relative w-[38%] shrink-0 overflow-hidden border-l border-l-[#F4F4F1] bg-neutral-200 sm:w-[34%] md:w-[38%]">
           <img
             className="h-full w-full object-cover object-top"
             src="/assets/img/img.png"

@@ -16,7 +16,7 @@ function Work() {
       className="bg-[#0B0B0B] px-5 py-24 text-white sm:px-8 md:py-32"
     >
       <Motion.div
-        className="max-w-6xl mb-14 md:mb-20"
+        className="site-container mb-14 md:mb-20"
         initial="hidden"
         whileInView="show"
         viewport={{ once: true, amount: 0.4 }}
@@ -32,8 +32,12 @@ function Work() {
         </h1>
       </Motion.div>
 
-      <WorkGrid projects={projects} />
-      <Footer />
+      <div className="site-container">
+        <WorkGrid projects={projects} />
+      </div>
+      <div className="site-container">
+        <Footer />
+      </div>
     </section>
   );
 }

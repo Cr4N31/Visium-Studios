@@ -3,6 +3,8 @@
 :root {
   --site-white: #f4f4f1;
   --site-black: #0b0b0b;
+  --content-max: 100rem;
+  --content-gutter: clamp(1.25rem, 4vw, 4rem);
 }
 
 @theme {
@@ -117,13 +119,7 @@ a {
   z-index: 0;
   width: 51%;
   height: 140%;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.12) 0%,
-    rgba(255, 255, 255, 0.08) 18%,
-    rgba(18, 18, 18, 0.96) 48%,
-    rgba(0, 0, 0, 1) 100%
-  );
+  background: #0b0b0b;
   border: 1px solid rgba(255, 255, 255, 0.18);
   box-shadow:
     inset 0 0 0 1px rgba(255, 255, 255, 0.04),
@@ -188,7 +184,7 @@ a {
   width: 180px;
   height: 1px;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.16);
+  background: #0b0b0b;
 }
 
 .visium-loader-bar-fill {
@@ -476,6 +472,18 @@ nav a {
   background-color: var(--site-white);
 }
 
+/* Shared content measure; section backgrounds can still run full-bleed. */
+.site-container {
+  width: min(calc(100% - (var(--content-gutter) * 2)), var(--content-max));
+  margin-inline: auto;
+}
+
+@media (min-width: 1800px) {
+  :root {
+    --content-gutter: 5rem;
+  }
+}
+
 .studio-team-carousel {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -618,6 +626,33 @@ nav a {
 
   .service-tree__capability--right {
     left: 72%;
+  }
+}
+
+/* Keep desktop composition centered and proportionate on ultrawide screens. */
+@media (min-width: 1800px) {
+  .home-hero > :first-child,
+  .home-hero > :last-child {
+    width: min(100%, 1600px);
+    margin-inline: auto;
+  }
+}
+
+@media (max-width: 767px) {
+  /* Reserve room for the wordmark while keeping the reel compact on phones. */
+  .home-hero > :first-child > div:first-child {
+    height: 10.4rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }
 

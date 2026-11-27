@@ -241,7 +241,7 @@ export default function Services() {
         y.set(e.clientY - 137);
       }}
     >
-      <div className="mb-24 flex items-start gap-2 px-8 md:gap-3 md:px-10">
+      <div className="site-container mb-24 flex items-start gap-2 md:gap-3">
         <sup className="mt-[0.5em] font-mono text-xs md:text-sm">(02)</sup>
         <h2 className="text-[clamp(2.5rem,6vw,5rem)] font-normal leading-[0.9] tracking-[-0.05em]">
           <TextScramble>Service</TextScramble>
@@ -249,7 +249,7 @@ export default function Services() {
       </div>
 
       <LayoutGroup>
-        <div className="px-5 md:px-10">
+        <div className="site-container">
           {serviceList.map((s, index) => (
             <Row
               key={s.slug}

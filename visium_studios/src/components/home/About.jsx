@@ -14,6 +14,7 @@ function About() {
       viewport={{ once: true, amount: 0.2 }}
       transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
     >
+      <div className="site-container">
       {/* Heading row */}
       <div className="flex items-start gap-2 md:gap-3">
         <sup className="mt-[0.5em] font-mono text-xs md:text-sm">(02)</sup>
@@ -44,6 +45,7 @@ function About() {
             <CapabilitiesMarquee />
           </div>
         </div>
+      </div>
       </div>
     </MotionSection>
   );

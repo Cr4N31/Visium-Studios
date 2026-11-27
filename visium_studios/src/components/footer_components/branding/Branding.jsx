@@ -133,7 +133,7 @@ function Branding() {
   return (
     <div className="bg-[#0B0B0B] text-white">
       {/* Header */}
-      <section className="px-8 pb-16 pt-28 md:pt-40">
+      <section className="site-container px-8 pb-16 pt-28 md:pt-40">
         <h1 className="text-[clamp(2.5rem,8vw,5rem)] font-normal leading-[1.05] text-white">
           <TextScramble>Branding</TextScramble>
         </h1>

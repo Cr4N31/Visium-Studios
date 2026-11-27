@@ -100,7 +100,7 @@ function Studio() {
       ref={sectionRef}
       className="overflow-hidden bg-[#0B0B0B] py-10 text-white md:py-14"
     >
-      <div className="px-5 sm:px-8 md:px-10">
+      <div className="site-container">
         <div className="flex items-start gap-2 md:gap-3">
           <sup className="mt-[0.5em] font-mono text-xs md:text-sm">(04)</sup>
           <h2 className="text-[clamp(2.5rem,6vw,5rem)] font-normal leading-[0.9] tracking-[-0.05em]">

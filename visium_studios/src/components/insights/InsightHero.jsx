@@ -34,7 +34,7 @@ function InsightHero() {
     >
       {/* Headline */}
       <Motion.h1
-        className="max-w-[72rem] font-serif text-[clamp(2.25rem,5.3vw,4.25rem)] font-normal leading-[1.15] tracking-[-0.045em]"
+        className="site-container font-serif text-[clamp(2.25rem,5.3vw,4.25rem)] font-normal leading-[1.15] tracking-[-0.045em]"
         style={{ y: headY, opacity: headOpacity }}
       >
         <Line delay={0.1}>

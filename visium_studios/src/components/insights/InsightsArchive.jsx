@@ -69,7 +69,7 @@ function InsightsArchive() {
       : sortedInsights.filter((a) => a.category === active);
 
   return (
-    <section className="px-8 pb-24 md:pb-40">
+    <section className="site-container pb-24 md:pb-40">
       <div className="mb-10 flex flex-col gap-6 md:mb-16 md:flex-row md:items-end md:justify-between">
         <p className="text-[11px] uppercase tracking-[0.2em] text-black/45">
           Archive (0{list.length})

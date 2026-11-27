@@ -173,6 +173,7 @@ function VideoMotion() {
           muted
           loop
           playsInline
+          preload="metadata"
           aria-hidden="true"
           tabIndex={-1}
           disablePictureInPicture
@@ -184,7 +185,7 @@ function VideoMotion() {
         {/* Dark tint: video stays visible underneath, lightens on hover */}
         <div
           aria-hidden="true"
-          className={`pointer-events-none absolute inset-0 z-10 bg-black transition-opacity duration-300 ${
+          className={`pointer-events-none absolute inset-0 z-10 bg-[#0B0B0B] transition-opacity duration-300 ${
             hovering ? "opacity-35" : "opacity-55"
           }`}
         />
@@ -193,7 +194,7 @@ function VideoMotion() {
             clash with the "Show reel" cursor) */}
         <div
           aria-hidden="true"
-          className={`pointer-events-none relative z-20 flex  items-center justify-center  border border-white/70 bg-[#F4F4F1] text-xs font-medium uppercase tracking-[0.12em] text-black backdrop-blur-sm transition-opacity duration-200 h-10 w-26 ${
+          className={`pointer-events-none relative z-20 flex h-10 w-26 items-center justify-center border border-[#F4F4F1]/70 bg-[#F4F4F1] text-xs font-medium uppercase tracking-[0.12em] text-[#0B0B0B] backdrop-blur-sm transition-opacity duration-200 ${
             hovering ? "opacity-0" : "opacity-100"
           }`}
         >
@@ -233,6 +234,7 @@ function VideoMotion() {
                   muted={muted}
                   loop
                   playsInline
+                  preload="none"
                   className="block h-auto w-auto max-h-[80dvh] max-w-[90vw] object-contain"
                   onPlay={() => setPlaying(true)}
                   onPause={() => setPlaying(false)}

@@ -43,7 +43,7 @@ function Loader({ visible = true, onCoverComplete, onRevealComplete }) {
         {Array.from({ length: BAR_COUNT }).map((_, i) => (
           <motion.div
             key={i}
-            className="h-full flex-1 origin-top bg-[#050505]"
+            className="h-full flex-1 origin-top bg-[#0B0B0B]"
             initial={{ scaleY: 0 }}
             animate={{ scaleY: visible ? 1 : 0 }}
             transition={{

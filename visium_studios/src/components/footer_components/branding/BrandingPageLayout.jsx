@@ -70,7 +70,7 @@ function BrandingPageLayout({
 
   return (
     <div className="bg-[#0B0B0B] text-white">
-      <section className="px-8 pb-16 pt-28 md:pt-40">
+      <section className="site-container px-8 pb-16 pt-28 md:pt-40">
         <h1 className="text-[clamp(2.5rem,8vw,5rem)] font-normal leading-[1.05] text-white">
           <TextScramble>{title}</TextScramble>
         </h1>
@@ -82,7 +82,7 @@ function BrandingPageLayout({
       {sections.map((section, index) => (
         <section
           key={section.heading || index}
-          className="grid grid-cols-1 gap-8 border-t border-white/10 px-8 py-16 md:grid-cols-[minmax(0,280px)_1fr] md:gap-16"
+          className="site-container grid grid-cols-1 gap-8 border-t border-white/10 px-8 py-16 md:grid-cols-[minmax(0,280px)_1fr] md:gap-16"
         >
           <div>
             <span className="block text-xs text-white/40">
@@ -107,7 +107,7 @@ function BrandingPageLayout({
       ))}
 
       {services.length > 0 ? (
-        <section className="grid grid-cols-1 gap-8 border-t border-white/10 px-8 py-16 md:grid-cols-[minmax(0,280px)_1fr] md:gap-16">
+        <section className="site-container grid grid-cols-1 gap-8 border-t border-white/10 px-8 py-16 md:grid-cols-[minmax(0,280px)_1fr] md:gap-16">
           <div>
             <span className="block text-xs text-white/40">
               {String(sections.length + 1).padStart(2, "0")}

@@ -37,7 +37,7 @@ function FinalCTA({ eyebrow = "Start a Project" }) {
       className="relative overflow-hidden border-t border-white/10 px-8 py-24 text-white md:py-32"
       aria-labelledby="final-cta-heading"
     >
-      <div className="relative z-10 flex flex-col gap-4 justify-between">
+      <div className="site-container relative z-10 flex flex-col justify-between gap-4">
         {/* Section label */}
         <div className="flex items-center gap-4">
           <span className="text-xs uppercase tracking-[0.2em] text-white/40">

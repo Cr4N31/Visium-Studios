@@ -5,7 +5,7 @@ import { motion as Motion, useInView, useReducedMotion } from "framer-motion";
 const SCRIBBLE_PATH =
   "M 22 42 C 18 14, 90 4, 130 6 C 176 8, 197 26, 192 44 C 187 64, 130 77, 85 75 C 38 73, 6 58, 11 36 C 14 22, 42 11, 74 9";
 
-function Scribble({ children, delay = 0, color = "#ffffff", duration = 3.6 }) {
+function Scribble({ children, delay = 0, color = "#F4F4F1", duration = 3.6 }) {
   const ref = useRef(null);
   const inView = useInView(ref, { amount: 0.6 });
   const reduceMotion = useReducedMotion();
@@ -61,7 +61,7 @@ function Scribble({ children, delay = 0, color = "#ffffff", duration = 3.6 }) {
 function HeroText() {
   return (
     <Motion.div
-      className="relative flex flex-col items-center justify-start pt-24 pb-10 gap-12 text-white sm:pt-28 sm:gap-10 md:min-h-[100vh] md:justify-center md:pt-0 md:pb-0 md:gap-12"
+      className="relative flex flex-col items-center justify-start gap-12 pt-24 pb-10 text-[#F4F4F1] sm:pt-28 sm:gap-10 md:min-h-[100svh] md:justify-center md:pt-0 md:pb-0 md:gap-12"
       initial="hidden"
       animate="show"
     >
